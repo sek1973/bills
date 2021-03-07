@@ -1,0 +1,25 @@
+.form-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: center;
+  height: 66px;
+}
+
+.form-item-label {
+  flex-grow: 2;
+  flex-basis: 20%;
+}
+
+.form-item-input {
+  flex-grow: 8;
+  flex-basis: 80%;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.form-field {
+  width: 100%;
+}

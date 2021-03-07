@@ -1,0 +1,42 @@
+<div class="bill-view">
+  <div class="bill-titlebar">
+    <div class="bill-title">
+      <span>
+        {{getTitle()}}
+      </span>
+    </div>
+    <div class="bill-toolbar">
+      <button mat-icon-button
+              matTooltip="Zestawienie"
+              [routerLink]="['/zestawienie']"
+              routerLinkActive="active">
+        <span class="material-icons"
+              inline=true>view_list
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <app-bill-edit class="bill-details"
+                 [bill]="bill"
+                 [editMode]="editMode"
+                 [newBill]="newBill"
+                 (loading)="onLoading($event)"></app-bill-edit>
+
+  <app-schedules *ngIf="!newBill"
+                 class="bill-schedules"
+                 [billUid]="bill.uid"></app-schedules>
+
+  <app-payments *ngIf="!newBill"
+                class="bill-payments"
+                [billUid]="bill.uid"
+                (loading)="onLoading($event)"></app-payments>
+</div>
+
+<app-spinner color="primary"
+             mode="indeterminate"
+             [value]="50"
+             [backdropEnabled]="true"
+             [positionGloballyCenter]="true"
+             [displayProgressSpinner]="loading">
+</app-spinner>

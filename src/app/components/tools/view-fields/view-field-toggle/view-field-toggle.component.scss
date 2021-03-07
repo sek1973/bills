@@ -1,0 +1,17 @@
+.field-item {
+  display: flex;
+  flex-direction: row;
+  min-height: 50px;
+  width: 100%;
+  align-items: center;
+}
+
+.field-label {
+  width: 100%;
+  font-weight: 500;
+}
+
+.field-toggle {
+  width: auto;
+  padding-right: 10px;
+}

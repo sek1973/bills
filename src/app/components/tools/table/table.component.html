@@ -1,0 +1,272 @@
+<mat-menu #tableMenu="matMenu"
+          xPosition="before"
+          yPosition="below"
+          [overlapTrigger]="false">
+
+  <button *ngIf="showRefreshButton"
+          mat-menu-item
+          matTooltip="Odśwież"
+          class="menu-button"
+          (click)="onRefreshClicked($event)">
+    <span class="material-icons menu-icon">refresh</span>
+    Odśwież
+  </button>
+
+  <button *ngIf="editButtonVisible"
+          mat-menu-item
+          [disabled]="!canEdit"
+          matTooltip="Edytuj"
+          class="menu-button"
+          (click)="onEditClicked($event)">
+    <span class="material-icons menu-icon">edit</span>
+    Edytuj
+  </button>
+
+  <button *ngIf="addButtonVisible"
+          mat-menu-item
+          [disabled]="!canAdd"
+          matTooltip="Dodaj"
+          class="menu-button"
+          (click)="onAddClicked($event)">
+    <span class="material-icons menu-icon">add</span>
+    Dodaj
+  </button>
+
+  <button *ngIf="removeButtonVisible"
+          mat-menu-item
+          [disabled]="!canDelete"
+          matTooltip="Usuń"
+          class="menu-button"
+          (click)="onDeleteClicked($event)">
+    <span class="material-icons menu-icon">remove</span>
+    Usuń
+  </button>
+
+  <ng-container *ngIf="exportable">
+    <button [disabled]="isDataSourceLoading() | async"
+            mat-menu-item
+            matTooltip="Drukuj"
+            class="menu-button"
+            (click)="onPrintClicked($event)">
+      <span class="material-icons menu-icon"
+            inline=true>print</span>
+      Drukuj
+    </button>
+
+    <button [disabled]="isDataSourceLoading() | async"
+            mat-menu-item
+            class="material-icons"
+            matTooltip="Eksportuj"
+            class="menu-button"
+            (click)="onExportClicked($event)">
+      <span class="material-icons menu-icon"
+            inline=true>file_download</span>
+      Eksportuj
+    </button>
+
+    <button *ngIf="pasteButtonVisible"
+            mat-menu-item
+            [disabled]="!canPaste"
+            matTooltip="Wklej"
+            class="menu-button"
+            (click)="onPasteClicked($event)">
+      <span class="material-icons menu-icon">content_paste</span>
+      Wklej
+    </button>
+  </ng-container>
+</mat-menu>
+
+
+<ng-template #defaultCellTemplate
+             let-row="row"
+             let-column="column">
+  {{row[column]}}
+</ng-template>
+
+<ng-template #defaultTitleTemplate>
+  <span class="table-title">{{tableTitle}}</span>
+</ng-template>
+
+<div class="component-container">
+  <div class="table-header-row"
+       *ngIf="!hideHeader">
+    <ng-container [ngTemplateOutlet]="getTableTitleTemplate(defaultTitleTemplate)">
+    </ng-container>
+
+    <div>
+      <ng-container [ngTemplateOutlet]="middleToolbarPanelTemplate"
+                    [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow, $loading: isDataSourceLoading()}">
+      </ng-container>
+    </div>
+
+    <mat-form-field class="filter-field"
+                    *ngIf="showFilter">
+      <input matInput
+             [disabled]="isDataSourceLoading() | async"
+             #filterInput
+             (click)="$event.stopPropagation();"
+             placeholder="Filter">
+    </mat-form-field>
+
+    <div class="buttons-panel">
+      <div class="table-buttons-visible">
+        <button *ngIf="showRefreshButton"
+                mat-icon-button
+                matTooltip="Odśwież"
+                (click)="onRefreshClicked($event)">
+          <span class="material-icons">refresh</span>
+        </button>
+
+        <button *ngIf="editButtonVisible"
+                mat-icon-button
+                [disabled]="!canEdit"
+                matTooltip="Edytuj"
+                (click)="onEditClicked($event)">
+          <span class="material-icons">edit</span>
+        </button>
+
+        <button *ngIf="addButtonVisible"
+                mat-icon-button
+                [disabled]="!canAdd"
+                matTooltip="Dodaj"
+                (click)="onAddClicked($event)">
+          <span class="material-icons">add</span>
+        </button>
+
+        <button *ngIf="removeButtonVisible"
+                mat-icon-button
+                [disabled]="!canDelete"
+                matTooltip="Usuń"
+                (click)="onDeleteClicked($event)">
+          <span class="material-icons">remove</span>
+        </button>
+
+        <ng-container *ngIf="exportable">
+          <button [disabled]="isDataSourceLoading() | async"
+                  mat-icon-button
+                  matTooltip="Drukuj"
+                  (click)="onPrintClicked($event)">
+            <span class="material-icons"
+                  inline=true>print</span>
+          </button>
+
+          <button [disabled]="isDataSourceLoading() | async"
+                  mat-icon-button
+                  matTooltip="Eksportuj"
+                  (click)="onExportClicked($event)">
+            <span class="material-icons"
+                  inline=true>file_download</span>
+          </button>
+
+          <button *ngIf="pasteButtonVisible"
+                  #pasteButton
+                  mat-icon-button
+                  [disabled]="!canPaste"
+                  matTooltip="Wklej"
+                  (click)="onPasteClicked($event)">
+            <span class="material-icons">content_paste</span>
+          </button>
+        </ng-container>
+      </div>
+
+      <ng-container [ngTemplateOutlet]="rightToolbarPanelTemplate"
+                    [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow, $loading: isDataSourceLoading()}">
+      </ng-container>
+
+      <div *ngIf="menuVisible"
+           class="menu-button-visible">
+        <button mat-icon-button
+                matTooltip="Menu"
+                [matMenuTriggerFor]="tableMenu">
+          <span class="material-icons">menu</span>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <mat-progress-bar *ngIf="isDataSourceLoading() | async"
+                    mode="indeterminate">
+  </mat-progress-bar>
+
+  <div class="table-container">
+    <table #table
+           mat-table
+           [dataSource]="dataSource"
+           matSort
+           multiTemplateDataRows
+           [matSortActive]="sortActive"
+           [matSortDirection]="sortDirection"
+           [attr.data-ready]="dataReady">
+
+      <ng-container matColumnDef="{{column.name}}"
+                    *ngFor="let column of columnsDefinition">
+
+        <ng-container *ngIf="column.name !== '_expand'">
+          <th mat-header-cell
+              *matHeaderCellDef
+              mat-sort-header
+              [disabled]="!sortable || !column.sort">
+            {{column.header}}
+          </th>
+          <td mat-cell
+              *matCellDef="let row; let rowIndex = dataIndex;">
+            <ng-container [ngTemplateOutlet]="getCellTemplate(column.name, defaultCellTemplate)"
+                          [ngTemplateOutletContext]="{row: row, column: column.name, rowIndex: rowIndex}">
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <ng-container *ngIf="column.name === '_expand'">
+          <th mat-header-cell
+              *matHeaderCellDef
+              class="expand-column"></th>
+          <td mat-cell
+              *matCellDef="let row; let rowIndex = dataIndex;"
+              (click)="onRowExpandClick(row)">
+            <span *ngIf="expandedRow !== row"
+                  [ngClass]="shouldExpandBeDisabled(row) ? 'expand-column-disabled' : 'expand-column'">keyboard_arrow_right</span>
+            <span *ngIf="expandedRow === row"
+                  class="expand-column">keyboard_arrow_down</span>
+          </td>
+        </ng-container>
+
+      </ng-container>
+
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell
+            *matCellDef="let row"
+            [attr.colspan]="columnsDefinition.length">
+          <div [class.active-row-detail]="activeRow === expandedRow"
+               [class.expand-row-detail]="activeRow !== expandedRow"
+               [@detailExpand]="row === expandedRow ? 'expanded' : 'collapsed'">
+            <ng-container *ngIf="row === expandedRow"
+                          [ngTemplateOutlet]="expandedRowTemplate"
+                          [ngTemplateOutletContext]="{row: row}">
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row
+          *matHeaderRowDef="columnsNames; sticky: true"></tr>
+      <tr mat-row
+          *matRowDef="let row; let rowIndex = dataIndex; columns: columnsNames;"
+          class="row-row"
+          [class.active-row]="activeRow === row && activeRow !== expandedRow"
+          [class.active-row-expanded]="activeRow === row && activeRow === expandedRow"
+          [class.odd-row]="rowIndex % 2 === 1"
+          [class.even-row]="rowIndex % 2 === 0"
+          (click)="onRowClick(row)"
+          (dblclick)="onRowDblClick(row)">
+      </tr>
+      <tr mat-row
+          *matRowDef="let row; columns: ['expandedDetail']"
+          class="expanded-row">
+      </tr>
+    </table>
+  </div>
+  <mat-paginator *ngIf="pageable"
+                 [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>

@@ -1,0 +1,12 @@
+<div *ngIf="visible"
+     class="form-item"
+     [formGroup]="fieldFormGroup">
+  <mat-slide-toggle class="form-item-input"
+                    [matTooltip]="tooltipText"
+                    [matTooltipShowDelay]="tooltipShowDelayValue"
+                    [matTooltipHideDelay]="tooltipHideDelayValue"
+                    [id]="fieldName"
+                    [formControlName]="fieldName">
+    <mat-label>{{placeholderText}}</mat-label>
+  </mat-slide-toggle>
+</div>

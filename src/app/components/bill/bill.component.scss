@@ -1,0 +1,48 @@
+.bill-titlebar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+  align-items: stretch;
+  height: 60px;
+}
+
+.bill-title {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 24px;
+  align-items: center;
+  padding: 10px 20px 10px 20px;
+}
+
+.bill-toolbar {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 20px 10px 20px;
+}
+
+.toolbar-button {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.bill-details {
+  min-height: 100px;
+}
+
+.bill-schedules {
+  max-height: 250px;
+}
+
+.bill-payments {
+  max-height: 350px;
+}
+
+.bill-view {
+  display: flex;
+  flex-direction: column;
+}

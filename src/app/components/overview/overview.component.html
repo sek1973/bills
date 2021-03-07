@@ -1,0 +1,67 @@
+<app-table #table
+           [tableTitle]="'Rachunki'"
+           [dataSource]="dataSource"
+           [columnsDefinition]="columns"
+           [editable]="true"
+           [canAdd]="true"
+           [showPasteButton]="false"
+           [pageable]="false"
+           (rowActivated)="onRowClicked($event)"
+           (deleteButtonClicked)="deleteBill()"
+           (editButtonClicked)="editBill()"
+           (addButtonClicked)="addBill()"
+           (refreshButtonClicked)="refresh()"
+           (rowDblClick)="editBill()">
+
+  <ng-template cellTemplateForColumn="name"
+               let-row="row"
+               let-column="column">
+    <a [routerLink]="['/rachunek', getId(row)]"
+       routerLinkActive="active"
+       [ngStyle]="{'color': formatActiveColor(row) }">{{getValue(row, column)}}</a>
+  </ng-template>
+
+  <ng-template cellTemplateForColumn="deadline"
+               let-row="row"><span [ngStyle]="{'color': formatColor(row) }">
+      {{row.deadline | timespanToString}}
+    </span>
+  </ng-template>
+
+  <ng-template cellTemplateForColumn="sum"
+               let-row="row"><span [ngStyle]="{'color': formatActiveColor(row) }">
+      {{row.sum | currencyToString}}
+    </span>
+  </ng-template>
+
+  <ng-template #rightToolbarPanelTemplate>
+    <button mat-icon-button
+            matTooltip="Wyloguj"
+            (click)="logout()">
+      <span class="material-icons"
+            inline=true>power_settings_new</span>
+    </button>
+    <button mat-icon-button
+            matTooltip="Zapłacony"
+            (click)="payBill()">
+      <span class="material-icons"
+            inline=true>check</span>
+    </button>
+  </ng-template>
+
+  <ng-template #expandedRowTemplate
+               let-row="row">
+    <app-bill-edit [newBill]="false"
+                   [editMode]="false"
+                   [bill]="row"
+                   class="bill-details"></app-bill-edit>
+  </ng-template>
+
+</app-table>
+
+<app-spinner color="primary"
+             mode="indeterminate"
+             [value]="50"
+             [backdropEnabled]="true"
+             [positionGloballyCenter]="true"
+             [displayProgressSpinner]="loading">
+</app-spinner>

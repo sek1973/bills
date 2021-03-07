@@ -1,0 +1,19 @@
+.form-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+  align-items: center;
+  height: 50px;
+}
+
+.form-item-input {
+  flex-grow: 1;
+}
+
+.placeholder {
+  color: rgba(black, 0.5);
+}
+
+.form-field {
+  flex-grow: 1;
+}

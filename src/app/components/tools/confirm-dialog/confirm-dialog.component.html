@@ -1,0 +1,49 @@
+<div class="dialog-container">
+  <div class="text-panel">
+    <div class="dialog-title">
+      {{dialogTitle}}
+    </div>
+
+    <div class="confirm-message">
+      {{message}}
+    </div>
+  </div>
+
+  <ng-container [ngSwitch]="inputType">
+    <div *ngSwitchCase="confirmDialogInputType.InputTypeText">
+      <app-input-text [path]="['input']"
+                      [descriptionProvider]="descriptionProvider"
+                      [formGroup]="form">
+      </app-input-text>
+    </div>
+    <div *ngSwitchCase="confirmDialogInputType.InputTypeCurrency">
+      <app-input-currency [path]="['input']"
+                          [descriptionProvider]="descriptionProvider"
+                          [formGroup]="form">
+      </app-input-currency>
+    </div>
+    <div *ngSwitchCase="confirmDialogInputType.InputTypeTextArea"
+         class="input-container">
+      <app-input-textarea [path]="['input']"
+                          [descriptionProvider]="descriptionProvider"
+                          [inputMinRows]="10"
+                          [inputMaxRows]="10"
+                          [formGroup]="form">
+      </app-input-textarea>
+    </div>
+  </ng-container>
+
+  <div class="buttons-panel">
+    <button mat-raised-button
+            color="warn"
+            class="toolbar-button"
+            cdkFocusInitial
+            (click)="onCancel()">{{cancelButtonLabel}}</button>
+    <button mat-raised-button
+            color="primary"
+            class="toolbar-button"
+            [disabled]="!canApply"
+            cdkFocusInitial
+            (click)="onApply()">{{applyButtonLabel}}</button>
+  </div>
+</div>

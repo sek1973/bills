@@ -1,0 +1,162 @@
+table {
+  width: 100%;
+}
+
+tr.expanded-row {
+  height: 0;
+}
+
+tr.active-row {
+  background: rgba(blue, 0.1);
+  font-weight: bold;
+}
+
+tr.active-row-expanded {
+  background: rgba(blue, 0.1);
+  border-bottom: none;
+  font-weight: bold;
+}
+
+.row-detail {
+  overflow: hidden;
+  display: flex;
+  background-color: rgba(blue, 0.1);
+  color: gray;
+  font-size: 20px;
+}
+
+%expand-column-base {
+  font-family: 'Material Icons';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  flex: 0 0 20px !important;
+  width: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: blue;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+}
+
+.expand-column {
+  @extend %expand-column-base;
+  cursor: pointer;
+  color: blue;
+}
+
+.expand-column-disabled {
+  @extend %expand-column-base;
+  color: rgba(blue, 0.2);
+}
+
+.select-column {
+  color: blue;
+  cursor: pointer;
+  flex: 0 0 20px !important;
+  width: 20px;
+  padding-left: 5px;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+}
+
+.even-row {
+  background-color: white;
+}
+
+.odd-row {
+  background-color: lightgray;
+}
+
+tr.row-row {
+  >td.mat-cell {
+    color: gray;
+  }
+
+  &:hover {
+    background-color: rgba(blue, 0.2);
+
+    >td.mat-cell {
+      color: white;
+    }
+
+    >td>span.expand-column {
+      color: white;
+    }
+
+    >td>span.expand-column-disabled {
+      color: rgba(white, 0.2);
+    }
+  }
+
+  &.active-row:hover {
+    background-color: rgba(blue, 0.2);
+
+    >td.mat-cell {
+      color: white;
+    }
+
+    >td>span.expand-column {
+      color: white;
+    }
+
+    >td>span.expand-column-disabled {
+      color: rgba(white, 0.2);
+    }
+  }
+}
+
+.table-titlebar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+}
+
+.table-title {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 24px;
+  padding: 10px 20px 10px 20px;
+}
+
+.table-toolbar {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px 10px 20px;
+}
+
+.toolbar-button {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.spinner-container {
+  height: 360px;
+  width: 100%;
+  position: fixed;
+}
+
+.spinner-container mat-spinner {
+  margin: 100px auto 0 auto;
+}
+
+.bill-details {
+  width: 100%;
+  overflow: auto;
+  padding-top: 10px;
+}

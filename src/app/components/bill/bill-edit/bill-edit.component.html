@@ -1,0 +1,99 @@
+<div class="bill-toolbar">
+  <button *ngIf="editMode"
+          mat-raised-button
+          color="accent"
+          class="toolbar-button"
+          (click)="cancel()">Anuluj</button>
+  <button *ngIf="editMode"
+          mat-raised-button
+          color="warn"
+          class="toolbar-button"
+          (click)="deleteBill()">Usuń</button>
+  <button *ngIf="editMode"
+          mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          [disabled]="!canSave"
+          (click)="saveBill()">Zapisz</button>
+  <button *ngIf="!editMode"
+          mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          (click)="editBill()">Edytuj</button>
+  <button *ngIf="!editMode"
+          mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          (click)="payBill()">Zapłacony</button>
+</div>
+
+<div class="form">
+  <div class="form-column-left">
+    <app-input-text [formGroup]="form"
+                    [editMode]="editMode"
+                    [path]="['name']"
+                    [descriptionProvider]="getDescriptionProvider()">
+    </app-input-text>
+    <app-input-text [formGroup]="form"
+                    [editMode]="editMode"
+                    [path]="['description']"
+                    [descriptionProvider]="getDescriptionProvider()">
+    </app-input-text>
+    <app-input-toggle [formGroup]="form"
+                      [editMode]="editMode"
+                      [path]="['active']"
+                      [descriptionProvider]="getDescriptionProvider()">
+    </app-input-toggle>
+    <app-input-date [formGroup]="form"
+                    [editMode]="editMode"
+                    [path]="['deadline']"
+                    [descriptionProvider]="getDescriptionProvider()">
+    </app-input-date>
+    <app-input-text [formGroup]="form"
+                    [editMode]="editMode"
+                    type="number"
+                    [path]="['repeat']"
+                    [descriptionProvider]="getDescriptionProvider()">
+    </app-input-text>
+    <app-input-select [formGroup]="form"
+                      [editMode]="editMode"
+                      [path]="['unit']"
+                      [descriptionProvider]="getDescriptionProvider()"
+                      [selectItems]="unitEnumItems">
+    </app-input-select>
+    <app-input-date [formGroup]="form"
+                    [editMode]="editMode"
+                    [path]="['reminder']"
+                    [descriptionProvider]="getDescriptionProvider()">
+    </app-input-date>
+  </div>
+
+  <div class="form-column-right">
+    <app-input-currency [formGroup]="form"
+                        [editMode]="editMode"
+                        [path]="['sum']"
+                        [descriptionProvider]="getDescriptionProvider()">
+    </app-input-currency>
+    <app-input-percent [formGroup]="form"
+                       [editMode]="editMode"
+                       type="number"
+                       [path]="['share']"
+                       [descriptionProvider]="getDescriptionProvider()">
+    </app-input-percent>
+    <app-input-hyperlink [formGroup]="form"
+                         [editMode]="editMode"
+                         [path]="['url']"
+                         [descriptionProvider]="getDescriptionProvider()">
+    </app-input-hyperlink>
+    <app-input-text [formGroup]="form"
+                    [editMode]="editMode"
+                    [path]="['login']"
+                    [descriptionProvider]="getDescriptionProvider()">
+    </app-input-text>
+    <app-input-password [formGroup]="form"
+                        [editMode]="editMode"
+                        [path]="['password']"
+                        [descriptionProvider]="getDescriptionProvider()">
+    </app-input-password>
+  </div>
+</div>

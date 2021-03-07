@@ -1,0 +1,270 @@
+$active-row-background: rgba(lightgray, 0.2);
+$even-row-background: rgba(lightgray, 0.1);
+$odd-row-background: white;
+$hover-row-background: rgba(lightgray, 0.5);
+
+.table-container {
+  overflow-x: auto;
+}
+
+table.mat-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-title {
+  font-size: 24px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 0px;
+  padding-right: 8px;
+}
+
+.filter-field {
+  flex-grow: 1;
+  max-width: 40%;
+  color: darkgray;
+}
+
+.buttons-panel {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: rgba(black, 0.8);
+}
+
+button.mat-icon-button {
+  width: 48px;
+  height: 18px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+span.material-icons {
+  font-size: 24px;
+}
+
+.menu-icon {
+  padding-right: 5px;
+}
+
+tr.mat-header-row {
+  height: 30px;
+  border-bottom: 1px solid rgba(darkgray, 0.65);
+}
+
+tr.mat-row {
+  height: 48px;
+}
+
+th.mat-header-cell {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+}
+
+td {
+  font-size: 14px;
+}
+
+th.mat-sort-header-sorted {
+  color: darkgray;
+}
+
+tr.expanded-row {
+  height: 0;
+}
+
+tr.active-row {
+  background: $active-row-background;
+  font-weight: 500;
+}
+
+tr.active-row-expanded {
+  background: $active-row-background;
+  border-bottom: none;
+  font-weight: 500;
+}
+
+.active-row-detail {
+  overflow: hidden;
+  display: flex;
+  background-color: $active-row-background;
+  color: black;
+}
+
+.expand-row-detail {
+  overflow: hidden;
+  display: flex;
+  color: black;
+}
+
+%expand-column-base {
+  font-family: 'Material Icons';
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  flex: 0 0 20px !important;
+  width: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: blue;
+  -webkit-font-feature-settings: 'liga';
+  font-feature-settings: 'liga';
+}
+
+.expand-column {
+  @extend %expand-column-base;
+  cursor: pointer;
+  color: blue;
+}
+
+.expand-column-disabled {
+  @extend %expand-column-base;
+  color: rgba(blue, 0.2);
+}
+
+.select-column {
+  color: blue;
+  cursor: pointer;
+  flex: 0 0 20px !important;
+  width: 20px;
+  padding-left: 5px;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+}
+
+td.mat-cell,
+td.mat-footer-cell,
+th.mat-header-cell {
+  border: none;
+}
+
+td.mat-footer-cell:first-of-type,
+th.mat-header-cell:first-of-type {
+  padding-left: 16px;
+}
+
+td.mat-footer-cell:last-of-type,
+th.mat-header-cell:last-of-type {
+  padding-right: 16px;
+}
+
+td.mat-cell:first-of-type:not(.mat-column-expandedDetail) {
+  padding-left: 16px;
+}
+
+td.mat-cell:first-of-type.mat-column-expandedDetail {
+  padding-left: 0px;
+}
+
+td.mat-cell:last-of-type:not(.mat-column-expandedDetail) {
+  padding-right: 16px;
+}
+
+td.mat-cell:last-of-type.mat-column-expandedDetail {
+  padding-right: 0px;
+}
+
+td.mat-cell:not(:first-of-type),
+td.mat-footer-cell:not(:first-of-type),
+th.mat-header-cell:not(:first-of-type) {
+  padding-left: 5px;
+}
+
+tr.row-row>td.mat-cell {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.even-row {
+  background-color: $even-row-background;
+}
+
+.odd-row {
+  background-color: $odd-row-background;
+}
+
+tr.row-row {
+  >td.mat-cell {
+    color: black;
+  }
+
+  &:hover {
+    background-color: $hover-row-background;
+  }
+
+  &.active-row:hover {
+    background-color: $hover-row-background;
+  }
+}
+
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  min-height: 50px;
+  padding-top: 16px;
+  padding-left: 16px;
+  padding-right: 8px;
+  padding-bottom: 8px;
+  background-color: white;
+  width: 100%;
+}
+
+.table-container {
+  height: 100%;
+  overflow: auto;
+}
+
+.component-container {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.menu-button-visible {
+  @media(min-width: 640px) {
+    display: none;
+  }
+}
+
+.table-buttons-visible {
+  align-items: center;
+
+  @media(min-width: 640px) {
+    display: flex;
+  }
+
+  @media(max-width: 639px) {
+    display: none;
+  }
+}

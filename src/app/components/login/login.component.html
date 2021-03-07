@@ -1,0 +1,38 @@
+<div class="parent">
+  <div class="container">
+    <form [formGroup]="loginForm"
+          class="container-form">
+      <h2 class="message">Witamy w aplikacji Rachunki!</h2>
+
+      <app-input-text [formGroup]="loginForm"
+                      [path]="['email']"
+                      [type]="'email'"
+                      [descriptionProvider]="getDescriptionProvider()"
+                      class="full-width">
+      </app-input-text>
+
+      <app-input-password [formGroup]="loginForm"
+                          [path]="['password']"
+                          [descriptionProvider]="getDescriptionProvider()"
+                          tooltipText="Podaj hasło, którego używasz do logowania do aplikacji"
+                          placeholderText="Hasło"
+                          class="full-width">
+      </app-input-password>
+
+      <button mat-raised-button
+              color="primary"
+              [disabled]="!loginForm.valid"
+              (click)="onLogIn()">Zaloguj</button>
+      <span *ngIf="error"
+            class="error">{{error}}</span>
+    </form>
+  </div>
+</div>
+
+<app-spinner color="primary"
+             mode="indeterminate"
+             [value]="50"
+             [backdropEnabled]="true"
+             [positionGloballyCenter]="true"
+             [displayProgressSpinner]="loading$ | async">
+</app-spinner>

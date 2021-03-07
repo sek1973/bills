@@ -1,0 +1,12 @@
+<div *ngIf="hasValue"
+     class="field-item">
+  <label [for]="id + ':value'"
+         class="field-label">
+    {{labelText}}
+  </label>
+
+  <span [id]="id + ':value'"
+        class="field-text">
+    {{value | dynamicPipe: customPipe:customPipeArgs }}
+  </span>
+</div>

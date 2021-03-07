@@ -1,0 +1,36 @@
+.parent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+  width: 100%;
+}
+
+.container-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  max-width: 400px;
+}
+
+.message {
+  color: blue;
+}
+
+.error {
+  color: red;
+  padding-top: 20px;
+}
+
+.full-width {
+  width: 100%;
+}

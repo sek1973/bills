@@ -1,0 +1,15 @@
+<div *ngIf="hasValue"
+     class="field-item"
+     id="id">
+  <mat-slide-toggle [id]="id + ':value'"
+                    class="field-toggle"
+                    disabled="true"
+                    [checked]="value">
+  </mat-slide-toggle>
+
+  <label [for]="id + ':value'"
+         class="field-label">
+    {{labelText}}
+  </label>
+
+</div>
