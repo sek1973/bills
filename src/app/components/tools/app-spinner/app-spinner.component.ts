@@ -1,7 +1,9 @@
-import { OverlayService } from './overlay-service';
 import { OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { Component, Input, OnInit, ViewChild, TemplateRef, DoCheck, ViewContainerRef } from '@angular/core';
-import { ProgressSpinnerMode, ThemePalette } from '@angular/material';
+import { Component, DoCheck, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { ThemePalette } from '@angular/material/core';
+import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import { OverlayService } from './overlay-service';
+
 
 @Component({
   selector: 'app-spinner',
@@ -18,22 +20,25 @@ export class AppSpinnerComponent implements OnInit, DoCheck {
   @Input() value?: number;
   @Input() backdropEnabled = true;
   @Input() positionGloballyCenter = true;
-  @Input() displayProgressSpinner: boolean;
+  @Input() displayProgressSpinner: boolean | null = null;
 
-  @ViewChild('progressSpinnerRef', { static: true }) private progressSpinnerRef: TemplateRef<any>;
-  private overlayConfig: OverlayConfig;
-  private overlayRef: OverlayRef;
+  @ViewChild('progressSpinnerRef', { static: true })
+  private progressSpinnerRef!: TemplateRef<any>;
+  private overlayConfig!: OverlayConfig;
+  private overlayRef!: OverlayRef;
   constructor(private vcRef: ViewContainerRef, private overlayService: OverlayService) { }
-  ngOnInit() {
+
+  ngOnInit(): void {
     this.overlayConfig = {
       hasBackdrop: this.backdropEnabled
     };
     if (this.positionGloballyCenter) {
-      this.overlayConfig['positionStrategy'] = this.overlayService.positionGloballyCenter();
+      this.overlayConfig.positionStrategy = this.overlayService.positionGloballyCenter();
     }
     this.overlayRef = this.overlayService.createOverlay(this.overlayConfig);
   }
-  ngDoCheck() {
+
+  ngDoCheck(): void {
     if (this.displayProgressSpinner && !this.overlayRef.hasAttached()) {
       this.overlayService.attachTemplatePortal(this.overlayRef, this.progressSpinnerRef, this.vcRef);
     } else if (!this.displayProgressSpinner && this.overlayRef.hasAttached()) {

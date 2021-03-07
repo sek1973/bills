@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { FieldDescription } from 'src/app/model/field-description';
-import { MessagingService } from '../../services/messaging.service';
+import { AuthActions } from 'src/app/state';
 import { DescriptionProvider } from '../tools/inputs/input-component-base';
 import { AuthService } from './../../services/auth.service';
-import { BillsFirebaseService } from './../../services/bills.firebase.service';
 import { NavigationService } from './../../services/navigation.service';
+
 
 
 @Component({
@@ -14,26 +15,28 @@ import { NavigationService } from './../../services/navigation.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   public loading$ = this.loadingSubject.asObservable();
-  public error = undefined;
+  public error: string | undefined = undefined;
 
-  emailFormControl = new FormControl('', [
+  private loginSubscription = Subscription.EMPTY;
+
+  userFormControl = new FormControl('', [
     Validators.required,
-    Validators.email,
+    Validators.minLength(5),
   ]);
   passwordFormControl = new FormControl('', [
     Validators.required,
     Validators.minLength(6),
   ]);
-  loginForm = new FormGroup({ email: this.emailFormControl, password: this.passwordFormControl });
+  loginForm = new FormGroup({ email: this.userFormControl, password: this.passwordFormControl });
 
   formDescription = new Map<string, FieldDescription>([
-    ['email', {
-      tooltipText: 'Podaj adres email - login do aplikacji.',
-      placeholderText: 'Adres email - login',
-      labelText: 'Adres email'
+    ['user', {
+      tooltipText: 'Podaj nazwę użytkownika - login do aplikacji.',
+      placeholderText: 'Nazwa użytkownika - login',
+      labelText: 'Nazwa użytkownika'
     }],
     ['password', {
       tooltipText: 'Podaj hasło, którego używasz do logowania do aplikacji.',
@@ -45,33 +48,32 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private navigationService: NavigationService,
-    private billsFirebaseService: BillsFirebaseService,
-    private messagingService: MessagingService) { }
+    private store: Store) { }
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
+    this.loginSubscription.unsubscribe();
   }
 
   onLogIn(): void {
     this.error = undefined;
     this.loadingSubject.next(true);
-    const email = this.loginForm.value.email;
+    const user = this.loginForm.value.email;
     const password = this.loginForm.value.password;
-    this.authService.login(email, password).then(
-      () => {
-        this.billsFirebaseService.load();
+    this.authService.login(user, password).subscribe({
+      next: (val: boolean) => {
+        this.store.dispatch(AuthActions.login({ user }));
         this.loadingSubject.next(false);
-        this.authService.getUserName().subscribe(userId => {
-          this.messagingService.requestPermission(userId);
-          this.messagingService.receiveMessage();
-        });
-        setTimeout(() => this.navigationService.goToPreviousPage('/zestawienie'));
+        this.navigationService.goToPreviousPage('/zestawienie');
       },
-      (rejected: { message: undefined; }) => {
-        this.error = rejected.message;
+      error: (err: Error) => {
+        this.error = err.message;
         this.loadingSubject.next(false);
-        console.error(rejected);
+        console.error(err);
       }
-    );
+    });
   }
 
   getErrorMessage(formControl: FormControl): string {

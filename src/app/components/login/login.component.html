@@ -5,8 +5,8 @@
       <h2 class="message">Witamy w aplikacji Rachunki!</h2>
 
       <app-input-text [formGroup]="loginForm"
-                      [path]="['email']"
-                      [type]="'email'"
+                      [path]="['user']"
+                      [type]="'text'"
                       [descriptionProvider]="getDescriptionProvider()"
                       class="full-width">
       </app-input-text>
@@ -14,8 +14,6 @@
       <app-input-password [formGroup]="loginForm"
                           [path]="['password']"
                           [descriptionProvider]="getDescriptionProvider()"
-                          tooltipText="Podaj hasło, którego używasz do logowania do aplikacji"
-                          placeholderText="Hasło"
                           class="full-width">
       </app-input-password>
 
