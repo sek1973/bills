@@ -20,6 +20,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {
@@ -117,7 +121,14 @@ import { TimespanToStringPipe } from './pipes/timespan-to-string.pipe';
     MatNativeDateModule,
     MatMomentDateModule,
     MatSelectModule,
-    MatMenuModule
+    MatMenuModule,
+    StoreModule.forRoot({}),
+    StoreDevtoolsModule.instrument({
+      name: 'Bills',
+      maxAge: 25,
+      logOnly: environment.production
+    }),
+    EffectsModule.forRoot([])
   ],
   providers: [],
   bootstrap: [AppComponent]
