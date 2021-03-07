@@ -1,11 +1,10 @@
-import { Subscription } from 'rxjs';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-
 import { ConfirmDialogResponse } from '../../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../../tools/confirm-dialog/confirm-dialog.model';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
@@ -16,6 +15,7 @@ import { Unit } from './../../../model/unit';
 import { BillsFirebaseService } from './../../../services/bills.firebase.service';
 import { SelectItem } from './../../tools/inputs/input-select/input-select.component';
 
+
 @Component({
   selector: 'app-bill-edit',
   templateUrl: './bill-edit.component.html',
@@ -23,7 +23,7 @@ import { SelectItem } from './../../tools/inputs/input-select/input-select.compo
 })
 export class BillEditComponent implements OnInit {
 
-  private _bill: Bill;
+  private _bill!: Bill;
   @Input() set bill(val: Bill) {
     this._bill = val;
     Promise.resolve().then(() => this.loadBill());
@@ -31,8 +31,8 @@ export class BillEditComponent implements OnInit {
   get bill(): Bill {
     return this._bill;
   }
-  @Input() newBill: boolean;
-  private _editMode: boolean = false;
+  @Input() newBill: boolean = false;
+  private _editMode = false;
   @Input() set editMode(val: boolean) {
     this._editMode = val;
   }
@@ -63,19 +63,20 @@ export class BillEditComponent implements OnInit {
     password: new FormControl()
   });
 
-  constructor(private billsFirebaseService: BillsFirebaseService,
+  constructor(
+    private billsFirebaseService: BillsFirebaseService,
     private confirmationService: ConfirmationService,
     private router: Router,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar) {
-    this.form.statusChanges.subscribe(status => this.setEditStatus(status));
+    this.form.statusChanges.subscribe({ next: status => this.setEditStatus(status) });
     this.setUnitEnumItems();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  private loadBill() {
+  private loadBill(): void {
     if (this.bill) {
       this.form.patchValue({
         uid: this.bill.uid,
@@ -83,10 +84,10 @@ export class BillEditComponent implements OnInit {
         name: this.bill.name,
         description: this.bill.description,
         active: this.bill.active,
-        deadline: this.bill.deadline ? this.bill.deadline.toDate() : undefined,
+        deadline: this.bill.deadline,
         repeat: this.bill.repeat,
         unit: this.bill.unit,
-        reminder: this.bill.reminder ? this.bill.reminder.toDate() : undefined,
+        reminder: this.bill.reminder,
         sum: this.bill.sum,
         share: this.bill.share,
         url: this.bill.url,
@@ -98,18 +99,18 @@ export class BillEditComponent implements OnInit {
     this.subscription.unsubscribe();
     this.subscription = this.billsFirebaseService.billsObservable.subscribe(bills => {
       const billsNames = bills.map(bill => bill.name).filter(name => name !== this.bill.name);
-      this.form.get('name').setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
+      this.form.get('name')?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
     });
     if (this.editMode) { this.form.enable(); } else { this.form.disable(); }
   }
 
-  editBill() {
+  editBill(): void {
     this.loading.emit(true);
     this.editMode = true;
     this.loading.emit(false);
   }
 
-  payBill() {
+  payBill(): void {
     this.confirmationService
       .confirm('Rachunek opłacony',
         'Podaj kwotę do zapłacenia (udział zostanie wyliczony automatycznie):', 'Anuluj', 'OK',
@@ -122,14 +123,14 @@ export class BillEditComponent implements OnInit {
               this.loading.emit(false);
               this.snackBar.open('Opłacenie rachunku zapisane!', 'Ukryj', { duration: 3000 });
             },
-              error => this.snackBar.open('Błąd zapisania opłacenia rachunku: ' + error,
+              (error: string) => this.snackBar.open('Błąd zapisania opłacenia rachunku: ' + error,
                 'Ukryj', { panelClass: 'snackbar-style-error' })
             );
         }
       });
   }
 
-  saveBill() {
+  saveBill(): void {
     this.loading.emit(true);
     const bill = this.form.value;
     if (bill.uid) {
@@ -139,7 +140,7 @@ export class BillEditComponent implements OnInit {
     }
   }
 
-  deleteBill() {
+  deleteBill(): void {
     if (!this.newBill) {
       this.confirmationService
         .confirm('Usuń rachunek',
@@ -162,7 +163,7 @@ export class BillEditComponent implements OnInit {
     }
   }
 
-  cancel() {
+  cancel(): void {
     if (this.newBill) {
       this.router.navigate(['/zestawienie']);
     } else {
@@ -171,7 +172,7 @@ export class BillEditComponent implements OnInit {
     }
   }
 
-  private setBill(bill: Bill) {
+  private setBill(bill: Bill): void {
     this.billsFirebaseService.update(bill)
       .then(() => {
         this.editMode = false;
@@ -184,7 +185,7 @@ export class BillEditComponent implements OnInit {
       });
   }
 
-  private addBill(bill: Bill) {
+  private addBill(bill: Bill): void {
     this.billsFirebaseService.add(bill)
       .then((ref) => {
         this.loading.emit(false);
@@ -210,15 +211,15 @@ export class BillEditComponent implements OnInit {
 
   getDescriptionProvider(): DescriptionProvider {
     return {
-      getDescriptionObj: (...path: string[]) => BillDescription.get(path[0])
+      getDescriptionObj: (...path: string[]) => BillDescription.get(path[0]) || { tooltipText: '', placeholderText: '', labelText: '' }
     };
   }
 
-  private setUnitEnumItems() {
+  private setUnitEnumItems(): void {
     this.unitEnumItems = unitsToSelectItems();
   }
 
-  private setEditStatus(status: string) {
+  private setEditStatus(status: string): void {
     this.canSave = status === 'VALID' ? true : false;
   }
 

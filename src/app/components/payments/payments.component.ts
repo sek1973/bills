@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-
 import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { Payment } from './../../model/payment';
@@ -11,13 +11,14 @@ import { PaymentsFirebaseService } from './../../services/payments.firebase.serv
 import { TableComponent } from './../tools/table/table.component';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
+
 @Component({
   selector: 'app-payments',
   templateUrl: './payments.component.html',
   styleUrls: ['./payments.component.scss'],
 })
 export class PaymentsComponent implements OnInit {
-  private _builUid: string;
+  private _builUid!: string;
   @Input() set billUid(val: string) {
     this._builUid = val;
     this.setTableDataSource();
@@ -25,12 +26,13 @@ export class PaymentsComponent implements OnInit {
   get billUid(): string {
     return this._builUid;
   }
-  @ViewChild('table', { read: TableComponent }) table: TableComponent;
+  @ViewChild('table', { read: TableComponent })
+  table!: TableComponent;
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   activeRow: any;
 
-  dataSource: PaymentsDataSource;
+  dataSource?: PaymentsDataSource;
   columns = [
     { name: 'deadline', header: 'Termin' },
     { name: 'paiddate', header: 'Zapłacono' },
@@ -39,51 +41,51 @@ export class PaymentsComponent implements OnInit {
     { name: 'remarks', header: 'Uwagi' }
   ];
 
-  constructor(private paymentsFirebaseService: PaymentsFirebaseService,
-    public dialog: MatDialog,
+  constructor(
+    private paymentsFirebaseService: PaymentsFirebaseService,
+    @Inject(MatDialog) public dialog: MatDialog,
     private confirmationService: ConfirmationService,
     private snackBar: MatSnackBar) { }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  private setTableDataSource() {
+  private setTableDataSource(): void {
     this.dataSource = new PaymentsDataSource(this.paymentsFirebaseService, this.billUid);
     this.dataSource.load();
   }
 
-  onRowClicked(row) {
+  onRowClicked(row: any): void {
     if (this.activeRow !== row) {
       this.activeRow = row;
     }
   }
 
-  getId(row: Payment): string {
+  getId(row: Payment): string | undefined {
     return row.uid;
   }
 
-  refresh() {
-    this.dataSource.load();
+  refresh(): void {
+    this.dataSource?.load();
   }
 
-  addPayment() {
-    this.openDialog(undefined);
+  addPayment(): void {
+    this.openDialog();
   }
 
-  editPayment() {
+  editPayment(): void {
     if (this.table.activeRow) { this.openDialog(this.table.activeRow); }
   }
 
-  private openDialog(payment: Payment): void {
+  private openDialog(payment?: Payment): void {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       width: '500px',
-      data: { payment: payment, billUid: this.billUid }
+      data: { payment, billUid: this.billUid }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-    });
+    dialogRef.afterClosed().subscribe();
   }
 
-  deletePayment() {
+  deletePayment(): void {
     if (this.table.activeRow) {
       this.confirmationService
         .confirm('Usuń zrealizowaną płatność', 'Czy na pewno chcesz usunąć tę płatność z historii?', 'Nie', 'Tak')
@@ -97,12 +99,12 @@ export class PaymentsComponent implements OnInit {
     }
   }
 
-  onRowActivated(row: Payment) {
+  onRowActivated(row: Payment): void {
     this.table.canDelete = row ? true : false;
     this.table.canEdit = row ? true : false;
   }
 
-  pasteData() {
+  pasteData(): void {
     this.confirmationService
       .confirm('Importuj historyczne płatności',
         'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',

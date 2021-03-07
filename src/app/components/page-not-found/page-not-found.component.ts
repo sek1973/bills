@@ -10,10 +10,10 @@ export class PageNotFoundComponent implements OnInit {
 
   constructor(private location: Location) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  goBack() {
+  goBack(): void {
     this.location.back();
   }
 

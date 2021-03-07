@@ -1,19 +1,22 @@
+import { Component, Input, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { getSafe } from 'src/app/helpers';
-import { Input, OnInit, Directive } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
 import { FieldDescription } from 'src/app/model/field-description';
 
 export interface DescriptionProvider {
   getDescriptionObj: (...path: string[]) => FieldDescription;
 }
-@Directive()
-export class InputComponentBase implements OnInit {
+@Component({
+  selector: 'app-input-base',
+  template: ''
+})
+export class InputBaseComponent implements OnInit {
   tooltipShowDelayValue = 1000;
   tooltipHideDelayValue = 2000;
-  fieldFormGroup: FormGroup;
+  fieldFormGroup!: FormGroup;
 
   @Input() autoHide: boolean = true;
-  private _formGroup: FormGroup;
+  private _formGroup!: FormGroup;
   @Input() set formGroup(val: FormGroup) {
     this._formGroup = val;
     this.setFieldFormGroup();
@@ -21,7 +24,8 @@ export class InputComponentBase implements OnInit {
   get formGroup(): FormGroup {
     return this._formGroup;
   }
-  @Input() descriptionProvider: DescriptionProvider;
+  @Input()
+  descriptionProvider!: DescriptionProvider;
   private _editMode: boolean = true;
   @Input() set editMode(val: boolean) {
     this._editMode = val;
@@ -45,13 +49,13 @@ export class InputComponentBase implements OnInit {
 
   get visible(): boolean {
     if (this.autoHide && !this.editMode) {
-      const controlValue = getSafe(() => this.fieldFormGroup.get(this.fieldName).value);
+      const controlValue = getSafe(() => this.fieldFormGroup.get(this.fieldName)?.value);
       return !this.formControl || controlValue === undefined || controlValue === null || controlValue === '' ? false : true;
     }
     return this.formControl ? true : false;
   }
 
-  private _path: string[];
+  private _path!: string[];
   @Input()
   set path(val: string[]) {
     this._path = val;
@@ -66,8 +70,8 @@ export class InputComponentBase implements OnInit {
     return this.fieldFormGroup.get(this.fieldName) as FormControl;
   }
 
-  private _fieldName: string;
-  get fieldName() {
+  private _fieldName!: string;
+  get fieldName(): string {
     return this._fieldName;
   }
 
@@ -83,14 +87,14 @@ export class InputComponentBase implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.setFormGroupState();
   }
 
-  private setFieldName() {
+  private setFieldName(): void {
     if (this.path && this.path.length) {
       this._fieldName = this.path[this.path.length - 1];
-    } else { this._fieldName = undefined; }
+    } else { this._fieldName = ''; }
   }
 
   private setFieldFormGroup(): void {
@@ -100,7 +104,7 @@ export class InputComponentBase implements OnInit {
       }
       if (this.path.length > 1) {
         const parentFgPath = this.path.slice(0, -1);
-        const parentFg = <FormGroup>this.formGroup.get(parentFgPath);
+        const parentFg = this.formGroup.get(parentFgPath) as FormGroup;
         if (parentFg !== null) {
           this.fieldFormGroup = parentFg;
         }

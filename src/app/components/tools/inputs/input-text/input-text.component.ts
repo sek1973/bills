@@ -1,12 +1,12 @@
-import { InputComponentBase } from './../input-component-base';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { InputBaseComponent } from './../input-component-base';
 
 @Component({
   selector: 'app-input-text',
   templateUrl: './input-text.component.html',
   styleUrls: ['./input-text.component.scss']
 })
-export class InputTextComponent extends InputComponentBase implements OnInit {
+export class InputTextComponent extends InputBaseComponent implements OnInit {
   @Input()
   type:
     | 'color'

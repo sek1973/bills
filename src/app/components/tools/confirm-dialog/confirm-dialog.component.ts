@@ -1,9 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DescriptionProvider } from '../inputs/input-component-base';
-import { ConfirmDialogModel, ConfirmDialogInputType } from './confirm-dialog.model';
+import { ConfirmDialogInputType, ConfirmDialogModel } from './confirm-dialog.model';
 
 export interface ConfirmDialogResponse {
   response: boolean;
@@ -22,13 +21,13 @@ export class ConfirmDialogComponent implements OnInit {
   applyButtonLabel: string;
   canApply: boolean = true;
 
-  form: FormGroup;
-  inputType: ConfirmDialogInputType;
+  form?: FormGroup;
+  inputType?: ConfirmDialogInputType;
   confirmDialogInputType = ConfirmDialogInputType;
-  descriptionProvider: DescriptionProvider;
+  descriptionProvider?: DescriptionProvider;
 
   constructor(
-    public dialogRef: MatDialogRef<ConfirmDialogComponent>,
+    @Inject(MatDialogRef) public dialogRef: MatDialogRef<ConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel
   ) {
     this.dialogTitle = data.dialogTitle;
@@ -38,17 +37,17 @@ export class ConfirmDialogComponent implements OnInit {
     this.initInput(data);
   }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  initInput(data: ConfirmDialogModel) {
+  initInput(data: ConfirmDialogModel): void {
     if (data.inputType !== undefined) {
       this.inputType = data.inputType;
       this.descriptionProvider = {
         getDescriptionObj: (...path: string[]) => {
           return {
-            tooltipText: data.inputTooltipText,
-            placeholderText: data.inputPlaceholderText,
-            labelText: data.inputLabelText
+            tooltipText: data.inputTooltipText || '',
+            placeholderText: data.inputPlaceholderText || '',
+            labelText: data.inputLabelText || ''
           };
         }
       };
@@ -58,13 +57,13 @@ export class ConfirmDialogComponent implements OnInit {
     }
   }
 
-  onCancel() {
+  onCancel(): void {
     this.dialogRef.close(false);
   }
 
-  onApply() {
+  onApply(): void {
     if (this.form) {
-      this.dialogRef.close({ response: true, value: this.form.get('input').value });
+      this.dialogRef.close({ response: true, value: this.form.get('input')?.value });
     } else {
       this.dialogRef.close(true);
     }

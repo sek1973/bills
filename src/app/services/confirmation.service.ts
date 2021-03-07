@@ -1,16 +1,16 @@
-import { ConfirmDialogInputType } from './../components/tools/confirm-dialog/confirm-dialog.model';
-import { ConfirmDialogComponent, ConfirmDialogResponse } from './../components/tools/confirm-dialog/confirm-dialog.component';
-import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { Inject, Injectable } from '@angular/core';
+import { ValidatorFn } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ConfirmDialogModel } from '../components/tools/confirm-dialog/confirm-dialog.model';
-import { ValidatorFn } from '@angular/forms';
+import { ConfirmDialogComponent, ConfirmDialogResponse } from './../components/tools/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogInputType } from './../components/tools/confirm-dialog/confirm-dialog.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfirmationService {
-  constructor(private dialog: MatDialog) { }
+  constructor(@Inject(MatDialog) private dialog: MatDialog) { }
 
   confirm(
     dialogTitle: string,

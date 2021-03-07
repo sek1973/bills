@@ -7,27 +7,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  constructor(private billsFirebaseService: BillsFirebaseService,
-		            private messagingService: MessagingService,
-		            private authGuard: AuthGuard,
-		            private authService: AuthService,
-		            private reminderService: ReminderService) {
-		this.reminderService.start();
-	}
+  constructor() { }
 
-	ngOnInit() {
-		this.authGuard.canActivate(null, null).subscribe(response => {
-			if (response) {
-				this.billsFirebaseService.load();
-				this.authService.getUserName().subscribe(userId => {
-					this.messagingService.requestPermission(userId);
-					this.messagingService.receiveMessage();
-				});
-			}
-		});
-	}
+  ngOnInit(): void { }
 
-	ngOnDestroy() {
-		this.reminderService.stop();
-	}
+  ngOnDestroy(): void { }
 }

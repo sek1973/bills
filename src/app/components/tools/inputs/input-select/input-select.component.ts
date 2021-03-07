@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-
 import { Unit, UnitDescription } from './../../../../model/unit';
-import { InputComponentBase } from './../input-component-base';
+import { InputBaseComponent } from './../input-component-base';
+
 
 export interface SelectItem<T> {
   value: T;
@@ -20,7 +20,7 @@ export function unitsToSelectItems(): SelectItem<Unit>[] {
   templateUrl: './input-select.component.html',
   styleUrls: ['./input-select.component.scss']
 })
-export class InputSelectComponent extends InputComponentBase implements OnInit {
+export class InputSelectComponent extends InputBaseComponent implements OnInit {
 
   @Input() selectItems: SelectItem<Unit>[];
 

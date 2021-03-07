@@ -1,13 +1,14 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { getSafe, timestampToDate } from 'src/app/helpers';
 import { Schedule } from 'src/app/model/schedule';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
 import { ScheduleDescription } from './../../../model/schedule';
 import { SchedulesFirebaseService } from './../../../services/schedules.firebase.service';
+
 
 export interface ScheduleDialogData {
   billUid: string;
@@ -34,7 +35,8 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     remarks: new FormControl()
   });
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: ScheduleDialogData,
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: ScheduleDialogData,
     public dialogRef: MatDialogRef<ScheduleDialogComponent>,
     private schedulesFirebaseService: SchedulesFirebaseService,
     private confirmationService: ConfirmationService,
@@ -47,7 +49,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     this.loading = false;
   }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
   ngAfterViewInit(): void {
     Promise.resolve().then(() => this.setFormValue());
@@ -66,16 +68,16 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     this.setEditStatus(this.form.status);
   }
 
-  private setEditStatus(status: string) {
+  private setEditStatus(status: string): void {
     this.canSave = status === 'VALID' ? true : false;
   }
 
-  closeDialog() {
+  closeDialog(): void {
     this.dialogRef.close('cancel');
   }
 
-  saveData() {
-    let request: Promise<firebase.firestore.DocumentReference | void>;
+  saveData(): void {
+    let request: Promise<any | void>;
     this.loading = true;
     if (this.schedule) {
       request = this.schedulesFirebaseService.update(this.form.value, this.billUid);
@@ -89,7 +91,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
       (error) => { this.snackBar.open('Błąd zapisania danych: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' }); });
   }
 
-  private checkDuplicatedSchedule(action: () => void) {
+  private checkDuplicatedSchedule(action: () => void): void {
     const dateControl = this.form.get('date') as FormControl;
     const date = dateControl.value;
     this.schedulesFirebaseService.queryByDate(this.billUid, date).then(
@@ -107,7 +109,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     );
   }
 
-  cloneData() {
+  cloneData(): void {
     this.loading = true;
     const request = this.schedulesFirebaseService.add(this.form.value, this.billUid);
     this.checkDuplicatedSchedule(() => this.runPromise(request,
@@ -115,7 +117,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
       error => this.snackBar.open('Błąd klonowania planowanej płatności:' + error, 'Ukryj', { panelClass: 'snackbar-style-error' })));
   }
 
-  private runPromise(promise: Promise<any>, actionThen?: () => void, actionError?: (error: any) => void) {
+  private runPromise(promise: Promise<any>, actionThen?: () => void, actionError?: (error: any) => void): void {
     promise.then(resp => {
       this.loading = false;
       if (actionThen) { actionThen(); }
@@ -129,7 +131,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
   getDescriptionProvider(): DescriptionProvider {
     return {
-      getDescriptionObj: (...path: string[]) => ScheduleDescription.get(path[0])
+      getDescriptionObj: (...path: string[]) => ScheduleDescription.get(path[0]) || { tooltipText: '', placeholderText: '', labelText: '' }
     };
   }
 

@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FieldDescription } from 'src/app/model/field-description';
-
 import { MessagingService } from '../../services/messaging.service';
 import { DescriptionProvider } from '../tools/inputs/input-component-base';
 import { AuthService } from './../../services/auth.service';
 import { BillsFirebaseService } from './../../services/bills.firebase.service';
 import { NavigationService } from './../../services/navigation.service';
+
 
 @Component({
   selector: 'app-login',
@@ -42,15 +42,16 @@ export class LoginComponent implements OnInit {
     }]
   ]);
 
-  constructor(private authService: AuthService,
+  constructor(
+    private authService: AuthService,
     private navigationService: NavigationService,
     private billsFirebaseService: BillsFirebaseService,
     private messagingService: MessagingService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onLogIn() {
+  onLogIn(): void {
     this.error = undefined;
     this.loadingSubject.next(true);
     const email = this.loginForm.value.email;
@@ -65,7 +66,7 @@ export class LoginComponent implements OnInit {
         });
         setTimeout(() => this.navigationService.goToPreviousPage('/zestawienie'));
       },
-      rejected => {
+      (rejected: { message: undefined; }) => {
         this.error = rejected.message;
         this.loadingSubject.next(false);
         console.error(rejected);
@@ -76,7 +77,7 @@ export class LoginComponent implements OnInit {
   getErrorMessage(formControl: FormControl): string {
     let errorMsg = '';
     if (formControl.errors) {
-      formControl.errors.array.forEach(err => {
+      formControl.errors.array.forEach((err: string) => {
         errorMsg += err;
       });
     }
@@ -85,7 +86,7 @@ export class LoginComponent implements OnInit {
 
   getDescriptionProvider(): DescriptionProvider {
     return {
-      getDescriptionObj: (...path: string[]) => this.formDescription.get(path[0])
+      getDescriptionObj: (...path: string[]) => this.formDescription.get(path[0]) || { tooltipText: '', placeholderText: '', labelText: '' }
     };
   }
 

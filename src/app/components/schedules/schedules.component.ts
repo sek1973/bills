@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Schedule } from 'src/app/model/schedule';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-
 import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { SchedulesDataSource } from './../../services/schedules.datasource';
@@ -11,77 +11,79 @@ import { SchedulesFirebaseService } from './../../services/schedules.firebase.se
 import { TableComponent } from './../tools/table/table.component';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
 
+
 @Component({
   selector: 'app-schedules',
   templateUrl: './schedules.component.html',
   styleUrls: ['./schedules.component.scss']
 })
 export class SchedulesComponent implements OnInit {
-  private _builUid: string;
+  private _billUid!: string;
   @Input() set billUid(val: string) {
-    this._builUid = val;
+    this._billUid = val;
     this.setTableDataSource();
   }
   get billUid(): string {
-    return this._builUid;
+    return this._billUid;
   }
-  @ViewChild('table', { read: TableComponent }) table: TableComponent;
+  @ViewChild('table', { read: TableComponent })
+  table!: TableComponent;
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   activeRow: any;
 
-  dataSource: SchedulesDataSource;
+  dataSource?: SchedulesDataSource;
   columns = [
     { name: 'date', header: 'Termin' },
     { name: 'sum', header: 'Kwota' },
     { name: 'remarks', header: 'Uwagi' }
   ];
 
-  constructor(private schedulesFirebaseService: SchedulesFirebaseService,
-    public dialog: MatDialog,
+  constructor(
+    private schedulesFirebaseService: SchedulesFirebaseService,
+    @Inject(MatDialog) public dialog: MatDialog,
     private confirmationService: ConfirmationService,
     private snackBar: MatSnackBar) { }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  private setTableDataSource() {
+  private setTableDataSource(): void {
     this.dataSource = new SchedulesDataSource(this.schedulesFirebaseService, this.billUid);
     this.dataSource.load();
   }
 
-  onRowClicked(row) {
+  onRowClicked(row: any): void {
     if (this.activeRow !== row) {
       this.activeRow = row;
     }
   }
 
-  getId(row: Schedule): string {
+  getId(row: Schedule): string | undefined {
     return row.uid;
   }
 
-  refresh() {
-    this.dataSource.load();
+  refresh(): void {
+    this.dataSource?.load();
   }
 
-  addSchedule() {
-    this.openDialog(undefined);
+  addSchedule(): void {
+    this.openDialog();
   }
 
-  editSchedule() {
+  editSchedule(): void {
     if (this.table.activeRow) { this.openDialog(this.table.activeRow); }
   }
 
-  private openDialog(schedule: Schedule): void {
+  private openDialog(schedule?: Schedule): void {
     const dialogRef = this.dialog.open(ScheduleDialogComponent, {
       width: '500px',
-      data: { schedule: schedule, billUid: this.billUid }
+      data: { schedule, billUid: this.billUid }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-    });
+    dialogRef.afterClosed().subscribe();
   }
 
-  deleteSchedule() {
+  deleteSchedule(): void {
     if (this.table.activeRow) {
       this.confirmationService
         .confirm('Usuń planowaną płatność', 'Czy na pewno chcesz usunąć tę płatność?', 'Nie', 'Tak')
@@ -96,12 +98,12 @@ export class SchedulesComponent implements OnInit {
     }
   }
 
-  onRowActivated(row: Schedule) {
+  onRowActivated(row: Schedule): void {
     this.table.canDelete = row ? true : false;
     this.table.canEdit = row ? true : false;
   }
 
-  pasteData() {
+  pasteData(): void {
     this.confirmationService
       .confirm('Importuj planowane płatności',
         'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
@@ -12,12 +12,6 @@ import { validateBillName } from '../tools/inputs/validators/validators';
 import { AuthService } from './../../services/auth.service';
 import { ConfirmDialogResponse } from './../tools/confirm-dialog/confirm-dialog.component';
 import { TableComponent } from './../tools/table/table.component';
-
-
-export interface TableColumn {
-  name: string;
-  header: string;
-}
 
 @Component({
   selector: 'app-overview',
@@ -36,7 +30,8 @@ export class OverviewComponent implements OnInit {
   @ViewChild('table')
   table!: TableComponent;
 
-  constructor(private billsFirebaseService: BillsFirebaseService,
+  constructor(
+    private billsFirebaseService: BillsFirebaseService,
     private authService: AuthService,
     private router: Router,
     private confirmationService: ConfirmationService,
@@ -52,10 +47,10 @@ export class OverviewComponent implements OnInit {
   }
 
   getValue(row: Bill, column: string): string {
-    return getSafe(() => row[column]);
+    return getSafe(() => row[column as keyof Bill]);
   }
 
-  getId(row: Bill): number {
+  getId(row: Bill): number | undefined {
     return row.id;
   }
 
@@ -67,11 +62,13 @@ export class OverviewComponent implements OnInit {
           'Czy na pewno chcesz usunąć bieżący rachunek wraz z historią płatności? Operacji nie będzie można cofnąć! ' +
           'Aby potwierdzić podaj nazwę rachunku.', 'Nie', 'Tak',
           ConfirmDialogInputType.InputTypeText, undefined, [Validators.required, validateBillName(row.name)], 'Nazwa rachunku', 'Nazwa rachunku')
-        .subscribe((response) => {
-          if (response) {
-            this.billsFirebaseService.delete(row)
-              .then(() => this.snackBar.open('Opłacenie rachunku zapisane!', 'Ukryj', { duration: 3000 }),
-                error => this.snackBar.open('Błąd usuwania rachunku: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' }));
+        .subscribe({
+          next: (response) => {
+            if (response) {
+              this.billsFirebaseService.delete(row)
+                .then(() => this.snackBar.open('Opłacenie rachunku zapisane!', 'Ukryj', { duration: 3000 }),
+                  error => this.snackBar.open('Błąd usuwania rachunku: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' }));
+            }
           }
         });
     }
@@ -111,8 +108,8 @@ export class OverviewComponent implements OnInit {
   formatColor(row: Bill): string {
     const color = this.formatActiveColor(row);
     if (color !== '') { return color; }
-    if (row.deadline && row.deadline.toDate() < new Date()) { return 'red'; }
-    if (row.deadline && row.deadline.toDate() < addDays()) { return 'darkgoldenrod'; }
+    if (row.deadline < new Date()) { return 'red'; }
+    if (row.deadline < addDays()) { return 'darkgoldenrod'; }
     return '';
   }
 
@@ -123,7 +120,7 @@ export class OverviewComponent implements OnInit {
         .confirm('Rachunek opłacony',
           'Podaj kwotę jaka została zapłacona:', 'Anuluj', 'OK',
           ConfirmDialogInputType.InputTypeCurrency, bill.sum * bill.share, [Validators.required], 'Kwota', 'Kwota')
-        .subscribe((response) => {
+        .subscribe((response: boolean | ConfirmDialogResponse) => {
           if (response) {
             this.loading = true;
             this.billsFirebaseService.pay(bill, (response as ConfirmDialogResponse).value)
