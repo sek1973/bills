@@ -1,8 +1,7 @@
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-
 import { TableDataSource } from '../components/tools/table/table-data-source';
 import { Bill } from '../model/bill';
-import { BillsFirebaseService } from './bills.firebase.service';
+import { BillsFirebaseService } from './bills.service';
+
 
 export class BillsDataSource extends TableDataSource<Bill> {
 

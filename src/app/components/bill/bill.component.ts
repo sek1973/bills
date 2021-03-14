@@ -2,10 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { BillsFirebaseService } from '../../services/bills.service';
 import { Bill } from './../../model/bill';
 import { AuthService } from './../../services/auth.service';
-import { BillsFirebaseService } from './../../services/bills.firebase.service';
-
 
 @Component({
   selector: 'app-bill',

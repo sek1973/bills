@@ -6,7 +6,7 @@ import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { BillsDataSource } from '../../services/bills.datasource';
-import { BillsFirebaseService } from '../../services/bills.firebase.service';
+import { BillsFirebaseService } from '../../services/bills.service';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { validateBillName } from '../tools/inputs/validators/validators';
 import { AuthService } from './../../services/auth.service';

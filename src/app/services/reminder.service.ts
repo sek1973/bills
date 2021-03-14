@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Bill } from 'src/app/model/bill';
-import { BillsFirebaseService } from './bills.firebase.service';
+import { BillsFirebaseService } from './bills.service';
 
 
 @Injectable()

@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { firestore } from 'firebase';
-import { Moment } from 'moment';
 import * as moment from 'moment';
+import { Moment } from 'moment';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { addDays, dateToTimestamp } from 'src/app/helpers';
-
 import { Bill } from '../model/bill';
 import { Payment } from '../model/payment';
 import { Schedule } from '../model/schedule';
@@ -14,12 +11,11 @@ import { Unit } from '../model/unit';
 import { PaymentsFirebaseService } from './payments.firebase.service';
 import { SchedulesFirebaseService } from './schedules.firebase.service';
 
-import Timestamp = firestore.Timestamp;
 @Injectable({
   providedIn: 'root',
 })
 export class BillsFirebaseService {
-  private bills: Bill[];
+  private bills: Bill[] = [];
   private billsSubject = new BehaviorSubject<Bill[]>([]);
 
   private billsLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -27,13 +23,13 @@ export class BillsFirebaseService {
 
   private billsSubscription = Subscription.EMPTY;
 
-  constructor(public db: AngularFirestore,
+  constructor(
     private paymentsService: PaymentsFirebaseService,
     private schedulesService: SchedulesFirebaseService) {
     this.load();
   }
 
-  load() {
+  load(): void {
     this.billsSubscription.unsubscribe();
     this.billsSubscription = of(new Array<Bill>())
       .pipe(map(() => this.billsLoadingSubject.next(true)),
@@ -49,20 +45,15 @@ export class BillsFirebaseService {
       });
   }
 
-  get billsObservable() {
+  get billsObservable(): Observable<Bill[]> {
     return this.billsSubject.asObservable();
   }
 
   private fetch(): Observable<Bill[]> {
-    return this.db.collection<Bill>('bills')
-      .valueChanges({ idField: 'uid' });
+    return of([]);
   }
 
   fetchItem(id: number): Observable<Bill> {
-    if (id !== undefined) {
-      const query = this.db.doc<Bill>('bills/' + id);
-      return query.valueChanges();
-    }
     return of(null);
   }
 
@@ -89,40 +80,26 @@ export class BillsFirebaseService {
       password: bill.password || ''
     };
     if (result.reminder > result.deadline) {
-      result.reminder = dateToTimestamp(addDays(-7, result.deadline.toDate()));
+      result.reminder = dateToTimestamp(addDays(-7, result.deadline));
     }
     if (bill.uid) { result.uid = bill.uid; }
     return result;
   }
 
-  add(bill: Bill): Promise<firestore.DocumentReference> {
-    return this.db.collection('bills').add(this.createBillData(bill));
+  add(bill: Bill): Observable<number> {
+    return of(0);
   }
 
-  update(bill: Bill): Promise<void> {
-    try {
-      return this.db.collection('bills').doc(bill.uid).set(this.createBillData(bill));
-    } catch (error) {
-      return Promise.reject(error);
-    }
+  update(bill: Bill): Observable<void> {
+    return of();
   }
 
-  private updateInTransaction(bill: Bill, transaction: firestore.Transaction): firestore.Transaction {
-    const ref = this.db.firestore.collection('bills').doc(bill.uid);
-    return transaction.update(ref, bill);
+  delete(bill: Bill): Observable<void> {
+    return of();
   }
 
-  delete(bill: Bill): Promise<void> {
-    return this.db.collection('bills').doc(bill.uid).delete();
-  }
-
-  disconnect() {
-    this.billsLoadingSubject.complete();
-    this.billsSubscription.unsubscribe();
-  }
-
-  calculateNextDeadline(bill: Bill): firestore.Timestamp {
-    const deadline = moment(bill.deadline.toDate());
+  calculateNextDeadline(bill: Bill): Date {
+    const deadline = moment(bill.deadline);
     let result: Moment;
     switch (bill.unit) {
       case Unit.Day:
@@ -140,11 +117,10 @@ export class BillsFirebaseService {
       default:
         break;
     }
-    return Timestamp.fromDate(result.toDate());
+    return result?.toDate();
   }
 
   pay(bill: Bill, paid: number) {
-    const billUid = bill.uid;
     const payment = this.createPaymentData(bill, paid);
     const billCopy = this.createBillData(bill);
     let schedule: Schedule;
@@ -162,7 +138,7 @@ export class BillsFirebaseService {
   private createPaymentData(bill: Bill, paid: number): Payment {
     return this.paymentsService.createPaymentData({
       deadline: bill.deadline,
-      paiddate: Timestamp.fromDate(new Date()),
+      paiddate: new Date(),
       sum: paid,
       share: paid * bill.share,
       remarks: undefined
@@ -173,7 +149,7 @@ export class BillsFirebaseService {
     const deadline = schedule ? schedule.date : this.calculateNextDeadline(billCopy);
     const sum = schedule ? schedule.sum : billCopy.sum; // consider remarks
     billCopy.deadline = deadline;
-    billCopy.reminder = Timestamp.fromDate(addDays(-7, deadline.toDate()));
+    billCopy.reminder = addDays(-7, deadline.toDate());
     billCopy.sum = sum;
     return billCopy;
   }

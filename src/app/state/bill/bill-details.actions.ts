@@ -1,38 +1,38 @@
 import { createAction, props } from '@ngrx/store';
 import { Bill } from 'src/app/model';
 
-export const toggleProductCode = createAction(
+export const toggleBillCode = createAction(
   '[Bill Details] Toggle Bill Code'
 );
 
-export const setCurrentProduct = createAction(
+export const setCurrentBill = createAction(
   '[Bill Details] Set Current Bill',
   props<{ currentBillId: number }>()
 );
 
-export const clearCurrentProduct = createAction(
+export const clearCurrentBill = createAction(
   '[Bill Details] Clear Current Bill'
 );
 
-export const initializeCurrentProduct = createAction(
+export const initializeCurrentBill = createAction(
   '[Bill Details] Initialize Current Bill'
 );
 
-export const loadProducts = createAction(
+export const loadBills = createAction(
   '[Bill Details] Load'
 );
 
-export const updateProduct = createAction(
+export const updateBill = createAction(
   '[Bill Details] Update Bill',
   props<{ bill: Bill }>()
 );
 
-export const createProduct = createAction(
+export const createBill = createAction(
   '[Bill Details] Create Bill',
   props<{ bill: Bill }>()
 );
 
-export const deleteProduct = createAction(
+export const deleteBill = createAction(
   '[Bill Details] Delete Bill',
   props<{ billId: number }>()
 );

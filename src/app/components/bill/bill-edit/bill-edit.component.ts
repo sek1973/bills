@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
+import { BillsFirebaseService } from '../../../services/bills.service';
 import { ConfirmDialogResponse } from '../../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../../tools/confirm-dialog/confirm-dialog.model';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
@@ -12,7 +13,6 @@ import { unitsToSelectItems } from '../../tools/inputs/input-select/input-select
 import { validateBillName, validateDistinctBillName } from '../../tools/inputs/validators/validators';
 import { BillDescription } from './../../../model/bill';
 import { Unit } from './../../../model/unit';
-import { BillsFirebaseService } from './../../../services/bills.firebase.service';
 import { SelectItem } from './../../tools/inputs/input-select/input-select.component';
 
 
