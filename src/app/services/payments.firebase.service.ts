@@ -1,25 +1,17 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { firestore } from 'firebase';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
-import { currencyToNumber, dateToTimestamp, stringToTimestamp } from '../helpers';
+import { currencyToNumber, dateToTimestamp, stringToDate } from '../helpers';
 import { Bill } from '../model/bill';
 import { Payment } from '../model/payment';
-
-import Timestamp = firestore.Timestamp;
 @Injectable({
   providedIn: 'root',
 })
 export class PaymentsFirebaseService {
 
-  constructor(public db: AngularFirestore) { }
+  constructor() { }
 
-  fetch(uid: string): Observable<Payment[]> {
-    if (uid !== undefined) {
-      const query = this.db.collection<Bill>('bills').doc(uid).collection<Payment>('payments');
-      return query.valueChanges({ idField: 'uid' });
-    }
+  fetch(uid: string): Observable<Payment[]> {    
     return of([]);
   }
 
@@ -35,49 +27,42 @@ export class PaymentsFirebaseService {
     return result;
   }
 
-  addInTransaction(payment: Payment, billUid: string, transaction: firestore.Transaction): firestore.Transaction {
-    const ref = this.db.firestore.collection('bills').doc(billUid).collection('payments').doc();
-    return transaction.set(ref, payment);
+  add(payment: Payment, billId: number): Observable<number> {
+    return of(0);
   }
 
-  add(payment: Payment, billUid: string): Promise<firestore.DocumentReference> {
-    return this.db.collection('bills').doc(billUid).collection('payments').add(this.createPaymentData(payment));
+  update(payment: Payment, billId: number): Observable<void> {
+    return of();
   }
 
-  update(payment: Payment, billUid: string): Promise<void> {
-    return this.db.collection('bills').doc(billUid).collection('payments').doc(payment.uid).set(this.createPaymentData(payment));
+  delete(payment: Payment, billUid: string): Observable<void> {
+    return of();
   }
 
-  delete(payment: Payment, billUid: string): Promise<void> {
-    return this.db.collection('bills').doc(billUid).collection('payments').doc(payment.uid).delete();
-  }
-
-  importPayments(data: string, billUid: string, lineSeparator: string = '\n', columnSeparator: string = '\t'): Promise<void> {
-    return this.db.firestore.runTransaction(transaction => {
-      const errors = [];
-      data.split(lineSeparator).forEach((line, index) => {
+  importPayments(data: string, billId: number, lineSeparator: string = '\n', columnSeparator: string = '\t'): Observable<void> {
+    const errors: string[] = [];
+    data.split(lineSeparator).forEach((line, index) => {
         const payment = this.parsePayment(line, columnSeparator);
         if (payment) {
           try {
-            this.addInTransaction(payment, billUid, transaction);
+            this.add(payment, billId);
           } catch (error) {
-            return Promise.reject(error);
+            errors.push(`Nie można zaimportować wiersza (${index + 1}): ${line}`);
           }
         } else {
           errors.push(`Nie można zaimportować wiersza (${index + 1}): ${line}`);
         }
       });
-      if (errors.length) { return Promise.reject(errors); }
-      return Promise.resolve();
-    });
+      if (errors.length) { return throwError('Import zakończony z błędami:\n' + errors.join('\n')); }
+      return of();    
   }
 
   private parsePayment(text: string, columnSeparator: string = '\t'): Payment {
     const cells = text.split(columnSeparator);
-    const deadline: Timestamp = stringToTimestamp(cells[0]);
-    const paiddate: Timestamp = stringToTimestamp(cells[1]);
-    const sum: number = currencyToNumber(cells[2]);
-    const share: number = currencyToNumber(cells[3]);
+    const deadline: Date | undefined = stringToDate(cells[0]);
+    const paiddate: Date | undefined = stringToDate(cells[1]);
+    const sum: number | undefined = currencyToNumber(cells[2]);
+    const share: number | undefined = currencyToNumber(cells[3]);
     const remarks: string = cells[4];
     const payment: Payment = {
       deadline: deadline,

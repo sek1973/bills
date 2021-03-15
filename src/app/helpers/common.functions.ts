@@ -1,8 +1,4 @@
-import { firestore } from 'firebase';
-import { Moment } from 'moment';
-import * as moment from 'moment';
 
-import Timestamp = firestore.Timestamp;
 
 export function getSafe(fn: () => any): any {
   try {
@@ -12,18 +8,8 @@ export function getSafe(fn: () => any): any {
   }
 }
 
-export function timestampToString(val: Timestamp): string | undefined {
-  return val ? val.toDate().toLocaleDateString('pl-PL') : undefined;
-}
-
-export function timestampToDate(val: Timestamp): Date | undefined {
-  return val ? val.toDate() : undefined;
-}
-
-export function dateToTimestamp(val: Date | Moment): Timestamp | null {
-  if (val === null || val === undefined) { return null; }
-  const tmp = val instanceof Date ? val : (val as Moment).toDate();
-  return Timestamp.fromDate(tmp);
+export function dateToString(val: Date): string | undefined {
+  return val ? val.toLocaleDateString('pl-PL') : undefined;
 }
 
 /** Tries to read formats:
@@ -32,7 +18,7 @@ export function dateToTimestamp(val: Date | Moment): Timestamp | null {
  * - dd.mm.yyyy
  * - dd-mm-yyyy
  */
-export function stringToTimestamp(val: string): Timestamp | undefined {
+export function stringToDate(val: string): Date | undefined {
   if (val === undefined || val === null || val === '') { return undefined; }
   let date = val.split('-');
   if (date.length !== 3) { date = val.split('.'); }
@@ -41,10 +27,10 @@ export function stringToTimestamp(val: string): Timestamp | undefined {
   const date1: number = parseInt(date[1], 10);
   const date2: number = parseInt(date[2], 10);
   if (date0 > 1900 && date0 < 9999 && date1 > 0 && date1 < 13 && date2 > 0 && date2 < 32) {
-    return Timestamp.fromDate(new Date(date0, date1 - 1, date2));
+    return new Date(date0, date1 - 1, date2);
   }
   if (date2 > 1900 && date2 < 9999 && date1 > 0 && date1 < 13 && date0 > 0 && date0 < 32) {
-    return Timestamp.fromDate(new Date(date2, date1 - 1, date0));
+    return new Date(date2, date1 - 1, date0);
   }
   return undefined;
 }
@@ -66,7 +52,7 @@ export function currencyToNumber(val: string): number | undefined {
     const result = Number(cleaned);
     return result;
   }
-  return null;
+  return undefined;
 }
 
 export function percentToString(val: number, NaNvalue: any = 0): string | undefined {
@@ -82,10 +68,11 @@ export function percentToNumber(val: string): number | undefined {
     const result = Number(cleaned) / 100;
     return result;
   }
-  return null;
+  return undefined;
 }
 
 export function addDays(days: number = 7, date: Date = new Date()): Date {
-  const result = moment(date);
-  return result.add(days, 'day').toDate();
+  const result = date;
+  result.setDate( date.getDate() + days);
+  return result;
 }
