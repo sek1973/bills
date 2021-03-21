@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class PrintService {
-  constructor() {}
+  constructor() { }
 
   /**
  * Allows to print passed element and all its content with styles.
@@ -13,21 +13,23 @@ export class PrintService {
   printPreviewElement(element: HTMLElement): void {
     const WindowPrt = window.open('', '', 'left=0,top=0,width=1500,height=900,toolbar=0,scrollbars=0,status=0');
     const styles = window.getComputedStyle(element);
-    if (this.isBrowserIE()) {
-      WindowPrt.document.write(element.outerHTML);
-      const printContent = WindowPrt.document.body.firstChild as HTMLElement;
-      printContent.style.cssText = styles.cssText;
-      WindowPrt.document.head.innerHTML = document.head.innerHTML;
-    } else {
-      const printContent = element.cloneNode(true) as HTMLElement;
-      printContent.style.cssText = styles.cssText;
-      WindowPrt.document.head.innerHTML = document.head.innerHTML;
-      WindowPrt.document.body.append(printContent);
+    if (WindowPrt) {
+      if (this.isBrowserIE()) {
+        WindowPrt.document.write(element.outerHTML);
+        const printContent = WindowPrt.document.body.firstChild as HTMLElement;
+        printContent.style.cssText = styles.cssText;
+        WindowPrt.document.head.innerHTML = document.head.innerHTML;
+      } else {
+        const printContent = element.cloneNode(true) as HTMLElement;
+        printContent.style.cssText = styles.cssText;
+        WindowPrt.document.head.innerHTML = document.head.innerHTML;
+        WindowPrt.document.body.append(printContent);
+      }
+      WindowPrt.document.close();
+      WindowPrt.focus();
+      WindowPrt.print();
+      WindowPrt.close();
     }
-    WindowPrt.document.close();
-    WindowPrt.focus();
-    WindowPrt.print();
-    WindowPrt.close();
   }
 
   isBrowserIE() {

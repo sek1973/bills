@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
-import { Moment } from 'moment';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
-import { addDays, dateToTimestamp } from 'src/app/helpers';
+import { addDays, } from 'src/app/helpers';
 import { Bill } from '../model/bill';
 import { Payment } from '../model/payment';
 import { Schedule } from '../model/schedule';
@@ -53,14 +51,14 @@ export class BillsFirebaseService {
     return of([]);
   }
 
-  fetchItem(id: number): Observable<Bill> {
+  fetchItem(id: number): Observable<Bill | null> {
     return of(null);
   }
 
   private createBillData(bill: any): Bill {
     if (bill.id === undefined) {
       if (this.bills && this.bills.length) {
-        bill.id = Math.max(...this.bills.map(b => b.id)) + 1;
+        bill.id = Math.max(...this.bills.map(b => b.id ? b.id : 0)) + 1;
       } else { bill.id = 0; }
     }
     const result: Bill = {
@@ -71,16 +69,16 @@ export class BillsFirebaseService {
       active: bill.active || false,
       sum: bill.sum || 0,
       share: bill.share || 1,
-      deadline: dateToTimestamp(bill.deadline || new Date()),
-      reminder: dateToTimestamp(bill.reminder || addDays(-7, bill.deadline)),
+      deadline: bill.deadline || new Date(),
+      reminder: bill.reminder || addDays(-7, bill.deadline),
       repeat: bill.repeat || 1,
       unit: bill.unit || Unit.Month,
       url: bill.url || '',
       login: bill.login || '',
       password: bill.password || ''
     };
-    if (result.reminder > result.deadline) {
-      result.reminder = dateToTimestamp(addDays(-7, result.deadline));
+    if (result.reminder && result.reminder > result.deadline) {
+      result.reminder = addDays(-7, result.deadline);
     }
     if (bill.uid) { result.uid = bill.uid; }
     return result;
@@ -149,7 +147,7 @@ export class BillsFirebaseService {
     const deadline = schedule ? schedule.date : this.calculateNextDeadline(billCopy);
     const sum = schedule ? schedule.sum : billCopy.sum; // consider remarks
     billCopy.deadline = deadline;
-    billCopy.reminder = addDays(-7, deadline.toDate());
+    billCopy.reminder = addDays(-7, deadline);
     billCopy.sum = sum;
     return billCopy;
   }

@@ -43,15 +43,12 @@ export class SchedulesService {
   }
 
   importSchedules(data: string, billId: string, lineSeparator: string = '\n', columnSeparator: string = '\t'): Observable<void> {
+    const payments: Schedule[] = []
     const errors: string[] = [];
     data.split(lineSeparator).forEach((line, index) => {
       const payment = this.parseSchedule(line, columnSeparator);
       if (payment) {
-        try {
-          this.add(payment, billId);
-        } catch (error) {
-          return Promise.reject(error);
-        }
+        payments.push(payment);
       } else {
         errors.push(`Nie można zaimportować wiersza (${index + 1}): ${line}`);
       }
