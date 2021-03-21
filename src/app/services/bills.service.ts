@@ -97,25 +97,24 @@ export class BillsFirebaseService {
   }
 
   calculateNextDeadline(bill: Bill): Date {
-    const deadline = moment(bill.deadline);
-    let result: Moment;
+    const result = bill.deadline;
     switch (bill.unit) {
       case Unit.Day:
-        result = deadline.add(bill.repeat, 'day');
+        result.setDate(result.getDate() + bill.repeat);
         break;
       case Unit.Month:
-        result = deadline.add(bill.repeat, 'month');
+        result.setMonth(result.getMonth() + bill.repeat);
         break;
       case Unit.Week:
-        result = deadline.add(bill.repeat, 'week');
+        result.setDate(result.getDate() + 7 * bill.repeat);
         break;
       case Unit.Year:
-        deadline.add(bill.repeat, 'year');
+        result.setFullYear(result.getFullYear() + bill.repeat);
         break;
       default:
         break;
     }
-    return result?.toDate();
+    return result;
   }
 
   pay(bill: Bill, paid: number) {
