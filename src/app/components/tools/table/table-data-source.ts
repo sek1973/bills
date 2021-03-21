@@ -1,9 +1,10 @@
-import { MatTableDataSource } from '@angular/material';
-import { Observable, Subscription } from 'rxjs';
+
+import { MatTableDataSource } from '@angular/material/table';
+import { Observable, of, Subscription } from 'rxjs';
 
 export abstract class TableDataSource<T> extends MatTableDataSource<T> {
   protected subscription = Subscription.EMPTY;
-  public loading$: Observable<boolean>;
+  public loading$: Observable<boolean> = of(false);
 
   connect() {
     return super.connect();

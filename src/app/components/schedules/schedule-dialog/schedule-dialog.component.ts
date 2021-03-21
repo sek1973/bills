@@ -7,7 +7,7 @@ import { Schedule } from 'src/app/model/schedule';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
 import { ScheduleDescription } from './../../../model/schedule';
-import { SchedulesFirebaseService } from './../../../services/schedules.firebase.service';
+import { SchedulesService } from '../../../services/schedules.service';
 
 
 export interface ScheduleDialogData {
@@ -38,7 +38,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ScheduleDialogData,
     public dialogRef: MatDialogRef<ScheduleDialogComponent>,
-    private schedulesFirebaseService: SchedulesFirebaseService,
+    private schedulesFirebaseService: SchedulesService,
     private confirmationService: ConfirmationService,
     private snackBar: MatSnackBar) {
     this.billUid = getSafe(() => data.billUid);
@@ -58,7 +58,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   private setFormValue(): void {
     if (this.schedule) {
       const value = {
-        uid: this.schedule.uid,
+        uid: this.schedule.id,
         date: timestampToDate(this.schedule.date),
         sum: this.schedule.sum,
         remarks: this.schedule.remarks

@@ -6,7 +6,7 @@ import { getSafe, timestampToDate } from 'src/app/helpers';
 import { Payment } from 'src/app/model/payment';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
 import { PaymentDescription } from './../../../model/payment';
-import { PaymentsFirebaseService } from './../../../services/payments.firebase.service';
+import { PaymentsService } from '../../../services/payments.service';
 
 
 export interface PaymentDialogData {
@@ -39,7 +39,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: PaymentDialogData,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
-    private paymentsFirebaseService: PaymentsFirebaseService,
+    private paymentsFirebaseService: PaymentsService,
     private snackBar: MatSnackBar) {
     this.billUid = getSafe(() => data.billUid);
     this.payment = getSafe(() => data.payment);

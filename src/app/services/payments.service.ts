@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 
-import { currencyToNumber, dateToTimestamp, stringToDate } from '../helpers';
+import { currencyToNumber, stringToDate } from '../helpers';
 import { Bill } from '../model/bill';
 import { Payment } from '../model/payment';
 @Injectable({
   providedIn: 'root',
 })
-export class PaymentsFirebaseService {
+export class PaymentsService {
 
   constructor() { }
 
@@ -17,8 +17,8 @@ export class PaymentsFirebaseService {
 
   createPaymentData(payment: any): Payment {
     const result: Payment = {
-      deadline: dateToTimestamp(payment.deadline || new Date()),
-      paiddate: dateToTimestamp(payment.paiddate) || undefined,
+      deadline: payment.deadline || new Date(),
+      paiddate: payment.paiddate || undefined,
       sum: payment.sum,
       share: payment.share,
       remarks: payment.remarks || ''

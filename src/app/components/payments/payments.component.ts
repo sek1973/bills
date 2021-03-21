@@ -7,7 +7,7 @@ import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.co
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { Payment } from './../../model/payment';
 import { PaymentsDataSource } from './../../services/payments.datasource';
-import { PaymentsFirebaseService } from './../../services/payments.firebase.service';
+import { PaymentsService } from '../../services/payments.service';
 import { TableComponent } from './../tools/table/table.component';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
@@ -42,7 +42,7 @@ export class PaymentsComponent implements OnInit {
   ];
 
   constructor(
-    private paymentsFirebaseService: PaymentsFirebaseService,
+    private paymentsFirebaseService: PaymentsService,
     @Inject(MatDialog) public dialog: MatDialog,
     private confirmationService: ConfirmationService,
     private snackBar: MatSnackBar) { }

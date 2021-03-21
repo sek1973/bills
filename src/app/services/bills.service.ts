@@ -8,8 +8,8 @@ import { Bill } from '../model/bill';
 import { Payment } from '../model/payment';
 import { Schedule } from '../model/schedule';
 import { Unit } from '../model/unit';
-import { PaymentsFirebaseService } from './payments.firebase.service';
-import { SchedulesFirebaseService } from './schedules.firebase.service';
+import { PaymentsService } from './payments.service';
+import { SchedulesService } from './schedules.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +24,8 @@ export class BillsFirebaseService {
   private billsSubscription = Subscription.EMPTY;
 
   constructor(
-    private paymentsService: PaymentsFirebaseService,
-    private schedulesService: SchedulesFirebaseService) {
+    private paymentsService: PaymentsService,
+    private schedulesService: SchedulesService) {
     this.load();
   }
 

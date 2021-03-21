@@ -1,11 +1,8 @@
-import { firestore } from 'firebase';
-
-import Timestamp = firestore.Timestamp;
 import { FieldDescription } from './field-description';
 
 export interface Schedule {
-  uid?: string;
-  date: Timestamp;
+  id?: string;
+  date: Date;
   sum: number;
   remarks?: string;
 }

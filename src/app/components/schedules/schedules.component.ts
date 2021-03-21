@@ -7,7 +7,7 @@ import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { SchedulesDataSource } from './../../services/schedules.datasource';
-import { SchedulesFirebaseService } from './../../services/schedules.firebase.service';
+import { SchedulesService } from '../../services/schedules.service';
 import { TableComponent } from './../tools/table/table.component';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
 
@@ -40,7 +40,7 @@ export class SchedulesComponent implements OnInit {
   ];
 
   constructor(
-    private schedulesFirebaseService: SchedulesFirebaseService,
+    private schedulesFirebaseService: SchedulesService,
     @Inject(MatDialog) public dialog: MatDialog,
     private confirmationService: ConfirmationService,
     private snackBar: MatSnackBar) { }
@@ -59,7 +59,7 @@ export class SchedulesComponent implements OnInit {
   }
 
   getId(row: Schedule): string | undefined {
-    return row.uid;
+    return row.id;
   }
 
   refresh(): void {
