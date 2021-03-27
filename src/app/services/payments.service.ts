@@ -64,12 +64,7 @@ export class PaymentsService {
     const share: number | undefined = currencyToNumber(cells[3]);
     const remarks: string = cells[4];
     if (deadline && paiddate && sum !== undefined && share !== undefined) {
-      const payment: Payment = {
-        deadline: deadline,
-        paiddate: paiddate,
-        sum: sum,
-        share: share
-      };
+      const payment: Payment = { deadline, paiddate, sum, share };
       if (remarks) { payment.remarks = remarks; }
       return payment;
     }

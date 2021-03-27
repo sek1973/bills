@@ -6,10 +6,9 @@ import { Injectable } from '@angular/core';
 export class PrintService {
   constructor() { }
 
-  /**
- * Allows to print passed element and all its content with styles.
- * @param element - HTML element to be printed
- */
+  /**  * Allows to print passed element and all its content with styles.
+   * @param element - HTML element to be printed
+   */
   printPreviewElement(element: HTMLElement): void {
     const WindowPrt = window.open('', '', 'left=0,top=0,width=1500,height=900,toolbar=0,scrollbars=0,status=0');
     const styles = window.getComputedStyle(element);
@@ -32,16 +31,16 @@ export class PrintService {
     }
   }
 
-  isBrowserIE() {
+  isBrowserIE(): boolean {
     const ua = window.navigator.userAgent;
     const msie = ua.indexOf('MSIE ');
-    if (msie > 0) return true;
+    if (msie > 0) { return true; }
 
     const trident = ua.indexOf('Trident/');
-    if (trident > 0) return true;
+    if (trident > 0) { return true; }
 
     const edge = ua.indexOf('Edge/');
-    if (edge > 0) return true;
+    if (edge > 0) { return true; }
 
     return false;
   }

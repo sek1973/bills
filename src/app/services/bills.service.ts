@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { addDays, } from 'src/app/helpers';
 import { Bill } from '../model/bill';
 import { Payment } from '../model/payment';
@@ -117,19 +117,17 @@ export class BillsFirebaseService {
     return result;
   }
 
-  pay(bill: Bill, paid: number) {
+  pay(bill: Bill, paid: number): Observable<void> {
     const payment = this.createPaymentData(bill, paid);
     const billCopy = this.createBillData(bill);
-    let schedule: Schedule;
-    return this.db.firestore.runTransaction(transaction => {
-      return this.schedulesService.fetchComming(bill).then(sch => {
-        schedule = sch;
-        this.paymentsService.addInTransaction(payment, billUid, transaction);
-        this.adjustBillData(billCopy, schedule);
-        if (schedule) { this.schedulesService.deleteInTransaction(schedule, billUid, transaction); }
-        this.updateInTransaction(billCopy, transaction);
-      });
-    });
+    let schedule: Schedule | undefined;
+    return this.schedulesService.fetchComming(bill).pipe(switchMap(sch => {
+      schedule = sch;
+      this.paymentsService.add(payment, bill?.id || 0);
+      this.adjustBillData(billCopy, schedule);
+      if (schedule) { this.schedulesService.delete(schedule, bill?.id || 0); }
+      return this.update(billCopy);
+    }));
   }
 
   private createPaymentData(bill: Bill, paid: number): Payment {
@@ -142,7 +140,7 @@ export class BillsFirebaseService {
     });
   }
 
-  private adjustBillData(billCopy: Bill, schedule: Schedule): Bill {
+  private adjustBillData(billCopy: Bill, schedule?: Schedule): Bill {
     const deadline = schedule ? schedule.date : this.calculateNextDeadline(billCopy);
     const sum = schedule ? schedule.sum : billCopy.sum; // consider remarks
     billCopy.deadline = deadline;

@@ -59,7 +59,7 @@ import { InputBaseComponent } from './components/tools/inputs/input-component-ba
 import { TableCellDirective } from './components/tools/table/directives';
 import { CurrencyToStringPipe } from './pipes/currency-to-string.pipe';
 import { DynamicPipe } from './pipes/dynamic.pipe';
-import { TimespanToStringPipe } from './pipes/timespan-to-string.pipe';
+import { DateToStringPipe } from './pipes/timespan-to-string.pipe';
 
 @NgModule({
   declarations: [
@@ -81,7 +81,7 @@ import { TimespanToStringPipe } from './pipes/timespan-to-string.pipe';
     ScheduleDialogComponent,
     PaymentDialogComponent,
     InputDateComponent,
-    TimespanToStringPipe,
+    DateToStringPipe,
     CurrencyToStringPipe,
     ConfirmDialogComponent,
     ViewFieldTextComponent,

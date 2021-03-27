@@ -12,7 +12,7 @@ export class PreviousUrlService {
 
   constructor() { }
 
-  init() {
+  init(): Promise<any> {
     return new Promise((resolve, reject) => {
       resolve(null);
     });

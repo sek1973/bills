@@ -13,7 +13,7 @@ export class DynamicPipe implements PipeTransform {
       return value;
     }
     else {
-      let pipe = this.injector.get(pipeToken);
+      const pipe = this.injector.get<any>(pipeToken);
       return pipe.transform(value, ...pipeArgs);
     }
   }

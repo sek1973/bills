@@ -12,11 +12,11 @@ export class SchedulesService {
 
   constructor() { }
 
-  fetchComming(bill: Bill): Observable<Schedule | null> {
-    return of(null);
+  fetchComming(bill: Bill): Observable<Schedule | undefined> {
+    return of(undefined);
   }
 
-  fetch(billId: string): Observable<Schedule[]> {
+  fetch(billId: number): Observable<Schedule[]> {
     return of([]);
   }
 
@@ -30,20 +30,20 @@ export class SchedulesService {
     return result;
   }
 
-  add(schedule: Schedule, billId: string): Observable<number> {
+  add(schedule: Schedule, billId: number): Observable<number> {
     return of(0);
   }
 
-  update(schedule: Schedule, billId: string): Observable<void> {
+  update(schedule: Schedule, billId: number): Observable<void> {
     return of();
   }
 
-  delete(schedule: Schedule, billId: string): Observable<void> {
+  delete(schedule: Schedule, billId: number): Observable<void> {
     return of();
   }
 
-  importSchedules(data: string, billId: string, lineSeparator: string = '\n', columnSeparator: string = '\t'): Observable<void> {
-    const payments: Schedule[] = []
+  importSchedules(data: string, billId: number, lineSeparator: string = '\n', columnSeparator: string = '\t'): Observable<void> {
+    const payments: Schedule[] = [];
     const errors: string[] = [];
     data.split(lineSeparator).forEach((line, index) => {
       const payment = this.parseSchedule(line, columnSeparator);
@@ -63,10 +63,7 @@ export class SchedulesService {
     const sum: number | undefined = currencyToNumber(cells[1]);
     const remarks: string = cells[2];
     if (date && sum) {
-      const schedule: Schedule = {
-        date: date,
-        sum: sum
-      };
+      const schedule: Schedule = { date, sum };
       if (remarks) { schedule.remarks = remarks; }
     }
     return undefined;

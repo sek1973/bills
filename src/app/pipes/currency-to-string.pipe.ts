@@ -7,7 +7,7 @@ import { currencyToString } from '../helpers';
 })
 export class CurrencyToStringPipe implements PipeTransform {
 
-  transform(value: number): string {
+  transform(value: number): string | undefined {
     return currencyToString(value);
   }
 

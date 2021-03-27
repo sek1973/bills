@@ -5,7 +5,7 @@ import { Directive, Input, TemplateRef } from '@angular/core';
 })
 export class TableCellDirective {
 
-  @Input() cellTemplateForColumn: string;
+  @Input() cellTemplateForColumn!: string;
 
   constructor(public templateRef: TemplateRef<any>) { }
 

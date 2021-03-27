@@ -5,7 +5,7 @@ import { dateToString } from '../helpers';
 @Pipe({
   name: 'timespanToString'
 })
-export class TimespanToStringPipe implements PipeTransform {
+export class DateToStringPipe implements PipeTransform {
 
   transform(value: Date): string | undefined {
     return dateToString(value);
