@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { BillsFirebaseService } from '../../services/bills.service';
+import { BillDetailsActions, BillsSelectors } from 'src/app/state';
 import { Bill } from './../../model/bill';
-import { AuthService } from './../../services/auth.service';
 
 @Component({
   selector: 'app-bill',
@@ -22,17 +21,17 @@ export class BillComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService,
-    private billsFirebaseService: BillsFirebaseService) { }
+    private store: Store) {
+    const bill = this.store.select(BillsSelectors.selectBill);
+  }
 
   ngOnInit(): void {
     let id: number;
-    this.subscription = this.route.paramMap.pipe(switchMap(param => {
+    this.subscription = this.route.paramMap.subscribe(param => {
       const val = param.get('id');
-      id = val ? Number.parseFloat(val) : -1;
-      return this.billsFirebaseService.billsObservable;
-    }))
-      .subscribe(bills => this.handleData(bills, id));
+      id = val?.length ? Number.parseInt(val, undefined) : -1;
+      this.store.dispatch(BillDetailsActions.setCurrentBill({ billId: id }));
+    });
   }
 
   private handleData(bills: Bill[], id: number): void {

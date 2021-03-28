@@ -7,7 +7,7 @@ export const toggleBillCode = createAction(
 
 export const setCurrentBill = createAction(
   '[Bill Details] Set Current Bill',
-  props<{ currentBillId: number }>()
+  props<{ billId: number }>()
 );
 
 export const clearCurrentBill = createAction(

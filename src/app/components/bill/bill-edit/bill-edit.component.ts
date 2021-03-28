@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-import { BillsFirebaseService } from '../../../services/bills.service';
+import { BillsService } from '../../../services/bills.service';
 import { ConfirmDialogResponse } from '../../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../../tools/confirm-dialog/confirm-dialog.model';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
@@ -64,7 +64,7 @@ export class BillEditComponent implements OnInit {
   });
 
   constructor(
-    private billsFirebaseService: BillsFirebaseService,
+    private billsService: BillsService,
     private confirmationService: ConfirmationService,
     private router: Router,
     private route: ActivatedRoute,

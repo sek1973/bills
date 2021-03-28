@@ -12,7 +12,7 @@ import { SchedulesService } from './schedules.service';
 @Injectable({
   providedIn: 'root',
 })
-export class BillsFirebaseService {
+export class BillsService {
   private bills: Bill[] = [];
   private billsSubject = new BehaviorSubject<Bill[]>([]);
 
@@ -92,7 +92,7 @@ export class BillsFirebaseService {
     return of();
   }
 
-  delete(bill: Bill): Observable<void> {
+  delete(billId: number): Observable<void> {
     return of();
   }
 
