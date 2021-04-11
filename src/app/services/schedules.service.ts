@@ -8,19 +8,15 @@ import { Schedule } from '../model/schedule';
 @Injectable({
   providedIn: 'root',
 })
-export class SchedulesService {
+export abstract class SchedulesService {
 
   constructor() { }
 
-  fetchComming(bill: Bill): Observable<Schedule | undefined> {
-    return of(undefined);
-  }
+  abstract fetchComming(billId: number): Observable<Schedule | undefined>;
 
-  fetch(billId: number): Observable<Schedule[]> {
-    return of([]);
-  }
+  abstract fetch(billId: number): Observable<Schedule[]>;
 
-  private createScheduleData(schedule: any): Schedule {
+  protected createScheduleData(schedule: any): Schedule {
     const result: Schedule = {
       date: schedule.date || new Date(),
       sum: schedule.sum || 0,
@@ -30,31 +26,24 @@ export class SchedulesService {
     return result;
   }
 
-  add(schedule: Schedule, billId: number): Observable<number> {
-    return of(0);
-  }
+  abstract add(schedule: Schedule, billId: number): Observable<number>;
 
-  update(schedule: Schedule, billId: number): Observable<void> {
-    return of();
-  }
+  abstract update(schedule: Schedule, billId: number): Observable<void>;
 
-  delete(schedule: Schedule, billId: number): Observable<void> {
-    return of();
-  }
+  abstract delete(schedule: Schedule, billId: number): Observable<void>;
 
-  importSchedules(data: string, billId: number, lineSeparator: string = '\n', columnSeparator: string = '\t'): Observable<void> {
-    const payments: Schedule[] = [];
+  importSchedules(data: string, lineSeparator: string = '\n', columnSeparator: string = '\t'): { schedules: Schedule[], errors: string[] } {
+    const schedules: Schedule[] = [];
     const errors: string[] = [];
     data.split(lineSeparator).forEach((line, index) => {
       const payment = this.parseSchedule(line, columnSeparator);
       if (payment) {
-        payments.push(payment);
+        schedules.push(payment);
       } else {
         errors.push(`Nie można zaimportować wiersza (${index + 1}): ${line}`);
       }
     });
-    if (errors.length) { return throwError(errors); }
-    return of();
+    return { schedules, errors };
   }
 
   private parseSchedule(text: string, columnSeparator: string = '\t'): Schedule | undefined {

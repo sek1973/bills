@@ -6,13 +6,11 @@ import { Payment } from '../model/payment';
 @Injectable({
   providedIn: 'root',
 })
-export class PaymentsService {
+export abstract class PaymentsService {
 
   constructor() { }
 
-  fetch(uid: string): Observable<Payment[]> {
-    return of([]);
-  }
+  abstract load(billId: string): Observable<Payment[]>;
 
   createPaymentData(payment: any): Payment {
     const result: Payment = {
@@ -26,17 +24,11 @@ export class PaymentsService {
     return result;
   }
 
-  add(payment: Payment, billId: number): Observable<number> {
-    return of(0);
-  }
+  abstract add(payment: Payment, billId: number): Observable<number>;
 
-  update(payment: Payment, billId: number): Observable<void> {
-    return of();
-  }
+  abstract update(payment: Payment, billId: number): Observable<void>;
 
-  delete(payment: Payment, billUid: string): Observable<void> {
-    return of();
-  }
+  abstract delete(payment: Payment, billUid: string): Observable<void>;
 
   importPayments(data: string, billId: number, lineSeparator: string = '\n', columnSeparator: string = '\t'): Observable<void> {
     const errors: string[] = [];

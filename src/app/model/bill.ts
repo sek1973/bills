@@ -2,7 +2,6 @@ import { FieldDescription } from './field-description';
 import { Unit } from './unit';
 
 export class Bill {
-  uid?: string;
   id?: number;
   lp?: number;
   name: string;

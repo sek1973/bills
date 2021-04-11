@@ -1,23 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export abstract class AuthService {
 
   constructor() { }
 
-  login(user: string, password: string): Observable<boolean> {
-    return of(true);
-  }
+  abstract login(user: string, password: string): Observable<boolean>;
 
-  getUserName(): Observable<string> {
-    return of('');
-  }
+  abstract logout(): Observable<boolean>;
 
-  logout(): Observable<boolean> {
-    return of(true);
-  }
+  abstract getUserName(): Observable<string>;
 
 }

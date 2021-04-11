@@ -12,44 +12,13 @@ import { SchedulesService } from './schedules.service';
 @Injectable({
   providedIn: 'root',
 })
-export class BillsService {
-  private bills: Bill[] = [];
-  private billsSubject = new BehaviorSubject<Bill[]>([]);
-
-  private billsLoadingSubject = new BehaviorSubject<boolean>(false);
-  public billsLoading$ = this.billsLoadingSubject.asObservable();
-
-  private billsSubscription = Subscription.EMPTY;
+export abstract class BillsService {
 
   constructor(
     private paymentsService: PaymentsService,
-    private schedulesService: SchedulesService) {
-    this.load();
-  }
+    private schedulesService: SchedulesService) { }
 
-  load(): void {
-    this.billsSubscription.unsubscribe();
-    this.billsSubscription = of(new Array<Bill>())
-      .pipe(map(() => this.billsLoadingSubject.next(true)),
-        mergeMap(() => this.fetch()),
-        map(bills => {
-          this.billsLoadingSubject.next(false);
-          return bills;
-        }),
-        catchError(() => of(new Array<Bill>())))
-      .subscribe((bills) => {
-        this.bills = bills;
-        this.billsSubject.next(bills);
-      });
-  }
-
-  get billsObservable(): Observable<Bill[]> {
-    return this.billsSubject.asObservable();
-  }
-
-  private fetch(): Observable<Bill[]> {
-    return of([]);
-  }
+  abstract load(): Observable<Bill[]>;
 
   fetchItem(id: number): Observable<Bill | null> {
     return of(null);
@@ -80,21 +49,14 @@ export class BillsService {
     if (result.reminder && result.reminder > result.deadline) {
       result.reminder = addDays(-7, result.deadline);
     }
-    if (bill.uid) { result.uid = bill.uid; }
     return result;
   }
 
-  add(bill: Bill): Observable<number> {
-    return of(0);
-  }
+  abstract add(bill: Bill): Observable<number>;
 
-  update(bill: Bill): Observable<void> {
-    return of();
-  }
+  abstract update(bill: Bill): Observable<void>;
 
-  delete(billId: number): Observable<void> {
-    return of();
-  }
+  abstract delete(billId: number): Observable<void>;
 
   calculateNextDeadline(bill: Bill): Date {
     const result = bill.deadline;
@@ -121,7 +83,7 @@ export class BillsService {
     const payment = this.createPaymentData(bill, paid);
     const billCopy = this.createBillData(bill);
     let schedule: Schedule | undefined;
-    return this.schedulesService.fetchComming(bill).pipe(switchMap(sch => {
+    return this.schedulesService.fetchComming(bill.id).pipe(switchMap(sch => {
       schedule = sch;
       this.paymentsService.add(payment, bill?.id || 0);
       this.adjustBillData(billCopy, schedule);

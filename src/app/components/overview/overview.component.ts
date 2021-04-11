@@ -2,11 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
+import { AuthActions, AuthSelectors, BillApiActions } from 'src/app/state';
+import { AppState } from 'src/app/state/app/app.state';
 import { BillsDataSource } from '../../services/bills.datasource';
-import { BillsFirebaseService } from '../../services/bills.service';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { validateBillName } from '../tools/inputs/validators/validators';
 import { AuthService } from './../../services/auth.service';
@@ -30,14 +33,16 @@ export class OverviewComponent implements OnInit {
   @ViewChild('table')
   table!: TableComponent;
 
+  auth$?: Observable<boolean>;
+
   constructor(
-    private billsFirebaseService: BillsFirebaseService,
-    private authService: AuthService,
+    private store: Store<AppState>,
     private router: Router,
     private confirmationService: ConfirmationService,
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    this.auth$ = this.store.select(AuthSelectors.selectAuth);
     this.dataSource = new BillsDataSource(this.billsFirebaseService);
   }
 
@@ -86,18 +91,18 @@ export class OverviewComponent implements OnInit {
   }
 
   logout(): void {
-    this.billsFirebaseService.disconnect();
-    this.authService.logout().then(
-      () => {
-        this.router.navigate(['/login']);
-        this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000 });
-      },
-      (rejected: string) =>
-        this.snackBar.open('Błąd wylogowania z aplikacji:' + rejected, 'Ukryj', { panelClass: 'snackbar-style-error' }));
+    this.store.dispatch(AuthActions.logout());
+  }
+
+  onLogout(loggedIn: boolean): void {
+    if (loggedIn === false) {
+      this.router.navigate(['/login']);
+      this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000 });
+    }
   }
 
   refresh(): void {
-    this.billsFirebaseService.load();
+    this.store.dispatch(Bills.)
   }
 
   formatActiveColor(row: Bill): string {

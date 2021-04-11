@@ -152,7 +152,7 @@ export class BillEditComponent implements OnInit {
         .subscribe((response) => {
           if (response) {
             this.loading.emit(true);
-            this.billsFirebaseService.delete(this.bill).then(() => {
+            this.billsService.delete(this.bill).then(() => {
               this.loading.emit(false);
               this.snackBar.open('Usunięto rachunek.', 'Ukryj', { duration: 3000 });
               this.router.navigate(['/zestawienie']);
