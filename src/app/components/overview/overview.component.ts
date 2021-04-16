@@ -7,12 +7,10 @@ import { Observable } from 'rxjs';
 import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-import { AuthActions, AuthSelectors, BillApiActions } from 'src/app/state';
+import { AuthActions, AuthSelectors, BillActions, BillsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
-import { BillsDataSource } from '../../services/bills.datasource';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { validateBillName } from '../tools/inputs/validators/validators';
-import { AuthService } from './../../services/auth.service';
 import { ConfirmDialogResponse } from './../tools/confirm-dialog/confirm-dialog.component';
 import { TableComponent } from './../tools/table/table.component';
 
@@ -22,7 +20,7 @@ import { TableComponent } from './../tools/table/table.component';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit {
-  dataSource!: BillsDataSource;
+  dataSource$!: Observable<Bill[]>;
   columns = [
     { name: 'name', header: 'Nazwa' },
     { name: 'deadline', header: 'Termin' },
@@ -43,7 +41,7 @@ export class OverviewComponent implements OnInit {
 
   ngOnInit(): void {
     this.auth$ = this.store.select(AuthSelectors.selectAuth);
-    this.dataSource = new BillsDataSource(this.billsFirebaseService);
+    this.dataSource$ = this.store.select(BillsSelectors.selectAll);
   }
 
   onRowClicked(row: Bill): void {
@@ -70,9 +68,7 @@ export class OverviewComponent implements OnInit {
         .subscribe({
           next: (response) => {
             if (response) {
-              this.billsFirebaseService.delete(row)
-                .then(() => this.snackBar.open('Opłacenie rachunku zapisane!', 'Ukryj', { duration: 3000 }),
-                  error => this.snackBar.open('Błąd usuwania rachunku: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' }));
+              this.store.dispatch(BillActions.deleteBill({ billId: row.id }));
             }
           }
         });
@@ -102,7 +98,7 @@ export class OverviewComponent implements OnInit {
   }
 
   refresh(): void {
-    this.store.dispatch(Bills.)
+    this.store.dispatch(BillActions.loadBills());
   }
 
   formatActiveColor(row: Bill): string {
@@ -128,17 +124,8 @@ export class OverviewComponent implements OnInit {
         .subscribe((response: boolean | ConfirmDialogResponse) => {
           if (response) {
             this.loading = true;
-            this.billsFirebaseService.pay(bill, (response as ConfirmDialogResponse).value)
-              .then(() => {
-                this.loading = false;
-                this.snackBar.open('Opłacenie rachunku zapisane!', 'Ukryj', { duration: 3000 });
-              },
-                (error: string) => {
-                  this.loading = false;
-                  this.snackBar.open('Błąd zapisania opłacenia rachunku: ' + error,
-                    'Ukryj', { panelClass: 'snackbar-style-error' });
-                }
-              );
+            const value = (response as ConfirmDialogResponse)?.value;
+            this.store.dispatch(BillActions.payBill({ billId: bill.id, sum: value }));
           }
         });
     }

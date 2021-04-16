@@ -20,15 +20,20 @@ export const loadBills = createAction(
 
 export const updateBill = createAction(
     '[Bills] Update Bill',
-    props<{ pbill: Bill }>()
+    props<{ bill: Bill }>()
 );
 
 export const createBill = createAction(
     '[Bills] Create Bill',
-    props<{ pbill: Bill }>()
+    props<{ bill: Bill }>()
 );
 
 export const deleteBill = createAction(
     '[Bills] Delete Bill',
-    props<{ pbillId: number }>()
+    props<{ billId: number }>()
+);
+
+export const payBill = createAction(
+    '[Bills] Pay Bill',
+    props<{ billId: number, sum: number }>()
 );
