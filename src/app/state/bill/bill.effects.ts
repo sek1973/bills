@@ -22,9 +22,9 @@ export class BillEffects {
         ofType(AuthActions.login),
         mergeMap((userName) => this.authService.login(userName)
           .pipe(
-            map(bills => BillApiActions.loadBillsSuccess({ bills })),
+            map(() => AuthActions.loginSuccess()),
             map(() => this.snackBar.open('Zalogowano do aplikacji!', 'Ukryj', { duration: 3000 }),
-              catchError(error => of(BillApiActions.loadBillsFailure({ error })))
+              catchError(error => of(AuthActions.loginFailure({ error })))
             )
           )
         );

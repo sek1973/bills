@@ -10,7 +10,8 @@ export const loginSuccess = createAction(
 );
 
 export const loginFailure = createAction(
-  '[Authentication] User Login Failure'
+  '[Authentication] User Login Failure',
+  props<{ error: any }>()
 );
 
 export const logout = createAction(
@@ -22,5 +23,6 @@ export const logoutSuccess = createAction(
 );
 
 export const logoutFailure = createAction(
-  '[Authentication] User Logout Failure'
+  '[Authentication] User Logout Failure',
+  props<{ error: any }>()
 );
