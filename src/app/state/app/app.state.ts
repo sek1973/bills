@@ -6,3 +6,10 @@ export interface AppState {
     bills: Bill[];
     error?: string;
 }
+
+export const appInitialState: AppState = {
+    currentBill: -1,
+    loggedIn: false,
+    bills: [],
+    error: undefined
+};
