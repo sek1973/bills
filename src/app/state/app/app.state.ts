@@ -4,4 +4,5 @@ export interface AppState {
     currentBill: number;
     loggedIn: boolean;
     bills: Bill[];
+    error?: string;
 }
