@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-import { AuthActions, AuthSelectors, BillsActions, BillsSelectors } from 'src/app/state';
+import { AuthActions, BillsActions, BillsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { validateBillName } from '../tools/inputs/validators/validators';
@@ -31,8 +31,6 @@ export class OverviewComponent implements OnInit {
   @ViewChild('table')
   table!: TableComponent;
 
-  auth$?: Observable<boolean>;
-
   constructor(
     private store: Store<AppState>,
     private router: Router,
@@ -40,7 +38,6 @@ export class OverviewComponent implements OnInit {
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.auth$ = this.store.select(AuthSelectors.selectAuth);
     this.dataSource$ = this.store.select(BillsSelectors.selectAll);
   }
 

@@ -1,66 +1,45 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, concatMap, map, mergeMap } from 'rxjs/operators';
-import { BillsService } from 'src/app/services/bills.service';
-import { BillApiActions, BillDetailsActions } from '.';
+import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
+import { AuthService } from 'src/app/services/auth.service';
+import { AuthActions } from '../auth';
 
 @Injectable()
-export class BillEffects {
+export class AuthEffects {
 
-  constructor(private actions$: Actions, private billsService: BillsService) { }
+  constructor(
+    private actions$: Actions,
+    private authService: AuthService,
+    private snackBar: MatSnackBar) { }
 
-  loadBills$ = createEffect(() => {
+  login$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillDetailsActions.loadBills),
-        mergeMap(() => this.billsService.getBills()
+        ofType(AuthActions.login),
+        switchMap(userData => this.authService.login(userData.user, userData.password)
           .pipe(
-            map(bills => BillApiActions.loadBillsSuccess({ bills })),
-            catchError(error => of(BillApiActions.loadBillsFailure({ error })))
+            map(() => this.snackBar.open('Zalogowano do aplikacji!', 'Ukryj', { duration: 3000 })),
+            map(() => AuthActions.loginSuccess()),
+            catchError(error => of(AuthActions.loginFailure({ error })))
           )
         )
       );
   });
 
-  updateBill$ = createEffect(() => {
+  logout$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillDetailsActions.updateBill),
-        concatMap(action =>
-          this.billsService.update(action.bill)
-            .pipe(
-              map(bill => BillApiActions.updateBillSuccess({ bill })),
-              catchError(error => of(BillApiActions.updateBillFailure({ error })))
-            )
-        )
-      );
-  });
-
-  createBill$ = createEffect(() => {
-    return this.actions$
-      .pipe(
-        ofType(BillDetailsActions.createBill),
-        concatMap(action =>
-          this.billsService.add(action.bill)
-            .pipe(
-              map(bill => BillApiActions.createBillSuccess({ bill })),
-              catchError(error => of(BillApiActions.createBillFailure({ error })))
-            )
-        )
-      );
-  });
-
-  deleteBill$ = createEffect(() => {
-    return this.actions$
-      .pipe(
-        ofType(BillDetailsActions.deleteBill),
-        mergeMap(action =>
-          this.billsService.delete(action.billId).pipe(
-            map(() => BillApiActions.deleteBillSuccess({ billId: action.billId })),
-            catchError(error => of(BillApiActions.deleteBillFailure({ error })))
+        ofType(AuthActions.logout),
+        concatMap(() => this.authService.logout()
+          .pipe(
+            map(() => this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000 })),
+            map(() => AuthActions.logoutSuccess()),
+            catchError(error => of(AuthActions.logoutFailure({ error })))
           )
         )
       );
   });
+
 }
