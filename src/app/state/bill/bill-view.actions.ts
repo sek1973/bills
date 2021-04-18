@@ -2,42 +2,42 @@ import { createAction, props } from '@ngrx/store';
 import { Bill } from 'src/app/model';
 
 export const toggleBillCode = createAction(
-  '[Bill Details] Toggle Bill Code'
+  '[Bill View] Toggle Bill Code'
 );
 
 export const setCurrentBill = createAction(
-  '[Bill Details] Set Current Bill',
+  '[Bill View] Set Current Bill',
   props<{ billId: number }>()
 );
 
 export const clearCurrentBill = createAction(
-  '[Bill Details] Clear Current Bill'
+  '[Bill View] Clear Current Bill'
 );
 
 export const initializeCurrentBill = createAction(
-  '[Bill Details] Initialize Current Bill'
+  '[Bill View] Initialize Current Bill'
 );
 
 export const loadBills = createAction(
-  '[Bill Details] Load'
+  '[Bill View] Load'
 );
 
 export const updateBill = createAction(
-  '[Bill Details] Update Bill',
+  '[Bill View] Update Bill',
   props<{ bill: Bill }>()
 );
 
 export const createBill = createAction(
-  '[Bill Details] Create Bill',
+  '[Bill View] Create Bill',
   props<{ bill: Bill }>()
 );
 
 export const deleteBill = createAction(
-  '[Bill Details] Delete Bill',
+  '[Bill View] Delete Bill',
   props<{ billId: number }>()
 );
 
 export const payBill = createAction(
-  '[Bills Details] Pay Bill',
+  '[Bill View] Pay Bill',
   props<{ billId: number, sum: number }>()
 );

@@ -5,6 +5,22 @@ export const login = createAction(
   props<{ user: string }>()
 );
 
+export const loginSuccess = createAction(
+  '[Authentication] User Login Success'
+);
+
+export const loginFailure = createAction(
+  '[Authentication] User Login Failure'
+);
+
 export const logout = createAction(
   '[Authentication] Logout'
+);
+
+export const logoutSuccess = createAction(
+  '[Authentication] User Logout Success'
+);
+
+export const logoutFailure = createAction(
+  '[Authentication] User Logout Failure'
 );

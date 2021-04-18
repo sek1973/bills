@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-import { AuthActions, AuthSelectors, BillActions, BillsSelectors } from 'src/app/state';
+import { AuthActions, AuthSelectors, BillsActions, BillsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { validateBillName } from '../tools/inputs/validators/validators';
@@ -68,7 +68,7 @@ export class OverviewComponent implements OnInit {
         .subscribe({
           next: (response) => {
             if (response) {
-              this.store.dispatch(BillActions.deleteBill({ billId: row.id }));
+              this.store.dispatch(BillsActions.deleteBill({ billId: row.id }));
             }
           }
         });
@@ -98,7 +98,7 @@ export class OverviewComponent implements OnInit {
   }
 
   refresh(): void {
-    this.store.dispatch(BillActions.loadBills());
+    this.store.dispatch(BillsActions.loadBills());
   }
 
   formatActiveColor(row: Bill): string {
@@ -125,7 +125,7 @@ export class OverviewComponent implements OnInit {
           if (response) {
             this.loading = true;
             const value = (response as ConfirmDialogResponse)?.value;
-            this.store.dispatch(BillActions.payBill({ billId: bill.id, sum: value }));
+            this.store.dispatch(BillsActions.payBill({ billId: bill.id, sum: value }));
           }
         });
     }

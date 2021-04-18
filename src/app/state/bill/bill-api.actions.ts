@@ -7,7 +7,7 @@ export const loadBillsSuccess = createAction(
 );
 
 export const loadBillsFailure = createAction(
-  '[Bill API] Load Fail',
+  '[Bill API] Load Failure',
   props<{ error: string }>()
 );
 
@@ -17,7 +17,7 @@ export const updateBillSuccess = createAction(
 );
 
 export const updateBillFailure = createAction(
-  '[Bill API] Update Bill Fail',
+  '[Bill API] Update Bill Failure',
   props<{ error: string }>()
 );
 
@@ -27,7 +27,7 @@ export const createBillSuccess = createAction(
 );
 
 export const createBillFailure = createAction(
-  '[Bill API] Create Bill Fail',
+  '[Bill API] Create Bill Failure',
   props<{ error: string }>()
 );
 
@@ -37,6 +37,6 @@ export const deleteBillSuccess = createAction(
 );
 
 export const deleteBillFailure = createAction(
-  '[Bill API] Delete Bill Fail',
+  '[Bill API] Delete Bill Failure',
   props<{ error: string }>()
 );
