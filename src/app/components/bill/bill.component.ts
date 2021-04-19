@@ -22,7 +22,8 @@ export class BillComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private store: Store) {
-    const bill = this.store.select(BillsSelectors.selectBill);
+    this.subscription = this.store.select(BillsSelectors.selectBill)
+      .subscribe(bill => this.bill = bill);
   }
 
   ngOnInit(): void {
