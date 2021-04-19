@@ -1,12 +1,12 @@
 
 import { MatTableDataSource } from '@angular/material/table';
-import { Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 
-export abstract class TableDataSource<T> extends MatTableDataSource<T> {
+export class TableDataSource<T> extends MatTableDataSource<T> {
   protected subscription = Subscription.EMPTY;
   public loading$: Observable<boolean> = of(false);
 
-  connect() {
+  connect(): BehaviorSubject<T[]> {
     return super.connect();
   }
 

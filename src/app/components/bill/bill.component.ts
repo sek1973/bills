@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { BillDetailsActions, BillsSelectors } from 'src/app/state';
+import { AppState } from 'src/app/state/app/app.state';
 import { Bill } from './../../model/bill';
 
 @Component({
@@ -21,7 +22,7 @@ export class BillComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private store: Store) {
+    private store: Store<AppState>) {
     this.subscription = this.store.select(BillsSelectors.selectBill)
       .subscribe(bill => this.bill = bill);
   }

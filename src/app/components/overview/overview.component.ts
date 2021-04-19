@@ -1,14 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { AuthActions, BillsActions, BillsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
+import { TableDataSource } from '../tools';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { validateBillName } from '../tools/inputs/validators/validators';
 import { ConfirmDialogResponse } from './../tools/confirm-dialog/confirm-dialog.component';
@@ -19,14 +20,15 @@ import { TableComponent } from './../tools/table/table.component';
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
 })
-export class OverviewComponent implements OnInit {
-  dataSource$!: Observable<Bill[]>;
+export class OverviewComponent implements OnInit, OnDestroy {
+  dataSource!: TableDataSource<Bill>;
   columns = [
     { name: 'name', header: 'Nazwa' },
     { name: 'deadline', header: 'Termin' },
     { name: 'sum', header: 'Kwota' }
   ];
   loading = false;
+  private dataSubscription = Subscription.EMPTY;
 
   @ViewChild('table')
   table!: TableComponent;
@@ -38,7 +40,21 @@ export class OverviewComponent implements OnInit {
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.dataSource$ = this.store.select(BillsSelectors.selectAll);
+    this.dataSubscription = this.store
+      .select(BillsSelectors.selectAll)
+      .subscribe({
+        next: bills => {
+          if (this.dataSource) {
+            this.dataSource.data = bills;
+          } else {
+            this.dataSource = new TableDataSource(bills);
+          }
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.dataSubscription.unsubscribe();
   }
 
   onRowClicked(row: Bill): void {
