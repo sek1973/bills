@@ -2,9 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Bill } from 'src/app/model/bill';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
+import { BillsActions, BillsSelectors } from 'src/app/state';
+import { AppState } from 'src/app/state/app/app.state';
 import { BillsService } from '../../../services/bills.service';
 import { ConfirmDialogResponse } from '../../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../../tools/confirm-dialog/confirm-dialog.model';
@@ -22,15 +25,7 @@ import { SelectItem } from './../../tools/inputs/input-select/input-select.compo
   styleUrls: ['./bill-edit.component.scss']
 })
 export class BillEditComponent implements OnInit {
-
-  private _bill!: Bill;
-  @Input() set bill(val: Bill) {
-    this._bill = val;
-    Promise.resolve().then(() => this.loadBill());
-  }
-  get bill(): Bill {
-    return this._bill;
-  }
+  bill!: Bill;
   @Input() newBill: boolean = false;
   private _editMode = false;
   @Input() set editMode(val: boolean) {
@@ -44,7 +39,8 @@ export class BillEditComponent implements OnInit {
 
   unitEnumItems: SelectItem<Unit>[] = [];
 
-  private subscription = Subscription.EMPTY;
+  private billSubscription = Subscription.EMPTY;
+  private billsSubscription = Subscription.EMPTY;
 
   form: FormGroup = new FormGroup({
     uid: new FormControl(),
@@ -64,7 +60,7 @@ export class BillEditComponent implements OnInit {
   });
 
   constructor(
-    private billsService: BillsService,
+    private store: Store<AppState>,
     private confirmationService: ConfirmationService,
     private router: Router,
     private route: ActivatedRoute,
@@ -74,33 +70,39 @@ export class BillEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.init();
   }
 
-  private loadBill(): void {
-    if (this.bill) {
-      this.form.patchValue({
-        uid: this.bill.uid,
-        id: this.bill.id,
-        name: this.bill.name,
-        description: this.bill.description,
-        active: this.bill.active,
-        deadline: this.bill.deadline,
-        repeat: this.bill.repeat,
-        unit: this.bill.unit,
-        reminder: this.bill.reminder,
-        sum: this.bill.sum,
-        share: this.bill.share,
-        url: this.bill.url,
-        login: this.bill.login,
-        password: this.bill.password
-      });
-    }
-    this.setEditStatus(this.form.status);
-    this.subscription.unsubscribe();
-    this.subscription = this.billsFirebaseService.billsObservable.subscribe(bills => {
-      const billsNames = bills.map(bill => bill.name).filter(name => name !== this.bill.name);
-      this.form.get('name')?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
+  private loadBill(bill?: Bill): void {
+    this.bill = bill ? bill : new Bill();
+    this.form.patchValue({
+      id: this.bill.id,
+      name: this.bill.name,
+      description: this.bill.description,
+      active: this.bill.active,
+      deadline: this.bill.deadline,
+      repeat: this.bill.repeat,
+      unit: this.bill.unit,
+      reminder: this.bill.reminder,
+      sum: this.bill.sum,
+      share: this.bill.share,
+      url: this.bill.url,
+      login: this.bill.login,
+      password: this.bill.password
     });
+  }
+
+  private init(): void {
+    this.setEditStatus(this.form.status);
+    this.billSubscription.unsubscribe();
+    this.billSubscription = this.store.select(BillsSelectors.selectBill)
+      .subscribe(bill => this.loadBill(bill));
+    this.billsSubscription.unsubscribe();
+    this.billsSubscription = this.store.select(BillsSelectors.selectAll)
+      .subscribe(bills => {
+        const billsNames = bills.map(b => b.name);
+        this.form.get('name')?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
+      });
     if (this.editMode) { this.form.enable(); } else { this.form.disable(); }
   }
 
@@ -117,26 +119,20 @@ export class BillEditComponent implements OnInit {
         ConfirmDialogInputType.InputTypeCurrency, this.bill.sum, [Validators.required], 'Kwota', 'Kwota')
       .subscribe((response) => {
         if (response) {
-          this.loading.emit(true);
-          this.billsFirebaseService.pay(this.bill, Number((response as ConfirmDialogResponse).value))
-            .then(() => {
-              this.loading.emit(false);
-              this.snackBar.open('Opłacenie rachunku zapisane!', 'Ukryj', { duration: 3000 });
-            },
-              (error: string) => this.snackBar.open('Błąd zapisania opłacenia rachunku: ' + error,
-                'Ukryj', { panelClass: 'snackbar-style-error' })
-            );
+          this.store.dispatch(BillsActions.payBill({
+            billId: this.bill.id,
+            sum: Number((response as ConfirmDialogResponse).value)
+          }));
         }
       });
   }
 
   saveBill(): void {
-    this.loading.emit(true);
     const bill = this.form.value;
-    if (bill.uid) {
-      this.setBill(bill);
+    if (this.newBill) {
+      this.store.dispatch(BillsActions.createBill({ bill }));
     } else {
-      this.addBill(bill);
+      this.store.dispatch(BillsActions.updateBill({ bill }));
     }
   }
 
@@ -151,13 +147,7 @@ export class BillEditComponent implements OnInit {
           'Nazwa rachunku', 'Nazwa rachunku')
         .subscribe((response) => {
           if (response) {
-            this.loading.emit(true);
-            this.billsService.delete(this.bill).then(() => {
-              this.loading.emit(false);
-              this.snackBar.open('Usunięto rachunek.', 'Ukryj', { duration: 3000 });
-              this.router.navigate(['/zestawienie']);
-            },
-              error => this.snackBar.open('Błąd usuwania rachunku: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' }));
+            this.store.dispatch(BillsActions.deleteBill({ billId: this.bill.id }));
           }
         });
     }
@@ -170,32 +160,6 @@ export class BillEditComponent implements OnInit {
       this.editMode = false;
       this.loadBill();
     }
-  }
-
-  private setBill(bill: Bill): void {
-    this.billsFirebaseService.update(bill)
-      .then(() => {
-        this.editMode = false;
-        this.loading.emit(false);
-        this.snackBar.open('Dane zapisane!', 'Ukryj', { duration: 3000 });
-      })
-      .catch((error) => {
-        this.loading.emit(false);
-        this.snackBar.open('Błąd zapisu danych: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
-      });
-  }
-
-  private addBill(bill: Bill): void {
-    this.billsFirebaseService.add(bill)
-      .then((ref) => {
-        this.loading.emit(false);
-        this.snackBar.open('Dodano rachunek!', 'Ukryj', { duration: 3000 });
-        this.router.navigate([bill.id], { relativeTo: this.route });
-      })
-      .catch((error) => {
-        this.loading.emit(false);
-        this.snackBar.open('Błąd zapisu danych: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
-      });
   }
 
   getErrorMessage(...path: string[]): string {
