@@ -40,3 +40,13 @@ export const deleteBillFailure = createAction(
   '[Bill API] Delete Bill Failure',
   props<{ error: string }>()
 );
+
+export const payBillSuccess = createAction(
+  '[Bill API] Pay Bill Success',
+  props<{ billId: number }>()
+);
+
+export const payBillFailure = createAction(
+  '[Bill API] Pay Bill Failure',
+  props<{ error: string }>()
+);

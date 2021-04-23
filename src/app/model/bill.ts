@@ -2,7 +2,7 @@ import { FieldDescription } from './field-description';
 import { Unit } from './unit';
 
 export class Bill {
-  id!: number;
+  id: number;
   lp?: number;
   name: string;
   description?: string;
@@ -18,6 +18,7 @@ export class Bill {
   reminder?: Date;
 
   constructor() {
+    this.id = -1;
     this.name = 'Nowy rachunek';
     this.active = true;
     this.sum = 0;

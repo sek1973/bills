@@ -113,18 +113,7 @@ export class BillEditComponent implements OnInit {
   }
 
   payBill(): void {
-    this.confirmationService
-      .confirm('Rachunek opłacony',
-        'Podaj kwotę do zapłacenia (udział zostanie wyliczony automatycznie):', 'Anuluj', 'OK',
-        ConfirmDialogInputType.InputTypeCurrency, this.bill.sum, [Validators.required], 'Kwota', 'Kwota')
-      .subscribe((response) => {
-        if (response) {
-          this.store.dispatch(BillsActions.payBill({
-            billId: this.bill.id,
-            sum: Number((response as ConfirmDialogResponse).value)
-          }));
-        }
-      });
+    this.store.dispatch(BillsActions.payBill({ bill: this.bill }));
   }
 
   saveBill(): void {
@@ -137,20 +126,7 @@ export class BillEditComponent implements OnInit {
   }
 
   deleteBill(): void {
-    if (!this.newBill) {
-      this.confirmationService
-        .confirm('Usuń rachunek',
-          'Czy na pewno chcesz usunąć bieżący rachunek wraz z historią płatności? Operacji nie będzie można cofnąć! ' +
-          'Aby potwierdzić podaj nazwę rachunku.', 'Nie', 'Tak',
-          ConfirmDialogInputType.InputTypeText, undefined,
-          [Validators.required, validateBillName(this.bill.name)],
-          'Nazwa rachunku', 'Nazwa rachunku')
-        .subscribe((response) => {
-          if (response) {
-            this.store.dispatch(BillsActions.deleteBill({ billId: this.bill.id }));
-          }
-        });
-    }
+    this.store.dispatch(BillsActions.deleteBill({ bill: this.bill }));
   }
 
   cancel(): void {

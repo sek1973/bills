@@ -30,10 +30,10 @@ export const createBill = createAction(
 
 export const deleteBill = createAction(
     '[Bills] Delete Bill',
-    props<{ billId: number }>()
+    props<{ bill: Bill }>()
 );
 
 export const payBill = createAction(
     '[Bills] Pay Bill',
-    props<{ billId: number, sum: number }>()
+    props<{ bill: Bill }>()
 );
