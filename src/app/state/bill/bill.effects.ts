@@ -7,7 +7,7 @@ import { ConfirmDialogResponse, validateBillName } from 'src/app/components';
 import { ConfirmDialogInputType } from 'src/app/components/tools/confirm-dialog/confirm-dialog.model';
 import { BillsService } from 'src/app/services/bills.service';
 import { ConfirmationService } from 'src/app/services/confirmation.service';
-import { BillApiActions, BillDetailsActions } from '.';
+import { BillApiActions, BillDetailsActions, BillsActions } from '.';
 
 @Injectable()
 export class BillEffects {
@@ -20,7 +20,7 @@ export class BillEffects {
   loadBills$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillDetailsActions.loadBills),
+        ofType(BillsActions.loadBills, BillDetailsActions.loadBills),
         mergeMap(() => this.billsService.load()
           .pipe(
             map(bills => BillApiActions.loadBillsSuccess({ bills })),
@@ -33,7 +33,7 @@ export class BillEffects {
   updateBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillDetailsActions.updateBill),
+        ofType(BillsActions.updateBill, BillDetailsActions.updateBill),
         concatMap(action =>
           this.billsService.update(action.bill)
             .pipe(
@@ -47,7 +47,7 @@ export class BillEffects {
   createBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillDetailsActions.createBill),
+        ofType(BillsActions.createBill, BillDetailsActions.createBill),
         concatMap(action =>
           this.billsService.add(action.bill)
             .pipe(
@@ -61,7 +61,7 @@ export class BillEffects {
   deleteBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillDetailsActions.deleteBill),
+        ofType(BillsActions.deleteBill, BillDetailsActions.deleteBill),
         filter(action => action.bill.id >= 0),
         mergeMap(action => this.confirmationService
           .confirm('Usuń rachunek',
@@ -83,7 +83,7 @@ export class BillEffects {
   payBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillDetailsActions.payBill),
+        ofType(BillsActions.deleteBill, BillDetailsActions.payBill),
         filter(action => action.bill.id >= 0),
         mergeMap(action => this.confirmationService
           .confirm('Rachunek opłacony',

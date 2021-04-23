@@ -1,18 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
-import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { AuthActions, BillsActions, BillsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
 import { TableDataSource } from '../tools';
-import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
-import { validateBillName } from '../tools/inputs/validators/validators';
-import { ConfirmDialogResponse } from './../tools/confirm-dialog/confirm-dialog.component';
 import { TableComponent } from './../tools/table/table.component';
 
 @Component({
@@ -36,7 +31,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<AppState>,
     private router: Router,
-    private confirmationService: ConfirmationService,
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
@@ -73,18 +67,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   deleteBill(): void {
     const row = this.table.activeRow as Bill;
     if (row) {
-      this.confirmationService
-        .confirm('Usuń rachunek',
-          'Czy na pewno chcesz usunąć bieżący rachunek wraz z historią płatności? Operacji nie będzie można cofnąć! ' +
-          'Aby potwierdzić podaj nazwę rachunku.', 'Nie', 'Tak',
-          ConfirmDialogInputType.InputTypeText, undefined, [Validators.required, validateBillName(row.name)], 'Nazwa rachunku', 'Nazwa rachunku')
-        .subscribe({
-          next: (response) => {
-            if (response) {
-              this.store.dispatch(BillsActions.deleteBill({ billId: row.id }));
-            }
-          }
-        });
+      this.store.dispatch(BillsActions.deleteBill({ bill: row }));
     }
   }
 
@@ -130,17 +113,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   payBill(): void {
     if (this.table.activeRow) {
       const bill = this.table.activeRow;
-      this.confirmationService
-        .confirm('Rachunek opłacony',
-          'Podaj kwotę jaka została zapłacona:', 'Anuluj', 'OK',
-          ConfirmDialogInputType.InputTypeCurrency, bill.sum * bill.share, [Validators.required], 'Kwota', 'Kwota')
-        .subscribe((response: boolean | ConfirmDialogResponse) => {
-          if (response) {
-            this.loading = true;
-            const value = (response as ConfirmDialogResponse)?.value;
-            this.store.dispatch(BillsActions.payBill({ billId: bill.id, sum: value }));
-          }
-        });
+      this.store.dispatch(BillsActions.payBill({ bill: bill.id }));
     }
   }
 
