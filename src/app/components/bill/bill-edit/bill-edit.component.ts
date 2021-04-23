@@ -1,23 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { Bill } from 'src/app/model/bill';
-import { ConfirmationService } from 'src/app/services/confirmation.service';
 import { BillsActions, BillsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
-import { BillsService } from '../../../services/bills.service';
-import { ConfirmDialogResponse } from '../../tools/confirm-dialog/confirm-dialog.component';
-import { ConfirmDialogInputType } from '../../tools/confirm-dialog/confirm-dialog.model';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
 import { unitsToSelectItems } from '../../tools/inputs/input-select/input-select.component';
-import { validateBillName, validateDistinctBillName } from '../../tools/inputs/validators/validators';
+import { validateDistinctBillName } from '../../tools/inputs/validators/validators';
 import { BillDescription } from './../../../model/bill';
 import { Unit } from './../../../model/unit';
 import { SelectItem } from './../../tools/inputs/input-select/input-select.component';
-
 
 @Component({
   selector: 'app-bill-edit',
@@ -61,10 +55,7 @@ export class BillEditComponent implements OnInit {
 
   constructor(
     private store: Store<AppState>,
-    private confirmationService: ConfirmationService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar) {
+    private router: Router) {
     this.form.statusChanges.subscribe({ next: status => this.setEditStatus(status) });
     this.setUnitEnumItems();
   }
