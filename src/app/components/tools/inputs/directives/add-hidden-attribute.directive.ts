@@ -1,11 +1,11 @@
-import { Directive, ElementRef, Renderer2, Input } from '@angular/core';
+import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 
 @Directive({
   selector: '[appAddHiddenAttribute]'
 })
 export class AddHiddenAttributeDirective {
 
-  private _hidden: boolean;
+  private _hidden: boolean = false;
   @Input('appAddHiddenAttribute') set hidden(val: boolean) {
     this._hidden = val;
     if (this.hidden) {

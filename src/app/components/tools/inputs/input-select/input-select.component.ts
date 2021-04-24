@@ -11,7 +11,7 @@ export interface SelectItem<T> {
 export function unitsToSelectItems(): SelectItem<Unit>[] {
   const result: SelectItem<Unit>[] =
     Array.from(UnitDescription.keys())
-      .map(key => ({ value: key, text: UnitDescription.get(key) }));
+      .map(key => ({ value: key, text: UnitDescription.get(key) || '' }));
   return result;
 }
 
@@ -22,11 +22,11 @@ export function unitsToSelectItems(): SelectItem<Unit>[] {
 })
 export class InputSelectComponent extends InputBaseComponent implements OnInit {
 
-  @Input() selectItems: SelectItem<Unit>[];
+  @Input() selectItems: SelectItem<Unit>[] = [];
 
   constructor() { super(); }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

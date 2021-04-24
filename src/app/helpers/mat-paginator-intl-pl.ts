@@ -1,5 +1,5 @@
-import { MatPaginatorIntl } from '@angular/material';
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @Injectable()
 export class MatPaginatorIntlPL extends MatPaginatorIntl {
@@ -7,7 +7,7 @@ export class MatPaginatorIntlPL extends MatPaginatorIntl {
   nextPageLabel = 'Następna strona';
   previousPageLabel = 'Poprzednia strona';
 
-  getRangeLabel = function (page, pageSize, length) {
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
     if (length === 0 || pageSize === 0) {
       return '0 z ' + length;
     }

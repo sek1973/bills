@@ -18,13 +18,13 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
   styleUrls: ['./payments.component.scss'],
 })
 export class PaymentsComponent implements OnInit {
-  private _builUid!: string;
-  @Input() set billUid(val: string) {
-    this._builUid = val;
+  private _builId!: string;
+  @Input() set billId(val: string) {
+    this._builId = val;
     this.setTableDataSource();
   }
-  get billUid(): string {
-    return this._builUid;
+  get billId(): string {
+    return this._builId;
   }
   @ViewChild('table', { read: TableComponent })
   table!: TableComponent;
@@ -50,7 +50,7 @@ export class PaymentsComponent implements OnInit {
   ngOnInit(): void { }
 
   private setTableDataSource(): void {
-    this.dataSource = new PaymentsDataSource(this.paymentsFirebaseService, this.billUid);
+    this.dataSource = new PaymentsDataSource(this.paymentsFirebaseService, this.billId);
     this.dataSource.load();
   }
 
@@ -79,7 +79,7 @@ export class PaymentsComponent implements OnInit {
   private openDialog(payment?: Payment): void {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       width: '500px',
-      data: { payment, billUid: this.billUid }
+      data: { payment, billUid: this.billId }
     });
 
     dialogRef.afterClosed().subscribe();
@@ -91,7 +91,7 @@ export class PaymentsComponent implements OnInit {
         .confirm('Usuń zrealizowaną płatność', 'Czy na pewno chcesz usunąć tę płatność z historii?', 'Nie', 'Tak')
         .subscribe((response) => {
           if (response) {
-            this.paymentsFirebaseService.delete(this.table.activeRow, this.billUid).then(
+            this.paymentsFirebaseService.delete(this.table.activeRow, this.billId).then(
               () => this.snackBar.open('Usunięto płatność.', 'Ukryj', { duration: 3000 }),
               error => this.snackBar.open('Błąd usuwania płatności: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' }));
           }
@@ -117,7 +117,7 @@ export class PaymentsComponent implements OnInit {
             this.loading.emit(false);
             this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { panelClass: 'snackbar-style-error' });
           } else {
-            this.paymentsFirebaseService.importPayments(data, this.billUid).then(() => {
+            this.paymentsFirebaseService.importPayments(data, this.billId).then(() => {
               this.loading.emit(false);
               this.snackBar.open('Dane zaimportowane!', 'Ukryj', { duration: 3000 });
             },

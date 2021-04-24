@@ -18,18 +18,17 @@
   </div>
 
   <app-bill-edit class="bill-details"
-                 [bill]="bill"
                  [editMode]="editMode"
                  [newBill]="newBill"
                  (loading)="onLoading($event)"></app-bill-edit>
 
   <app-schedules *ngIf="!newBill"
                  class="bill-schedules"
-                 [billUid]="bill.uid"></app-schedules>
+                 [billId]="bill?.id"></app-schedules>
 
   <app-payments *ngIf="!newBill"
                 class="bill-payments"
-                [billUid]="bill.uid"
+                [billId]="bill?.id"
                 (loading)="onLoading($event)"></app-payments>
 </div>
 

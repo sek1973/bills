@@ -77,7 +77,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  @ViewChild('filterInput') filterInput;
+  @ViewChild('filterInput') filterInput!: HTMLElement;
   cellTemplates: Map<string, TemplateRef<any>> = new Map<string, TemplateRef<any>>();
   @ContentChildren(TableCellDirective) set dataTableCellDirectives(val: QueryList<TableCellDirective>) {
     this.cellTemplates = new Map<string, TemplateRef<any>>();
@@ -86,15 +86,15 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  @ContentChild('tableTitleTemplate') tableTitleTemplate: TemplateRef<Component>;
-  @ContentChild('expandedRowTemplate') expandedRowTemplate: TemplateRef<Component>;
-  @ContentChild('middleToolbarPanelTemplate') middleToolbarPanelTemplate: TemplateRef<Component>;
-  @ContentChild('rightToolbarPanelTemplate') rightToolbarPanelTemplate: TemplateRef<Component>;
+  @ContentChild('tableTitleTemplate') tableTitleTemplate?: TemplateRef<Component>;
+  @ContentChild('expandedRowTemplate') expandedRowTemplate?: TemplateRef<Component>;
+  @ContentChild('middleToolbarPanelTemplate') middleToolbarPanelTemplate?: TemplateRef<Component>;
+  @ContentChild('rightToolbarPanelTemplate') rightToolbarPanelTemplate?: TemplateRef<Component>;
 
-  @Input() sortActive: string;
-  @Input() sortDirection: SortDirection;
+  @Input() sortActive?: string;
+  @Input() sortDirection?: SortDirection;
 
-  private _dataSource: TableDataSource<any>;
+  private _dataSource!: TableDataSource<any>;
   @Input() set dataSource(value: TableDataSource<any>) {
     if (Array.isArray(value)) {
       throw new Error('Value should be TableDataSource<any>.');
@@ -125,7 +125,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() canEdit = false;
   @Input() canPaste = false;
 
-  @Input() tableTitle: string;
+  @Input() tableTitle: string = '';
   @Input() filterKeyDelayMs = 500;
   @Input() expansionPanel = false;
   @Input() hideHeader = false;
@@ -151,37 +151,37 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this._columnsDefinition) {
       return this._columnsDefinition.filter((element) => !element.hidden).map((element) => element.name);
     } else {
-      return undefined;
+      return [];
     }
   }
 
   public get dataColumns(): TableColumn[] {
     if (this._columnsDefinition) {
-      return this._columnsDefinition.filter((element) => {
-        if (!element.hidden && element.name !== '_expand') { return true; }
+      return this._columnsDefinition.filter(element => {
+        return (!element.hidden && element.name !== '_expand');
       });
     } else {
-      return undefined;
+      return [];
     }
   }
 
-  public get addButtonVisible() {
+  public get addButtonVisible(): boolean {
     return this.editable && this.showAddButton;
   }
 
-  public get editButtonVisible() {
+  public get editButtonVisible(): boolean {
     return this.editable && this.showEditButton;
   }
 
-  public get removeButtonVisible() {
+  public get removeButtonVisible(): boolean {
     return this.editable && this.showRemoveButton;
   }
 
-  public get pasteButtonVisible() {
+  public get pasteButtonVisible(): boolean {
     return this.editable && this.showPasteButton;
   }
 
-  public get menuVisible() {
+  public get menuVisible(): boolean {
     return this.addButtonVisible
       || this.editButtonVisible
       || this.removeButtonVisible
@@ -194,9 +194,9 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataReady = false;
   }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  private initDataSource() {
+  private initDataSource(): void {
     this.loadingSubscription = this.dataSource.loading$.subscribe(val => {
       if (val === false && this.table) {
         this.activeRow = undefined;
@@ -213,7 +213,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataSource.sortingDataAccessor = (data, header) => data[header];
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     setTimeout(() => {
       this.initDataSource();
     });

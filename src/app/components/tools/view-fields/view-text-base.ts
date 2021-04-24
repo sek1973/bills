@@ -1,7 +1,7 @@
-import { Input, OnInit, PipeTransform, Directive } from '@angular/core';
+import { Directive, Input, OnInit } from '@angular/core';
 import { getSafe } from 'src/app/helpers';
-
 import { DescriptionProvider } from '../inputs/input-component-base';
+
 
 export interface ValueProvider {
   getValue(...path: string[]): any;
@@ -13,11 +13,11 @@ export interface LabelProvider {
 
 @Directive()
 export class ViewFieldComponentBase implements OnInit {
-  @Input() valueProvider: ValueProvider;
-  @Input() descriptionProvider: DescriptionProvider;
+  @Input() valueProvider!: ValueProvider;
+  @Input() descriptionProvider!: DescriptionProvider;
   @Input() autoHide = true;
 
-  private _path: string[];
+  private _path!: string[];
   @Input()
   set path(path: string[]) {
     this._path = path;
@@ -31,8 +31,8 @@ export class ViewFieldComponentBase implements OnInit {
   get path(): string[] {
     return this._path;
   }
-  private _childPath: string;
-  get childAttr() {
+  private _childPath?: string;
+  get childAttr(): string | undefined {
     return this._childPath;
   }
   get value(): any {
@@ -41,12 +41,12 @@ export class ViewFieldComponentBase implements OnInit {
   get labelText(): any {
     return getSafe(() => this.descriptionProvider.getDescriptionObj(...this.path).labelText) || '';
   }
-  get hasValue() {
+  get hasValue(): boolean {
     return (this.value === null || this.value === undefined || this.value === '') ? false : true;
   }
-  id: string;
+  id: string = '';
 
   constructor() { }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 }
