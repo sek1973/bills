@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
+import { currencyToNumber, stringToDate } from '../../helpers';
+import { Payment } from '../../model/payment';
 
-import { currencyToNumber, stringToDate } from '../helpers';
-import { Payment } from '../model/payment';
 @Injectable({
   providedIn: 'root',
 })
@@ -12,17 +12,7 @@ export abstract class PaymentsService {
 
   abstract load(billId: string): Observable<Payment[]>;
 
-  createPaymentData(payment: any): Payment {
-    const result: Payment = {
-      deadline: payment.deadline || new Date(),
-      paiddate: payment.paiddate || undefined,
-      sum: payment.sum,
-      share: payment.share,
-      remarks: payment.remarks || ''
-    };
-    if (payment.uid) { result.uid = payment.uid; }
-    return result;
-  }
+  abstract createPaymentData(payment: Payment): Payment;
 
   abstract add(payment: Payment, billId: number): Observable<number>;
 
@@ -56,8 +46,7 @@ export abstract class PaymentsService {
     const share: number | undefined = currencyToNumber(cells[3]);
     const remarks: string = cells[4];
     if (deadline && paiddate && sum !== undefined && share !== undefined) {
-      const payment: Payment = { deadline, paiddate, sum, share };
-      if (remarks) { payment.remarks = remarks; }
+      const payment: Payment = new Payment(deadline, sum, share, paiddate, remarks);
       return payment;
     }
     return undefined;

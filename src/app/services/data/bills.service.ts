@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
-import { addDays, } from 'src/app/helpers';
-import { Bill } from '../model/bill';
-import { Payment } from '../model/payment';
-import { Schedule } from '../model/schedule';
-import { Unit } from '../model/unit';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { addDays } from 'src/app/helpers';
+import { Bill } from '../../model/bill';
+import { Payment } from '../../model/payment';
+import { Schedule } from '../../model/schedule';
+import { Unit } from '../../model/unit';
 import { PaymentsService } from './payments.service';
 import { SchedulesService } from './schedules.service';
 
@@ -20,14 +20,17 @@ export abstract class BillsService {
 
   abstract load(): Observable<Bill[]>;
 
-  fetchItem(id: number): Observable<Bill | null> {
-    return of(null);
-  }
+  abstract fetchItem(id: number): Observable<Bill | null>;
+
+  abstract getBills(): Bill[];
+
+  abstract fetchBills(): Observable<Bill[]>;
 
   private createBillData(bill: any): Bill {
-    if (bill.id === undefined) {
-      if (this.bills && this.bills.length) {
-        bill.id = Math.max(...this.bills.map(b => b.id ? b.id : 0)) + 1;
+    if (bill.id === -1) {
+      const bills = this.getBills();
+      if (bills && bills.length) {
+        bill.id = Math.max(...bills.map(b => b.id ? b.id : 0)) + 1;
       } else { bill.id = 0; }
     }
     const result: Bill = {
@@ -93,13 +96,7 @@ export abstract class BillsService {
   }
 
   private createPaymentData(bill: Bill, paid: number): Payment {
-    return this.paymentsService.createPaymentData({
-      deadline: bill.deadline,
-      paiddate: new Date(),
-      sum: paid,
-      share: paid * bill.share,
-      remarks: undefined
-    });
+    return new Payment(bill.deadline, paid, paid * bill.share, new Date());
   }
 
   private adjustBillData(billCopy: Bill, schedule?: Schedule): Bill {

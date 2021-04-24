@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-
-import { currencyToNumber, stringToDate } from '../helpers';
-import { Bill } from '../model/bill';
-import { Schedule } from '../model/schedule';
+import { Observable } from 'rxjs';
+import { currencyToNumber, stringToDate } from '../../helpers';
+import { Schedule } from '../../model/schedule';
 
 @Injectable({
   providedIn: 'root',

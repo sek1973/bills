@@ -4,9 +4,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { getSafe, timestampToDate } from 'src/app/helpers';
 import { Payment } from 'src/app/model/payment';
+import { PaymentsService } from '../../../services/data/payments.service';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
 import { PaymentDescription } from './../../../model/payment';
-import { PaymentsService } from '../../../services/payments.service';
 
 
 export interface PaymentDialogData {

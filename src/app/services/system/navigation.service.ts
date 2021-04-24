@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { PreviousUrlService } from './previous-url.service';
+
 
 @Injectable()
 export class NavigationService {

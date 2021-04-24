@@ -1,9 +1,9 @@
-import { PreviousUrlService } from './previous-url.service';
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 import { map } from 'rxjs/operators';
+import { PreviousUrlService } from '../system/previous-url.service';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'

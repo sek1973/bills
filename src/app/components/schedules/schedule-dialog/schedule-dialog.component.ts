@@ -4,10 +4,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { getSafe, timestampToDate } from 'src/app/helpers';
 import { Schedule } from 'src/app/model/schedule';
-import { ConfirmationService } from 'src/app/services/confirmation.service';
+import { ConfirmationService } from 'src/app/services/system/confirmation.service';
+import { SchedulesService } from '../../../services/data/schedules.service';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
 import { ScheduleDescription } from './../../../model/schedule';
-import { SchedulesService } from '../../../services/schedules.service';
 
 
 export interface ScheduleDialogData {

@@ -4,9 +4,9 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { FieldDescription } from 'src/app/model/field-description';
 import { AuthActions } from 'src/app/state';
+import { AuthService } from '../../services/auth/auth.service';
+import { NavigationService } from '../../services/system/navigation.service';
 import { DescriptionProvider } from '../tools/inputs/input-component-base';
-import { AuthService } from './../../services/auth.service';
-import { NavigationService } from './../../services/navigation.service';
 
 
 

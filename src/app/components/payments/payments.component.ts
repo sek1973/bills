@@ -2,12 +2,12 @@ import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } fro
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConfirmationService } from 'src/app/services/confirmation.service';
+import { ConfirmationService } from 'src/app/services/system/confirmation.service';
+import { PaymentsService } from '../../services/data/payments.service';
 import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { Payment } from './../../model/payment';
 import { PaymentsDataSource } from './../../services/payments.datasource';
-import { PaymentsService } from '../../services/payments.service';
 import { TableComponent } from './../tools/table/table.component';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export abstract class AuthService {
+  public abstract authState$: Observable<boolean>;
 
   constructor() { }
 

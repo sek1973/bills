@@ -5,8 +5,8 @@ import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap } from 'rxjs/operators';
 import { ConfirmDialogResponse, validateBillName } from 'src/app/components';
 import { ConfirmDialogInputType } from 'src/app/components/tools/confirm-dialog/confirm-dialog.model';
-import { BillsService } from 'src/app/services/bills.service';
-import { ConfirmationService } from 'src/app/services/confirmation.service';
+import { BillsService } from 'src/app/services/data/bills.service';
+import { ConfirmationService } from 'src/app/services/system/confirmation.service';
 import { BillApiActions, BillDetailsActions, BillsActions } from '.';
 
 @Injectable()

@@ -2,31 +2,22 @@ import { FieldDescription } from './field-description';
 import { Unit } from './unit';
 
 export class Bill {
-  id: number;
+  id: number = -1;
   lp?: number;
-  name: string;
+  name: string = 'Nowy rachunek';
   description?: string;
-  active: boolean;
+  active: boolean = true;
   url?: string;
   login?: string;
   password?: string;
-  sum: number;
-  share: number;
-  deadline: Date;
-  repeat: number;
-  unit: Unit;
+  sum: number = 0;
+  share: number = 1;
+  deadline: Date = new Date();
+  repeat: number = 1;
+  unit: Unit = Unit.Month;
   reminder?: Date;
 
-  constructor() {
-    this.id = -1;
-    this.name = 'Nowy rachunek';
-    this.active = true;
-    this.sum = 0;
-    this.share = 1;
-    this.deadline = new Date();
-    this.repeat = 1;
-    this.unit = Unit.Month;
-  }
+  constructor() { }
 }
 
 export const BillDescription = new Map<string, FieldDescription>([

@@ -2,17 +2,15 @@ import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } fro
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store } from '@ngrx/store';
+import { of } from 'rxjs';
 import { Schedule } from 'src/app/model/schedule';
-import { ConfirmationService } from 'src/app/services/confirmation.service';
+import { ConfirmationService } from 'src/app/services/system/confirmation.service';
 import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { SchedulesDataSource } from './../../services/schedules.datasource';
-import { SchedulesService } from '../../services/schedules.service';
 import { TableComponent } from './../tools/table/table.component';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
-import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { Store } from '@ngrx/store';
 
 
 @Component({
