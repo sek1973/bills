@@ -79,12 +79,17 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   }
 
   saveData(): void {
-    if (this.payment) {
+    const val = this.form.value;
+    this.payment.deadline = val.deadline;
+    this.payment.sum = val.sum;
+    this.payment.share = val.share;
+    this.payment.paiddate = val.paiddate;
+    this.payment.remarks = val.remarks;
+    this.payment.billId = val.billid;
+    if (this.payment.id === -1) {
       this.store.dispatch(PaymentsActions.updatePayment({ payment: this.payment }));
     } else {
-      const val = this.form.value;
-      const payment = new Payment(val.deadline, val.sum, val.share, val.paiddate, val.remarks, val.billid);
-      this.store.dispatch(PaymentsActions.createPayment({ payment }));
+      this.store.dispatch(PaymentsActions.createPayment({ payment: this.payment }));
     }
   }
 

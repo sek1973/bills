@@ -1,10 +1,12 @@
 import { FieldDescription } from './field-description';
 
-export interface Schedule {
-  id?: string;
-  date: Date;
-  sum: number;
-  remarks?: string;
+export class Schedule {
+  id: number = -1;
+
+  constructor(
+    public date: Date,
+    public sum: number = 0,
+    public remarks?: string) { }
 }
 
 export const ScheduleDescription = new Map<string, FieldDescription>([
