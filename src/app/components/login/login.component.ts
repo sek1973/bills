@@ -64,7 +64,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const password = this.loginForm.value.password;
     this.authService.login(user, password).subscribe({
       next: (val: boolean) => {
-        this.store.dispatch(AuthActions.login({ user }));
+        this.store.dispatch(AuthActions.login({ user, password }));
         this.loadingSubject.next(false);
         this.navigationService.goToPreviousPage('/zestawienie');
       },

@@ -8,14 +8,9 @@ export class Payment {
     public sum: number = 0,
     public share: number = 1,
     public paiddate?: Date,
-    public remarks?: string
-  ) {
-    this.deadline = deadline;
-    this.sum = sum;
-    this.share = share;
-    this.paiddate = paiddate;
-    this.remarks = remarks;
-  }
+    public remarks?: string,
+    public billId?: number
+  ) { }
 }
 
 export const PaymentDescription = new Map<string, FieldDescription>([

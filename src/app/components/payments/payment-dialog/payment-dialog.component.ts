@@ -1,16 +1,16 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { getSafe, timestampToDate } from 'src/app/helpers';
+import { Store } from '@ngrx/store';
+import { getSafe } from 'src/app/helpers';
 import { Payment } from 'src/app/model/payment';
-import { PaymentsService } from '../../../services/data/payments.service';
+import { PaymentsActions } from 'src/app/state';
+import { AppState } from 'src/app/state/app/app.state';
 import { DescriptionProvider } from '../../tools/inputs/input-component-base';
 import { PaymentDescription } from './../../../model/payment';
 
-
 export interface PaymentDialogData {
-  billUid: string;
+  billId: string;
   payment?: Payment;
 }
 @Component({
@@ -21,7 +21,7 @@ export interface PaymentDialogData {
 export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
   payment: Payment;
-  billUid: string;
+  billId: number;
   dialogTitle: string;
   dialogMode: 'add' | 'edit' = 'add';
   loading = true;
@@ -33,15 +33,15 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     paiddate: new FormControl(new Date(), Validators.required),
     sum: new FormControl(0, Validators.required),
     share: new FormControl(0, Validators.required),
-    remarks: new FormControl()
+    remarks: new FormControl(),
+    billId: new FormControl() // not visible
   });
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: PaymentDialogData,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
-    private paymentsFirebaseService: PaymentsService,
-    private snackBar: MatSnackBar) {
-    this.billUid = getSafe(() => data.billUid);
+    private store: Store<AppState>) {
+    this.billId = getSafe(() => data.billId);
     this.payment = getSafe(() => data.payment);
     this.dialogTitle = (this.payment ? 'Edytuj' : 'Dodaj') + ' zrealizowaną płatność';
     this.dialogMode = this.payment ? 'edit' : 'add';
@@ -62,9 +62,9 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   private setFormValue(): void {
     if (this.payment) {
       const value = {
-        uid: this.payment.uid,
-        deadline: timestampToDate(this.payment.deadline),
-        paiddate: timestampToDate(this.payment.paiddate),
+        id: this.payment.id,
+        deadline: this.payment.deadline,
+        paiddate: this.payment.paiddate,
         sum: this.payment.sum,
         share: this.payment.share,
         remarks: this.payment.remarks
@@ -79,21 +79,13 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   }
 
   saveData(): void {
-    let request: Promise<any | void>;
-    this.loading = true;
     if (this.payment) {
-      request = this.paymentsFirebaseService.update(this.form.value, this.billUid);
+      this.store.dispatch(PaymentsActions.updatePayment({ payment: this.payment }));
     } else {
-      request = this.paymentsFirebaseService.add(this.form.value, this.billUid);
+      const val = this.form.value;
+      const payment = new Payment(val.deadline, val.sum, val.share, val.paiddate, val.remarks, val.billid);
+      this.store.dispatch(PaymentsActions.createPayment({ payment }));
     }
-    request.then(resp => {
-      this.snackBar.open('Zapisano dane!', 'Ukryj', { duration: 3000 });
-      this.dialogRef.close('saved');
-    },
-      error => {
-        this.snackBar.open('Błąd zapisania danych: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
-        this.loading = false;
-      });
   }
 
   getDescriptionProvider(): DescriptionProvider {
