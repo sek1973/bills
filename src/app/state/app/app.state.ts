@@ -1,15 +1,23 @@
-import { Bill } from 'src/app/model';
+import { Bill, Payment, Schedule } from 'src/app/model';
 
 export interface AppState {
-    currentBill: number;
     loggedIn: boolean;
     bills: Bill[];
+    currentBill: number;
+    payments: Payment[];
+    currentPayment: number;
+    schedules: Schedule[];
+    currentSchedule: number;
     error?: string;
 }
 
 export const appInitialState: AppState = {
-    currentBill: -1,
     loggedIn: false,
     bills: [],
+    currentBill: -1,
+    payments: [],
+    currentPayment: -1,
+    schedules: [],
+    currentSchedule: -1,
     error: undefined
 };

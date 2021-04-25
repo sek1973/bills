@@ -1,38 +1,31 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ConfirmationService } from 'src/app/services/system/confirmation.service';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { PaymentsActions, PaymentsSelectors } from 'src/app/state';
+import { AppState } from 'src/app/state/app/app.state';
 import { PaymentsService } from '../../services/data/payments.service';
+import { TableDataSource } from '../tools';
 import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { Payment } from './../../model/payment';
-import { PaymentsDataSource } from './../../services/payments.datasource';
 import { TableComponent } from './../tools/table/table.component';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
-
 
 @Component({
   selector: 'app-payments',
   templateUrl: './payments.component.html',
   styleUrls: ['./payments.component.scss'],
 })
-export class PaymentsComponent implements OnInit {
-  private _builId?: number;
-  @Input() set billId(val: number | undefined) {
-    this._builId = val;
-    this.setTableDataSource();
-  }
-  get billId(): number | undefined {
-    return this._builId;
-  }
+export class PaymentsComponent implements OnInit, OnDestroy {
   @ViewChild('table', { read: TableComponent })
   table!: TableComponent;
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   activeRow: any;
 
-  dataSource?: PaymentsDataSource;
+  dataSource?: TableDataSource<Payment>;
   columns = [
     { name: 'deadline', header: 'Termin' },
     { name: 'paiddate', header: 'Zapłacono' },
@@ -40,18 +33,29 @@ export class PaymentsComponent implements OnInit {
     { name: 'share', header: 'Udział' },
     { name: 'remarks', header: 'Uwagi' }
   ];
+  private dataSubscription = Subscription.EMPTY;
 
   constructor(
     private paymentsFirebaseService: PaymentsService,
     @Inject(MatDialog) public dialog: MatDialog,
-    private confirmationService: ConfirmationService,
-    private snackBar: MatSnackBar) { }
+    private store: Store<AppState>) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.dataSubscription = this.store
+      .select(PaymentsSelectors.selectAll)
+      .subscribe({
+        next: payments => {
+          if (this.dataSource) {
+            this.dataSource.data = payments;
+          } else {
+            this.dataSource = new TableDataSource(payments);
+          }
+        }
+      });
+  }
 
-  private setTableDataSource(): void {
-    this.dataSource = new PaymentsDataSource(this.paymentsFirebaseService, this.billId);
-    this.dataSource.load();
+  ngOnDestroy(): void {
+    this.dataSubscription.unsubscribe();
   }
 
   onRowClicked(row: any): void {
@@ -87,15 +91,7 @@ export class PaymentsComponent implements OnInit {
 
   deletePayment(): void {
     if (this.table.activeRow) {
-      this.confirmationService
-        .confirm('Usuń zrealizowaną płatność', 'Czy na pewno chcesz usunąć tę płatność z historii?', 'Nie', 'Tak')
-        .subscribe((response) => {
-          if (response) {
-            this.paymentsFirebaseService.delete(this.table.activeRow, this.billId).then(
-              () => this.snackBar.open('Usunięto płatność.', 'Ukryj', { duration: 3000 }),
-              error => this.snackBar.open('Błąd usuwania płatności: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' }));
-          }
-        });
+      this.store.dispatch(PaymentsActions.deletePayment({ payment: this.table.activeRow }));
     }
   }
 
