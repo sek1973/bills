@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -7,8 +6,6 @@ import { PaymentsActions, PaymentsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
 import { PaymentsService } from '../../services/data/payments.service';
 import { TableDataSource } from '../tools';
-import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
-import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { Payment } from './../../model/payment';
 import { TableComponent } from './../tools/table/table.component';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
@@ -101,29 +98,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   }
 
   pasteData(): void {
-    this.confirmationService
-      .confirm('Importuj historyczne płatności',
-        'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',
-        ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
-      .subscribe((response) => {
-        if (response) {
-          this.loading.emit(true);
-          const data = (response as ConfirmDialogResponse).value as string;
-          if (!data || data === null || data === undefined || data === '') {
-            this.loading.emit(false);
-            this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { panelClass: 'snackbar-style-error' });
-          } else {
-            this.paymentsFirebaseService.importPayments(data, this.billId).then(() => {
-              this.loading.emit(false);
-              this.snackBar.open('Dane zaimportowane!', 'Ukryj', { duration: 3000 });
-            },
-              error => {
-                this.loading.emit(false);
-                this.snackBar.open('Błąd importu danych: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
-              });
-          }
-        }
-      });
+    this.store.dispatch(PaymentsActions.importPayments({ billId: this.billId }));
   }
 
 }
