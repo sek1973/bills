@@ -18,12 +18,12 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
   styleUrls: ['./payments.component.scss'],
 })
 export class PaymentsComponent implements OnInit {
-  private _builId!: string;
-  @Input() set billId(val: string) {
+  private _builId?: number;
+  @Input() set billId(val: number | undefined) {
     this._builId = val;
     this.setTableDataSource();
   }
-  get billId(): string {
+  get billId(): number | undefined {
     return this._builId;
   }
   @ViewChild('table', { read: TableComponent })
@@ -60,8 +60,8 @@ export class PaymentsComponent implements OnInit {
     }
   }
 
-  getId(row: Payment): string | undefined {
-    return row.uid;
+  getId(row: Payment): number | undefined {
+    return row?.id;
   }
 
   refresh(): void {

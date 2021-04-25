@@ -94,7 +94,7 @@
     </ng-container>
 
     <div>
-      <ng-container [ngTemplateOutlet]="middleToolbarPanelTemplate"
+      <ng-container [ngTemplateOutlet]="middleToolbarPanelTemplate || null"
                     [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow, $loading: isDataSourceLoading()}">
       </ng-container>
     </div>

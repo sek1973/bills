@@ -19,12 +19,12 @@ import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.compo
   styleUrls: ['./schedules.component.scss']
 })
 export class SchedulesComponent implements OnInit {
-  private _billId!: number;
-  @Input() set billId(val: number) {
+  private _billId?: number;
+  @Input() set billId(val: number | undefined) {
     this._billId = val;
     this.setTableDataSource();
   }
-  get billId(): number {
+  get billId(): number | undefined {
     return this._billId;
   }
   @ViewChild('table', { read: TableComponent })
@@ -90,24 +90,24 @@ export class SchedulesComponent implements OnInit {
         .confirm('Usuń planowaną płatność', 'Czy na pewno chcesz usunąć tę płatność?', 'Nie', 'Tak')
         .subscribe(response => {
           if (response) {
-            this.store.dispatch()
+            this.store.dispatch();
             return this.schedulesFirebaseService.delete(this.table.activeRow, this.billId);
           } else { return of(null); }
-        }))
+        });)
       () => this.snackBar.open('Usunięto planowaną płatność.', 'Ukryj', { duration: 3000 }),
-        error => this.snackBar.open('Błąd usuwania planowanej płatności: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' })
-            );
+        error => this.snackBar.open('Błąd usuwania planowanej płatności: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
+            )
     }
-  });
+  })
 }
   }
 
-onRowActivated(row: Schedule): void {
+onRowActivated(row: Schedule);: void {
   this.table.canDelete = row ? true : false;
   this.table.canEdit = row ? true : false;
-}
+};
 
-pasteData(): void {
+pasteData();: void {
   this.confirmationService
     .confirm('Importuj planowane płatności',
       'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',
@@ -131,6 +131,6 @@ pasteData(): void {
         }
       }
     });
-}
+};
 
 }
