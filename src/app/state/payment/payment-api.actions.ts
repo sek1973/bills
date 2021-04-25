@@ -40,3 +40,13 @@ export const deletePaymentFailure = createAction(
   '[Payment API] Delete Payment Failure',
   props<{ error: string }>()
 );
+
+export const importPaymentsSuccess = createAction(
+  '[Payment API] Import Payments Success',
+  props<{ report: string }>()
+);
+
+export const importPaymentsFailure = createAction(
+  '[Payment API] Import Payments Failure',
+  props<{ report: string }>()
+);

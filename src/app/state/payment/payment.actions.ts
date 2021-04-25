@@ -2,7 +2,8 @@ import { createAction, props } from '@ngrx/store';
 import { Payment } from 'src/app/model';
 
 export const loadPayments = createAction(
-  '[Payments] Load'
+  '[Payments] Load',
+  props<{ billId: number }>()
 );
 
 export const updatePayment = createAction(
@@ -18,4 +19,9 @@ export const createPayment = createAction(
 export const deletePayment = createAction(
   '[Payments] Delete Payment',
   props<{ payment: Payment }>()
+);
+
+export const importPayments = createAction(
+  '[Payments] Import Payments',
+  props<{ billId: number }>()
 );
