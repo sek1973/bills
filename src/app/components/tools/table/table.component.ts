@@ -290,49 +290,49 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onRowDblClick(row: any) {
+  onRowDblClick(row: any): void {
     this.rowDblClick.emit(row);
   }
 
-  onAddClicked() {
+  onAddClicked(event: Event): void {
     this.addButtonClicked.emit();
   }
 
-  onEditClicked(event: Event) {
+  onEditClicked(event: Event): void {
     this.editButtonClicked.emit(this.activeRow);
   }
 
-  onRefreshClicked(event: Event) {
+  onRefreshClicked(event: Event): void {
     this.refreshButtonClicked.emit(null);
   }
 
-  onDeleteClicked(event: Event) {
+  onDeleteClicked(event: Event): void {
     this.deleteButtonClicked.emit(this.activeRow);
   }
 
-  onExportClicked(event: Event) {
+  onExportClicked(event: Event): void {
     this.exportToCsv();
   }
 
-  onPrintClicked(event: Event) {
+  onPrintClicked(event: Event): void {
     const tableElement = this.tableElementRef.nativeElement as HTMLElement;
     this.printService.printPreviewElement(tableElement);
   }
 
-  onPasteClicked(event: Event) {
+  onPasteClicked(event: Event): void {
     this.pasteButtonClicked.emit();
   }
 
-  disableEditButtons() {
+  disableEditButtons(): void {
     this.disableEditButton();
     this.disableRemoveButton();
   }
 
-  private disableEditButton() {
+  private disableEditButton(): void {
     this.canEdit = false;
   }
 
-  private disableRemoveButton() {
+  private disableRemoveButton(): void {
     this.canDelete = false;
   }
 
@@ -367,7 +367,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     return result;
   }
 
-  private saveFile(csv: string) {
+  private saveFile(csv: string): void {
     const blob = new Blob([csv], {
       type: 'text/csv;charset=utf-8;'
     });
@@ -390,7 +390,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  public exportToCsv() {
+  public exportToCsv(): void {
     const csv = this.getExportData();
     this.saveFile(csv);
   }

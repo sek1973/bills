@@ -10,7 +10,7 @@ export class InputPasswordComponent extends InputBaseComponent implements OnInit
 
   constructor() { super(); }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }
