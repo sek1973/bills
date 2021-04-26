@@ -3,9 +3,9 @@ import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
 import { Schedule } from 'src/app/model/schedule';
 import { ConfirmationService } from 'src/app/services/system/confirmation.service';
+import { PaymentsActions } from 'src/app/state';
 import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
 import { SchedulesDataSource } from './../../services/schedules.datasource';
@@ -86,51 +86,39 @@ export class SchedulesComponent implements OnInit {
 
   deleteSchedule(): void {
     if (this.table.activeRow) {
-      this.confirmationService
-        .confirm('Usuń planowaną płatność', 'Czy na pewno chcesz usunąć tę płatność?', 'Nie', 'Tak')
-        .subscribe(response => {
-          if (response) {
-            this.store.dispatch();
-            return this.schedulesFirebaseService.delete(this.table.activeRow, this.billId);
-          } else { return of(null); }
-        });)
-      () => this.snackBar.open('Usunięto planowaną płatność.', 'Ukryj', { duration: 3000 }),
-        error => this.snackBar.open('Błąd usuwania planowanej płatności: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
-            )
+      this.store.dispatch(PaymentsActions.deletePayment({ payment: this.table.activeRow }));
     }
-  })
-}
   }
 
-onRowActivated(row: Schedule);: void {
-  this.table.canDelete = row ? true : false;
-  this.table.canEdit = row ? true : false;
-};
+  onRowActivated(row: Schedule): void {
+    this.table.canDelete = row ? true : false;
+    this.table.canEdit = row ? true : false;
+  };
 
-pasteData();: void {
-  this.confirmationService
-    .confirm('Importuj planowane płatności',
-      'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',
-      ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
-    .subscribe((response) => {
-      if (response) {
-        this.loading.emit(true);
-        const data = (response as ConfirmDialogResponse).value as string;
-        if (!data || data === null || data === undefined || data === '') {
-          this.loading.emit(false);
-          this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { panelClass: 'snackbar-style-error' });
-        } else {
-          this.schedulesFirebaseService.importSchedules(data, this.billId).then(() => {
+  pasteData(): void {
+    this.confirmationService
+      .confirm('Importuj planowane płatności',
+        'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',
+        ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
+      .subscribe((response) => {
+        if (response) {
+          this.loading.emit(true);
+          const data = (response as ConfirmDialogResponse).value as string;
+          if (!data || data === null || data === undefined || data === '') {
             this.loading.emit(false);
-            this.snackBar.open('Dane zaimportowane!', 'Ukryj', { duration: 3000 });
-          },
-            error => {
+            this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { panelClass: 'snackbar-style-error' });
+          } else {
+            this.schedulesFirebaseService.importSchedules(data, this.billId).then(() => {
               this.loading.emit(false);
-              this.snackBar.open('Błąd importu danych: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
-            });
+              this.snackBar.open('Dane zaimportowane!', 'Ukryj', { duration: 3000 });
+            },
+              error => {
+                this.loading.emit(false);
+                this.snackBar.open('Błąd importu danych: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
+              });
+          }
         }
-      }
-    });
-};
+      });
+  };
 
 }
