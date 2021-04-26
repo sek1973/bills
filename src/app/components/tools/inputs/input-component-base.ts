@@ -113,7 +113,7 @@ export class InputBaseComponent implements OnInit {
     }
   }
 
-  getErrorMessage(...path: string[]): string {
+  getErrorMessage(path: string[]): string {
     const formControl = this.formGroup.get(path);
     if (formControl !== null) {
       const errors = formControl.errors;

@@ -4,7 +4,6 @@ import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { PaymentsActions, PaymentsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
-import { PaymentsService } from '../../services/data/payments.service';
 import { TableDataSource } from '../tools';
 import { Payment } from './../../model/payment';
 import { TableComponent } from './../tools/table/table.component';
@@ -33,7 +32,6 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   private dataSubscription = Subscription.EMPTY;
 
   constructor(
-    private paymentsFirebaseService: PaymentsService,
     @Inject(MatDialog) public dialog: MatDialog,
     private store: Store<AppState>) { }
 

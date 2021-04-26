@@ -11,7 +11,7 @@ export class InputPercentComponent extends InputBaseComponent implements OnInit 
 
   constructor() { super(); }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

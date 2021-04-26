@@ -28,7 +28,6 @@
 
   <app-payments *ngIf="!newBill"
                 class="bill-payments"
-                [billId]="bill?.id"
                 (loading)="onLoading($event)"></app-payments>
 </div>
 

@@ -24,7 +24,7 @@ export class ConfirmDialogComponent implements OnInit {
   form?: FormGroup;
   inputType?: ConfirmDialogInputType;
   confirmDialogInputType = ConfirmDialogInputType;
-  descriptionProvider?: DescriptionProvider;
+  descriptionProvider!: DescriptionProvider;
 
   constructor(
     @Inject(MatDialogRef) public dialogRef: MatDialogRef<ConfirmDialogComponent>,
