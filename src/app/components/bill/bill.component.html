@@ -23,8 +23,8 @@
                  (loading)="onLoading($event)"></app-bill-edit>
 
   <app-schedules *ngIf="!newBill"
-                 class="bill-schedules"
-                 [billId]="bill?.id"></app-schedules>
+                 class="bill-schedules">
+  </app-schedules>
 
   <app-payments *ngIf="!newBill"
                 class="bill-payments"

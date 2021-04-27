@@ -1,56 +1,69 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { Schedule } from 'src/app/model/schedule';
-import { ConfirmationService } from 'src/app/services/system/confirmation.service';
-import { PaymentsActions } from 'src/app/state';
-import { ConfirmDialogResponse } from '../tools/confirm-dialog/confirm-dialog.component';
-import { ConfirmDialogInputType } from '../tools/confirm-dialog/confirm-dialog.model';
-import { SchedulesDataSource } from './../../services/schedules.datasource';
+import { BillsSelectors, PaymentsActions } from 'src/app/state';
+import { AppState } from 'src/app/state/app/app.state';
+import { SchedulesActions, SchedulesSelectors } from 'src/app/state/schedule';
 import { TableComponent } from './../tools/table/table.component';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
-
 
 @Component({
   selector: 'app-schedules',
   templateUrl: './schedules.component.html',
   styleUrls: ['./schedules.component.scss']
 })
-export class SchedulesComponent implements OnInit {
-  private _billId?: number;
-  @Input() set billId(val: number | undefined) {
-    this._billId = val;
-    this.setTableDataSource();
-  }
-  get billId(): number | undefined {
-    return this._billId;
-  }
+export class SchedulesComponent implements OnInit, OnDestroy {
   @ViewChild('table', { read: TableComponent })
   table!: TableComponent;
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  activeRow: any;
-
-  dataSource?: SchedulesDataSource;
+  data: Schedule[] = [];
+  activeRow?: Schedule;
   columns = [
     { name: 'date', header: 'Termin' },
     { name: 'sum', header: 'Kwota' },
     { name: 'remarks', header: 'Uwagi' }
   ];
+  billId: number = -1;
+
+  private dataSubscription: Subscription = Subscription.EMPTY;
+  private billIdSubscription: Subscription = Subscription.EMPTY;
 
   constructor(
     @Inject(MatDialog) public dialog: MatDialog,
-    private confirmationService: ConfirmationService,
-    private snackBar: MatSnackBar,
-    private store: Store) { }
+    private store: Store<AppState>) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.subscribeToData();
+    this.subscribeToBillId();
+  }
 
-  private setTableDataSource(): void {
-    this.dataSource = new SchedulesDataSource(this.schedulesFirebaseService, this.billId);
-    this.dataSource.load();
+  ngOnDestroy(): void {
+    this.billIdSubscription.unsubscribe();
+    this.dataSubscription.unsubscribe();
+  }
+
+  private subscribeToData(): void {
+    this.dataSubscription = this.store
+      .select(SchedulesSelectors.selectAll)
+      .pipe(filter(() => this.billId > -1))
+      .subscribe({
+        next: schedules => this.data = schedules || []
+      });
+  }
+
+  private subscribeToBillId(): void {
+    this.billIdSubscription = this.store
+      .select(BillsSelectors.selectBillId)
+      .subscribe({
+        next: billId => {
+          this.billId = billId;
+          this.store.dispatch(SchedulesActions.loadSchedules({ billId: this.billId }));
+        }
+      });
   }
 
   onRowClicked(row: any): void {
@@ -59,12 +72,12 @@ export class SchedulesComponent implements OnInit {
     }
   }
 
-  getId(row: Schedule): string | undefined {
-    return row.id;
+  getId(row: Schedule): number | undefined {
+    return row?.id;
   }
 
   refresh(): void {
-    this.dataSource?.load();
+    this.store.dispatch(SchedulesActions.loadSchedules({ billId: this.billId }));
   }
 
   addSchedule(): void {
@@ -72,15 +85,13 @@ export class SchedulesComponent implements OnInit {
   }
 
   editSchedule(): void {
-    if (this.table.activeRow) { this.openDialog(this.table.activeRow); }
+    if (this.table.activeRow) { this.openDialog(); }
   }
 
-  private openDialog(schedule?: Schedule): void {
+  private openDialog(): void {
     const dialogRef = this.dialog.open(ScheduleDialogComponent, {
-      width: '500px',
-      data: { schedule, billUid: this.billId }
+      width: '500px'
     });
-
     dialogRef.afterClosed().subscribe();
   }
 
@@ -93,32 +104,10 @@ export class SchedulesComponent implements OnInit {
   onRowActivated(row: Schedule): void {
     this.table.canDelete = row ? true : false;
     this.table.canEdit = row ? true : false;
-  };
+  }
 
   pasteData(): void {
-    this.confirmationService
-      .confirm('Importuj planowane płatności',
-        'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',
-        ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
-      .subscribe((response) => {
-        if (response) {
-          this.loading.emit(true);
-          const data = (response as ConfirmDialogResponse).value as string;
-          if (!data || data === null || data === undefined || data === '') {
-            this.loading.emit(false);
-            this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { panelClass: 'snackbar-style-error' });
-          } else {
-            this.schedulesFirebaseService.importSchedules(data, this.billId).then(() => {
-              this.loading.emit(false);
-              this.snackBar.open('Dane zaimportowane!', 'Ukryj', { duration: 3000 });
-            },
-              error => {
-                this.loading.emit(false);
-                this.snackBar.open('Błąd importu danych: ' + error, 'Ukryj', { panelClass: 'snackbar-style-error' });
-              });
-          }
-        }
-      });
-  };
+    this.store.dispatch(PaymentsActions.importPayments({ billId: this.billId }));
+  }
 
 }

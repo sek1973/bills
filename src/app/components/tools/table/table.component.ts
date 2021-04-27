@@ -14,14 +14,15 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { MatPaginator, MatSort, MatTable, SortDirection } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, SortDirection } from '@angular/material/sort';
+import { MatTable } from '@angular/material/table';
 import { fromEvent, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { PrintService } from '../../../services/system/print.service';
 import { TableCellDirective } from './directives';
 import { TableColumn } from './table-column.model';
 import { TableDataSource } from './table-data-source';
-
 
 @Component({
   selector: 'app-table',

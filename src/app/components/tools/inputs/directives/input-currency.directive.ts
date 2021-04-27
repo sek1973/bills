@@ -16,12 +16,12 @@ export const APP_CURRENCY_VALUE_ACCESSOR: any = {
 export class InputCurrencyDirective implements ControlValueAccessor {
 
   inputElement: HTMLInputElement;
-  isDisabled: boolean;
+  isDisabled: boolean = false;
   onChange: any = () => { };
   onTouched: any = () => { };
 
   @HostListener('input', ['$event.target.value'])
-  input(value) {
+  input(value: any): void {
     if (value !== undefined && value !== null) {
       value = value.replace(/[^0-9,.]/g, '')
         .replace(',', '.');
@@ -30,7 +30,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   }
 
   @HostListener('blur', ['$event.target.value'])
-  blur(value) {
+  blur(value: any): void {
     if (value !== undefined && value !== null) {
       value = value.replace(/[^0-9,.]/g, '')
         .replace(',', '.');
@@ -39,35 +39,34 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   }
 
   @HostListener('focus', ['$event.target.value'])
-  focus(value) {
+  focus(value: any): void {
     this.renderer.setProperty(this.element.nativeElement, 'value', currencyToNumber(value));
   }
 
-  @HostListener('keydown', ['$event']) onKeyDown(event) {
-    const e = <KeyboardEvent>event;
-    if ([46, 8, 9, 27, 13, 110, 188, 190].indexOf(e.keyCode) !== -1 ||
+  @HostListener('keydown', ['$event']) onKeyDown(event: KeyboardEvent): void {
+    if (['.', 'Backspace', 'Tab', 'Escape', 'Enter'].indexOf(event.key) !== -1 ||
       // Allow: Ctrl+A
-      (e.keyCode === 65 && (e.ctrlKey || e.metaKey)) ||
+      (event.key.toUpperCase() === 'A' && (event.ctrlKey || event.metaKey)) ||
       // Allow: Ctrl+C
-      (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) ||
+      (event.key.toUpperCase() === 'C' && (event.ctrlKey || event.metaKey)) ||
       // Allow: Ctrl+V
-      (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) ||
+      (event.key.toUpperCase() === 'V' && (event.ctrlKey || event.metaKey)) ||
       // Allow: Ctrl+X
-      (e.keyCode === 88 && (e.ctrlKey || e.metaKey)) ||
+      (event.key.toUpperCase() === 'X' && (event.ctrlKey || event.metaKey)) ||
       // Allow: home, end, left, right
-      (e.keyCode >= 35 && e.keyCode <= 39)) {
+      (['Home', 'End', 'ArrowLeft', 'ArrowRight'].indexOf(event.key)) !== -1) {
       // let it happen, don't do anything
       return;
     }
     // number
-    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-      e.preventDefault();
+    if (event.shiftKey || ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(event.key) !== -1) {
+      event.preventDefault();
     }
   }
 
   @HostListener('paste', ['$event']) onPaste(event: ClipboardEvent) {
     event.preventDefault();
-    const pastedInput: string = event.clipboardData
+    const pastedInput: string = event?.clipboardData
       .getData('text/plain')
       .replace(/[^0-9,.]/g, '')
       .replace(',', '.');

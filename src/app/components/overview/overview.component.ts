@@ -7,7 +7,6 @@ import { addDays, getSafe } from 'src/app/helpers';
 import { Bill } from 'src/app/model/bill';
 import { AuthActions, BillsActions, BillsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
-import { TableDataSource } from '../tools';
 import { TableComponent } from './../tools/table/table.component';
 
 @Component({
@@ -16,7 +15,7 @@ import { TableComponent } from './../tools/table/table.component';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
-  dataSource!: TableDataSource<Bill>;
+  data: Bill[] = [];
   columns = [
     { name: 'name', header: 'Nazwa' },
     { name: 'deadline', header: 'Termin' },
@@ -34,16 +33,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    this.subscribeToData();
+  }
+
+  private subscribeToData(): void {
     this.dataSubscription = this.store
       .select(BillsSelectors.selectAll)
       .subscribe({
-        next: bills => {
-          if (this.dataSource) {
-            this.dataSource.data = bills;
-          } else {
-            this.dataSource = new TableDataSource(bills);
-          }
-        }
+        next: bills => this.data = bills || []
       });
   }
 

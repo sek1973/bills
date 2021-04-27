@@ -2,7 +2,8 @@ import { createAction, props } from '@ngrx/store';
 import { Schedule } from 'src/app/model';
 
 export const loadSchedules = createAction(
-  '[Schedules] Load'
+  '[Schedules] Load',
+  props<{ billId: number }>()
 );
 
 export const updateSchedule = createAction(

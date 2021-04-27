@@ -2,9 +2,10 @@ import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, ViewChild }
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { PaymentsActions, PaymentsSelectors } from 'src/app/state';
+import { filter } from 'rxjs/operators';
+import { BillsSelectors, PaymentsActions, PaymentsSelectors } from 'src/app/state';
 import { AppState } from 'src/app/state/app/app.state';
-import { TableDataSource } from '../tools';
+import { SchedulesActions } from 'src/app/state/schedule';
 import { Payment } from './../../model/payment';
 import { TableComponent } from './../tools/table/table.component';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
@@ -19,9 +20,9 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   table!: TableComponent;
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  activeRow: any;
+  activeRow?: Payment;
 
-  dataSource?: TableDataSource<Payment>;
+  data: Payment[] = [];
   columns = [
     { name: 'deadline', header: 'Termin' },
     { name: 'paiddate', header: 'Zapłacono' },
@@ -29,28 +30,43 @@ export class PaymentsComponent implements OnInit, OnDestroy {
     { name: 'share', header: 'Udział' },
     { name: 'remarks', header: 'Uwagi' }
   ];
-  private dataSubscription = Subscription.EMPTY;
+  billId: number = -1;
+
+  private dataSubscription: Subscription = Subscription.EMPTY;
+  private billIdSubscription: Subscription = Subscription.EMPTY;
 
   constructor(
     @Inject(MatDialog) public dialog: MatDialog,
     private store: Store<AppState>) { }
 
   ngOnInit(): void {
+    this.subscribeToBillId();
+    this.subscribeToData();
+  }
+
+  private subscribeToData(): void {
     this.dataSubscription = this.store
       .select(PaymentsSelectors.selectAll)
+      .pipe(filter(() => this.billId > -1))
       .subscribe({
-        next: payments => {
-          if (this.dataSource) {
-            this.dataSource.data = payments;
-          } else {
-            this.dataSource = new TableDataSource(payments);
-          }
+        next: payments => this.data = payments || []
+      });
+  }
+
+  private subscribeToBillId(): void {
+    this.billIdSubscription = this.store
+      .select(BillsSelectors.selectBillId)
+      .subscribe({
+        next: billId => {
+          this.billId = billId;
+          this.store.dispatch(SchedulesActions.loadSchedules({ billId: this.billId }));
         }
       });
   }
 
   ngOnDestroy(): void {
     this.dataSubscription.unsubscribe();
+    this.billIdSubscription.unsubscribe();
   }
 
   onRowClicked(row: any): void {
@@ -64,7 +80,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   }
 
   refresh(): void {
-    this.dataSource?.load();
+    this.store.dispatch(PaymentsActions.loadPayments({ billId: this.billId }));
   }
 
   addPayment(): void {
