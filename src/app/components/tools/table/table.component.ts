@@ -36,15 +36,15 @@ import { TableDataSource } from './table-data-source';
     ])
   ]
 })
-export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TableComponent<T extends object> implements OnInit, AfterViewInit, OnDestroy {
   dataReady: boolean;
   expandedRow: any;
   activeRow: any;
 
   index = 0;
-  private sort: MatSort;
-  private paginator: MatPaginator;
-  private _columnsDefinition: TableColumn[];
+  private sort?: MatSort;
+  private paginator?: MatPaginator;
+  private _columnsDefinition: TableColumn[] = [];
   private subscription = Subscription.EMPTY;
   private loadingSubscription = Subscription.EMPTY;
 
@@ -62,8 +62,8 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   @Output() refreshButtonClicked: EventEmitter<null> = new EventEmitter<null>();
   @Output() pasteButtonClicked: EventEmitter<null> = new EventEmitter<null>();
 
-  @ViewChild(MatTable) table: MatTable<any>;
-  @ViewChild('table', { read: ElementRef }) tableElementRef: ElementRef;
+  @ViewChild(MatTable) table?: MatTable<any>;
+  @ViewChild('table', { read: ElementRef }) tableElementRef?: ElementRef;
 
   @ViewChild(MatSort)
   set matSort(ms: MatSort) {
@@ -78,7 +78,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  @ViewChild('filterInput') filterInput!: HTMLElement;
+  @ViewChild('filterInput', { read: HTMLElement }) filterInput!: HTMLElement;
   cellTemplates: Map<string, TemplateRef<any>> = new Map<string, TemplateRef<any>>();
   @ContentChildren(TableCellDirective) set dataTableCellDirectives(val: QueryList<TableCellDirective>) {
     this.cellTemplates = new Map<string, TemplateRef<any>>();
@@ -95,18 +95,23 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() sortActive?: string;
   @Input() sortDirection?: SortDirection;
 
-  private _dataSource!: TableDataSource<any>;
-  @Input() set dataSource(value: TableDataSource<any>) {
-    if (Array.isArray(value)) {
-      throw new Error('Value should be TableDataSource<any>.');
+  private _dataSource?: TableDataSource<T>;
+  get dataSource(): TableDataSource<T> | undefined {
+    return this._dataSource;
+  }
+
+  private _data!: T[];
+  @Input() set data(value: T[]) {
+    if (!Array.isArray(value)) {
+      throw new Error('Value should be an array!');
     }
     if (value !== undefined && value !== null) {
-      this._dataSource = value;
+      this._data = value;
       this.initDataSource();
     }
   }
-  get dataSource(): TableDataSource<any> {
-    return this._dataSource;
+  get data(): T[] {
+    return this._data;
   }
 
   @Input() showFilter = false;
@@ -198,20 +203,23 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void { }
 
   private initDataSource(): void {
-    this.loadingSubscription = this.dataSource.loading$.subscribe(val => {
-      if (val === false && this.table) {
-        this.activeRow = undefined;
-        this.rowActivated.emit(undefined);
-      }
-    });
+    this._dataSource = new TableDataSource(this.data);
     if (this.sort !== undefined) {
-      this.dataSource.sort = this.sort;
+      this._dataSource.sort = this.sort;
     }
     if (this.pageable && this.paginator !== undefined) {
-      this.dataSource.paginator = this.paginator;
+      this._dataSource.paginator = this.paginator;
     }
     // workaround for mixed context (numbers & strings) sorting - see: https://github.com/angular/material2/issues/9966:
-    this.dataSource.sortingDataAccessor = (data, header) => data[header];
+    this._dataSource.sortingDataAccessor = (data, header) => data[header as keyof object];
+
+    this.loadingSubscription = this._dataSource.loading$
+      .subscribe(val => {
+        if (val === false && this.table) {
+          this.activeRow = undefined;
+          this.rowActivated.emit(undefined);
+        }
+      });
   }
 
   ngAfterViewInit(): void {
@@ -219,18 +227,20 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
       this.initDataSource();
     });
     if (this.filterInput) {
-      this.subscription = fromEvent(this.filterInput.nativeElement, 'keyup')
+      this.subscription = fromEvent(this.filterInput, 'keyup')
         .pipe(
           debounceTime(this.filterKeyDelayMs), // before emitting last event
           distinctUntilChanged()
         )
-        .subscribe((event: KeyboardEvent) => {
-          this.applyFilter((<HTMLInputElement>event.target).value);
+        .subscribe({
+          next: (event: KeyboardEvent) => {
+            this.applyFilter((<HTMLInputElement>event.target).value);
+          }
         });
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.loadingSubscription.unsubscribe();
   }
@@ -244,7 +254,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  getTableTitleTemplate(defaultTemplate) {
+  getTableTitleTemplate(defaultTemplate: TemplateRef<any>): TemplateRef<any> {
     const template = this.tableTitleTemplate;
     if (template) {
       return template;
@@ -260,11 +270,13 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     return of(false);
   }
 
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  applyFilter(filterValue: string): void {
+    if (this.dataSource) {
+      this.dataSource.filter = filterValue.trim().toLowerCase();
+    }
   }
 
-  onRowClick(row: any) {
+  onRowClick(row: T): void {
     if (this.activeRow !== row) {
       this.activeRow = row;
       this.rowActivated.emit(row);
@@ -275,7 +287,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.disableExpand(row);
   }
 
-  onRowExpandClick(row: any) {
+  onRowExpandClick(row: T): void {
     if (this.disableExpand(row)) {
       return;
     }
@@ -291,7 +303,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onRowDblClick(row: any): void {
+  onRowDblClick(row: T): void {
     this.rowDblClick.emit(row);
   }
 
@@ -316,7 +328,7 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onPrintClicked(event: Event): void {
-    const tableElement = this.tableElementRef.nativeElement as HTMLElement;
+    const tableElement = this.tableElementRef?.nativeElement as HTMLElement;
     this.printService.printPreviewElement(tableElement);
   }
 
@@ -338,34 +350,37 @@ export class TableComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getExportData(): string {
-    const data = this.dataSource.filteredData || this.dataSource.data;
-    let result = '\ufeff';
-    const columns = this.dataColumns;
+    if (this.dataSource) {
+      const data = this.dataSource.filteredData || this.dataSource.data;
+      let result = '\ufeff';
+      const columns = this.dataColumns;
 
-    for (let colIndex = 0; colIndex < columns.length; colIndex++) {
-      const column = columns[colIndex];
-      result += '"' + (column.header || column.name) + '"';
-      if (colIndex < columns.length - 1) {
-        result += this.csvSeparator;
-      }
-    }
-    if (data) {
-      data.forEach((row, i) => {
-        result += '\n';
-        for (let rowIndex = 0; rowIndex < columns.length; rowIndex++) {
-          const column = columns[rowIndex];
-          let value = row[column.name];
-          if (value !== null && value !== undefined) {
-            value = String(value).replace(/"/g, '""');
-          } else { value = ''; }
-          result += '"' + value + '"';
-          if (rowIndex < columns.length - 1) {
-            result += this.csvSeparator;
-          }
+      for (let colIndex = 0; colIndex < columns.length; colIndex++) {
+        const column = columns[colIndex];
+        result += '"' + (column.header || column.name) + '"';
+        if (colIndex < columns.length - 1) {
+          result += this.csvSeparator;
         }
-      });
+      }
+      if (data) {
+        data.forEach((row, i) => {
+          result += '\n';
+          for (let rowIndex = 0; rowIndex < columns.length; rowIndex++) {
+            const column = columns[rowIndex];
+            let value = row[column.name as keyof T];
+            if (value !== null && value !== undefined) {
+              value = String(value).replace(/"/g, '""');
+            } else { value = ''; }
+            result += '"' + value + '"';
+            if (rowIndex < columns.length - 1) {
+              result += this.csvSeparator;
+            }
+          }
+        });
+      }
+      return result;
     }
-    return result;
+    return '';
   }
 
   private saveFile(csv: string): void {

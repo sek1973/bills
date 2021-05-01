@@ -64,26 +64,31 @@ export class InputCurrencyDirective implements ControlValueAccessor {
     }
   }
 
-  @HostListener('paste', ['$event']) onPaste(event: ClipboardEvent) {
-    event.preventDefault();
-    const pastedInput: string = event?.clipboardData
-      .getData('text/plain')
-      .replace(/[^0-9,.]/g, '')
-      .replace(',', '.');
-    document.execCommand('insertText', false, pastedInput);
+  @HostListener('paste', ['$event']) onPaste(event: ClipboardEvent): void {
+    if (event?.clipboardData) {
+      event.preventDefault();
+      const pastedInput: string = event.clipboardData
+        .getData('text/plain')
+        .replace(/[^0-9,.]/g, '')
+        .replace(',', '.');
+      document.execCommand('insertText', false, pastedInput);
+    }
   }
 
-  @HostListener('drop', ['$event']) onDrop(event: DragEvent) {
-    event.preventDefault();
-    const textData = event.dataTransfer
-      .getData('text')
-      .replace(/[^0-9,.]/g, '')
-      .replace(',', '.');
-    this.inputElement.focus();
-    document.execCommand('insertText', false, textData);
+  @HostListener('drop', ['$event']) onDrop(event: DragEvent): void {
+    if (event?.dataTransfer) {
+      event.preventDefault();
+      const textData = event.dataTransfer
+        .getData('text')
+        .replace(/[^0-9,.]/g, '')
+        .replace(',', '.');
+      this.inputElement.focus();
+      document.execCommand('insertText', false, textData);
+    }
   }
 
-  constructor(private renderer: Renderer2,
+  constructor(
+    private renderer: Renderer2,
     private element: ElementRef) {
     this.inputElement = element.nativeElement;
   }
