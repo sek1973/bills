@@ -1,11 +1,11 @@
-import { Directive, Input, ElementRef, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 
 @Directive({
   selector: '[appAddHrefAttribute]'
 })
 export class AddHrefAttributeDirective {
 
-  private _add: boolean;
+  private _add: boolean = false;
   @Input('appAddHrefAttribute') set add(val: boolean) {
     this._add = val;
     this.alterAttribute();
@@ -14,7 +14,7 @@ export class AddHrefAttributeDirective {
     return this._add;
   }
 
-  private _link: string;
+  private _link: string = '';
   @Input('appAddHrefAttributeLink') set link(val: string) {
     this._link = val;
     this.alterAttribute();
@@ -23,7 +23,7 @@ export class AddHrefAttributeDirective {
     return this._link;
   }
 
-  private alterAttribute() {
+  private alterAttribute(): void {
     if (this.link && this.add) {
       this.renderer.setAttribute(this.elementRef.nativeElement, 'href', this.link);
     } else {

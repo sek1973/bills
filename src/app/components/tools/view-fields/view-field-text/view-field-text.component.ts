@@ -9,7 +9,7 @@ import { ViewFieldComponentBase } from './../view-text-base';
 })
 export class ViewFieldTextComponent extends ViewFieldComponentBase implements OnInit {
   @Input() customPipe?: PipeTransform;
-  @Input() customPipeArgs?: any[];
+  @Input() customPipeArgs: any[] = [];
 
   constructor() { super(); }
 

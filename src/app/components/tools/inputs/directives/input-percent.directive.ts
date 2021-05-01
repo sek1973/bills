@@ -16,8 +16,8 @@ export const APP_PERCENT_VALUE_ACCESSOR: any = {
 })
 export class InputPercentDirective implements ControlValueAccessor {
 
-  isDisabled: boolean;
-  percentPipe: PercentPipe;
+  isDisabled: boolean = false;
+  percentPipe?: PercentPipe;
   onChange: any = () => { };
   onTouched: any = () => { };
 

@@ -17,7 +17,7 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
 })
 export class PaymentsComponent implements OnInit, OnDestroy {
   @ViewChild('table', { read: TableComponent })
-  table!: TableComponent;
+  table!: TableComponent<Payment>;
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   activeRow?: Payment;

@@ -15,7 +15,7 @@ export class AppSpinnerComponent implements OnInit, DoCheck {
 
   @Input() color?: ThemePalette;
   @Input() diameter?: number = 100;
-  @Input() mode?: ProgressSpinnerMode;
+  @Input() mode: ProgressSpinnerMode = 'indeterminate';
   @Input() strokeWidth?: number;
   @Input() value?: number;
   @Input() backdropEnabled = true;

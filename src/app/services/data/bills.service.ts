@@ -88,7 +88,7 @@ export abstract class BillsService {
     let schedule: Schedule | undefined;
     return this.schedulesService.fetchComming(bill.id).pipe(switchMap(sch => {
       schedule = sch;
-      this.paymentsService.add(payment, bill?.id || 0);
+      this.paymentsService.add(payment);
       this.adjustBillData(billCopy, schedule);
       if (schedule) { this.schedulesService.delete(schedule, bill?.id || 0); }
       return this.update(billCopy);
@@ -96,7 +96,7 @@ export abstract class BillsService {
   }
 
   private createPaymentData(bill: Bill, paid: number): Payment {
-    return new Payment(bill.deadline, paid, paid * bill.share, new Date());
+    return new Payment(bill.deadline, paid, paid * bill.share, new Date(), undefined, bill.id);
   }
 
   private adjustBillData(billCopy: Bill, schedule?: Schedule): Bill {

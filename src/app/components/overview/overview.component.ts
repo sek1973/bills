@@ -25,7 +25,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private dataSubscription = Subscription.EMPTY;
 
   @ViewChild('table')
-  table!: TableComponent;
+  table!: TableComponent<Bill>;
 
   constructor(
     private store: Store<AppState>,

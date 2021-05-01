@@ -17,7 +17,7 @@ import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.compo
 })
 export class SchedulesComponent implements OnInit, OnDestroy {
   @ViewChild('table', { read: TableComponent })
-  table!: TableComponent;
+  table!: TableComponent<Schedule>;
   @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   data: Schedule[] = [];

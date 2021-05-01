@@ -14,16 +14,6 @@ export abstract class SchedulesService {
 
   abstract fetch(billId: number): Observable<Schedule[]>;
 
-  protected createScheduleData(schedule: any): Schedule {
-    const result: Schedule = {
-      date: schedule.date || new Date(),
-      sum: schedule.sum || 0,
-      remarks: schedule.remarks || '',
-    };
-    if (schedule.uid) { result.id = schedule.uid; }
-    return result;
-  }
-
   abstract add(schedule: Schedule, billId: number): Observable<number>;
 
   abstract update(schedule: Schedule, billId: number): Observable<void>;
@@ -50,7 +40,7 @@ export abstract class SchedulesService {
     const sum: number | undefined = currencyToNumber(cells[1]);
     const remarks: string = cells[2];
     if (date && sum) {
-      const schedule: Schedule = { date, sum };
+      const schedule: Schedule = new Schedule(date, sum);
       if (remarks) { schedule.remarks = remarks; }
     }
     return undefined;

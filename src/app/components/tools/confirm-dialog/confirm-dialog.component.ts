@@ -21,7 +21,7 @@ export class ConfirmDialogComponent implements OnInit {
   applyButtonLabel: string;
   canApply: boolean = true;
 
-  form?: FormGroup;
+  form: FormGroup = new FormGroup({});
   inputType?: ConfirmDialogInputType;
   confirmDialogInputType = ConfirmDialogInputType;
   descriptionProvider!: DescriptionProvider;
