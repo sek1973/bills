@@ -36,7 +36,7 @@ import { TableDataSource } from './table-data-source';
     ])
   ]
 })
-export class TableComponent<T extends object> implements OnInit, AfterViewInit, OnDestroy {
+export class TableComponent<T extends { [key: string]: any }> implements OnInit, AfterViewInit, OnDestroy {
   dataReady: boolean;
   expandedRow: any;
   activeRow: any;
@@ -78,7 +78,7 @@ export class TableComponent<T extends object> implements OnInit, AfterViewInit, 
     }
   }
 
-  @ViewChild('filterInput', { read: HTMLElement }) filterInput!: HTMLElement;
+  @ViewChild('filterInput', { read: HTMLInputElement }) filterInput!: HTMLInputElement;
   cellTemplates: Map<string, TemplateRef<any>> = new Map<string, TemplateRef<any>>();
   @ContentChildren(TableCellDirective) set dataTableCellDirectives(val: QueryList<TableCellDirective>) {
     this.cellTemplates = new Map<string, TemplateRef<any>>();
@@ -92,8 +92,8 @@ export class TableComponent<T extends object> implements OnInit, AfterViewInit, 
   @ContentChild('middleToolbarPanelTemplate') middleToolbarPanelTemplate?: TemplateRef<Component>;
   @ContentChild('rightToolbarPanelTemplate') rightToolbarPanelTemplate?: TemplateRef<Component>;
 
-  @Input() sortActive?: string;
-  @Input() sortDirection?: SortDirection;
+  @Input() sortActive: string = '';
+  @Input() sortDirection: SortDirection = '';
 
   private _dataSource?: TableDataSource<T>;
   get dataSource(): TableDataSource<T> | undefined {
@@ -211,7 +211,7 @@ export class TableComponent<T extends object> implements OnInit, AfterViewInit, 
       this._dataSource.paginator = this.paginator;
     }
     // workaround for mixed context (numbers & strings) sorting - see: https://github.com/angular/material2/issues/9966:
-    this._dataSource.sortingDataAccessor = (data, header) => data[header as keyof object];
+    this._dataSource.sortingDataAccessor = (data, header) => data[header as keyof T];
 
     this.loadingSubscription = this._dataSource.loading$
       .subscribe(val => {
@@ -233,9 +233,7 @@ export class TableComponent<T extends object> implements OnInit, AfterViewInit, 
           distinctUntilChanged()
         )
         .subscribe({
-          next: (event: KeyboardEvent) => {
-            this.applyFilter((<HTMLInputElement>event.target).value);
-          }
+          next: () => this.applyFilter(this.filterInput.value)
         });
     }
   }
@@ -367,7 +365,7 @@ export class TableComponent<T extends object> implements OnInit, AfterViewInit, 
           result += '\n';
           for (let rowIndex = 0; rowIndex < columns.length; rowIndex++) {
             const column = columns[rowIndex];
-            let value = row[column.name as keyof T];
+            let value: string = row[column.name as keyof T];
             if (value !== null && value !== undefined) {
               value = String(value).replace(/"/g, '""');
             } else { value = ''; }
@@ -388,22 +386,7 @@ export class TableComponent<T extends object> implements OnInit, AfterViewInit, 
       type: 'text/csv;charset=utf-8;'
     });
     const fileName = this.exportFileName + '.csv';
-    if (window.navigator.msSaveOrOpenBlob) {
-      navigator.msSaveOrOpenBlob(blob, fileName);
-    } else {
-      const link = document.createElement('a');
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      if (link.download !== undefined) {
-        link.setAttribute('href', URL.createObjectURL(blob));
-        link.setAttribute('download', fileName);
-        link.click();
-      } else {
-        csv = 'data:text/csv;charset=utf-8,' + csv;
-        window.open(encodeURI(csv));
-      }
-      document.body.removeChild(link);
-    }
+    window.navigator.msSaveOrOpenBlob(blob, fileName);
   }
 
   public exportToCsv(): void {

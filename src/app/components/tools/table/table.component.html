@@ -169,7 +169,8 @@
         </ng-container>
       </div>
 
-      <ng-container [ngTemplateOutlet]="rightToolbarPanelTemplate"
+      <ng-container *ngIf="rightToolbarPanelTemplate"
+                    [ngTemplateOutlet]="rightToolbarPanelTemplate"
                     [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow, $loading: isDataSourceLoading()}">
       </ng-container>
 
@@ -191,7 +192,8 @@
   </mat-progress-bar>
 
   <div class="table-container">
-    <table #table
+    <table *ngIf="dataSource"
+           #table
            mat-table
            [dataSource]="dataSource"
            matSort
@@ -241,7 +243,7 @@
           <div [class.active-row-detail]="activeRow === expandedRow"
                [class.expand-row-detail]="activeRow !== expandedRow"
                [@detailExpand]="row === expandedRow ? 'expanded' : 'collapsed'">
-            <ng-container *ngIf="row === expandedRow"
+            <ng-container *ngIf="expandedRowTemplate && row === expandedRow"
                           [ngTemplateOutlet]="expandedRowTemplate"
                           [ngTemplateOutletContext]="{row: row}">
             </ng-container>
