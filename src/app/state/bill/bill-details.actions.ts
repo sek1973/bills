@@ -1,43 +1,47 @@
 import { createAction, props } from '@ngrx/store';
 import { Bill } from 'src/app/model';
 
-export const toggleBillCode = createAction(
-  '[Bill View] Toggle Bill Code'
-);
+export const BillDetailsActions = {
 
-export const setCurrentBill = createAction(
-  '[Bill View] Set Current Bill',
-  props<{ billId: number }>()
-);
+  toggleBillCode: createAction(
+    '[Bill View] Toggle Bill Code'
+  ),
 
-export const clearCurrentBill = createAction(
-  '[Bill View] Clear Current Bill'
-);
+  setCurrentBill: createAction(
+    '[Bill View] Set Current Bill',
+    props<{ billId: number }>()
+  ),
 
-export const initializeCurrentBill = createAction(
-  '[Bill View] Initialize Current Bill'
-);
+  clearCurrentBill: createAction(
+    '[Bill View] Clear Current Bill'
+  ),
 
-export const loadBills = createAction(
-  '[Bill View] Load'
-);
+  initializeCurrentBill: createAction(
+    '[Bill View] Initialize Current Bill'
+  ),
 
-export const updateBill = createAction(
-  '[Bill View] Update Bill',
-  props<{ bill: Bill }>()
-);
+  loadBills: createAction(
+    '[Bill View] Load'
+  ),
 
-export const createBill = createAction(
-  '[Bill View] Create Bill',
-  props<{ bill: Bill }>()
-);
+  updateBill: createAction(
+    '[Bill View] Update Bill',
+    props<{ bill: Bill }>()
+  ),
 
-export const deleteBill = createAction(
-  '[Bill View] Delete Bill',
-  props<{ bill: Bill }>()
-);
+  createBill: createAction(
+    '[Bill View] Create Bill',
+    props<{ bill: Bill }>()
+  ),
 
-export const payBill = createAction(
-  '[Bill View] Pay Bill',
-  props<{ bill: Bill }>()
-);
+  deleteBill: createAction(
+    '[Bill View] Delete Bill',
+    props<{ bill: Bill }>()
+  ),
+
+  payBill: createAction(
+    '[Bill View] Pay Bill',
+    props<{ bill: Bill }>()
+  ),
+
+};

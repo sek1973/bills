@@ -1,22 +1,26 @@
 import { createAction, props } from '@ngrx/store';
 import { Schedule } from 'src/app/model';
 
-export const loadSchedules = createAction(
-  '[Schedules] Load',
-  props<{ billId: number }>()
-);
+export const SchedulesActions = {
 
-export const updateSchedule = createAction(
-  '[Schedules] Update Schedule',
-  props<{ schedule: Schedule }>()
-);
+  loadSchedules: createAction(
+    '[Schedules] Load',
+    props<{ billId: number }>()
+  ),
 
-export const createSchedule = createAction(
-  '[Schedules] Create Schedule',
-  props<{ schedule: Schedule }>()
-);
+  updateSchedule: createAction(
+    '[Schedules] Update Schedule',
+    props<{ schedule: Schedule }>()
+  ),
 
-export const deleteSchedule = createAction(
-  '[Schedules] Delete Schedule',
-  props<{ schedule: Schedule }>()
-);
+  createSchedule: createAction(
+    '[Schedules] Create Schedule',
+    props<{ schedule: Schedule }>()
+  ),
+
+  deleteSchedule: createAction(
+    '[Schedules] Delete Schedule',
+    props<{ schedule: Schedule }>()
+  ),
+
+};

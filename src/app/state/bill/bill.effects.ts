@@ -7,7 +7,9 @@ import { ConfirmDialogResponse, validateBillName } from 'src/app/components';
 import { ConfirmDialogInputType } from 'src/app/components/tools/confirm-dialog/confirm-dialog.model';
 import { BillsService } from 'src/app/services/data/bills.service';
 import { ConfirmationService } from 'src/app/services/system/confirmation.service';
-import { BillApiActions, BillDetailsActions, BillsActions } from '.';
+import { BillApiActions } from './bill-api.actions';
+import { BillDetailsActions } from './bill-details.actions';
+import { BillsActions } from './bill.actions';
 
 @Injectable()
 export class BillEffects {

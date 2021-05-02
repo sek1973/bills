@@ -7,7 +7,8 @@ import { ConfirmDialogResponse } from 'src/app/components';
 import { ConfirmDialogInputType } from 'src/app/components/tools/confirm-dialog/confirm-dialog.model';
 import { PaymentsService } from 'src/app/services';
 import { ConfirmationService } from 'src/app/services/system/confirmation.service';
-import { PaymentApiActions, PaymentsActions } from '.';
+import { PaymentApiActions } from './payment-api.actions';
+import { PaymentsActions } from './payment.actions';
 
 @Injectable()
 export class PaymentEffects {
