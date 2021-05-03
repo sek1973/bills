@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PreviousUrlService {
   private _previousUrl: string = '';
   set previousUrl(val: string) {
