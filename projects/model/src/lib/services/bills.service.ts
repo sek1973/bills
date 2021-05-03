@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
+import { addDays } from 'projects/tools/src/public-api';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { addDays } from 'src/app/helpers';
-import { Bill } from '../../model/bill';
-import { Payment } from '../../model/payment';
-import { Schedule } from '../../model/schedule';
-import { Unit } from '../../model/unit';
+import { Bill, Payment, Schedule, Unit } from '../model';
 import { PaymentsService } from './payments.service';
 import { SchedulesService } from './schedules.service';
 

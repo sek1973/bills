@@ -1,7 +1,6 @@
 import { Directive, Input, OnInit } from '@angular/core';
-import { getSafe } from 'src/app/helpers';
+import { getSafe } from '../../helpers';
 import { DescriptionProvider } from '../inputs/input-component-base';
-
 
 export interface ValueProvider {
   getValue(...path: string[]): any;

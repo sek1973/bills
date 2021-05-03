@@ -1,4 +1,4 @@
-import { Bill, Payment, Schedule } from 'src/app/model';
+import { Bill, Payment, Schedule } from 'projects/model/src/lib/model';
 
 export interface AppState {
     loggedIn: boolean;

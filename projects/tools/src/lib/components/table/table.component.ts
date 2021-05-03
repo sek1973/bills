@@ -19,7 +19,7 @@ import { MatSort, SortDirection } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { fromEvent, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { PrintService } from '../../../services/system/print.service';
+import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
 import { TableColumn } from './table-column.model';
 import { TableDataSource } from './table-data-source';

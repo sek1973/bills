@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { BillsService } from 'projects/model/src/public-api';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, validateBillName } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap } from 'rxjs/operators';
-import { BillsService } from 'src/app/services/data/bills.service';
-import { ConfirmationService } from 'src/app/services/system/confirmation.service';
-import { ConfirmDialogInputType, ConfirmDialogResponse, validateBillName } from 'src/app/tools';
 import { BillApiActions } from './bill-api.actions';
 import { BillDetailsActions } from './bill-details.actions';
 import { BillsActions } from './bill.actions';

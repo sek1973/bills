@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Unit, UnitDescription } from './../../../../model/unit';
+import { Unit, UnitDescription } from 'projects/model/src/lib/model';
 import { InputBaseComponent } from './../input-component-base';
-
 
 export interface SelectItem<T> {
   value: T;

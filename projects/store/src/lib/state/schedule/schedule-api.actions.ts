@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Schedule } from 'src/app/model';
+import { Schedule } from 'projects/model/src/lib/model';
 
 export const ScheduleApiActions = {
 

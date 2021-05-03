@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Bill } from 'src/app/model';
-
+import { Bill } from 'projects/model/src/lib/model';
 
 export const BillApiActions = {
   loadBillsSuccess: createAction(

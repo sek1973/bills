@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { getSafe } from 'src/app/helpers';
+import { getSafe } from '../../../helpers';
 import { InputBaseComponent } from './../input-component-base';
 
 @Component({

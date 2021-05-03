@@ -1,15 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
+import { FieldDescription } from 'projects/model/src/lib/model';
+import { AuthService } from 'projects/model/src/public-api';
+import { AuthActions } from 'projects/store/src/lib/state';
+import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
+import { NavigationService } from 'projects/tools/src/public-api';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { FieldDescription } from 'src/app/model/field-description';
-import { AuthActions } from 'src/app/state';
-import { AuthService } from '../../services/auth/auth.service';
-import { NavigationService } from '../../services/system/navigation.service';
-import { DescriptionProvider } from '../tools/inputs/input-component-base';
-
-
-
 
 @Component({
   selector: 'app-login',
