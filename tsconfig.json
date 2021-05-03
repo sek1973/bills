@@ -19,7 +19,25 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "model": [
+        "dist/model/model",
+        "dist/model"
+      ],
+      "store": [
+        "dist/store/store",
+        "dist/store"
+      ],
+      "tools": [
+        "dist/tools/tools",
+        "dist/tools"
+      ],
+      "views": [
+        "dist/views/views",
+        "dist/views"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
