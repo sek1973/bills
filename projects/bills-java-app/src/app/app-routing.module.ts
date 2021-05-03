@@ -27,7 +27,6 @@ const routes: Routes = [
     path: '',
     redirectTo: '/zestawienie',
     pathMatch: 'full',
-    canActivate: [AuthGuard]
   },
   { path: 'login', component: LoginComponent },
   { path: '**', component: PageNotFoundComponent }
