@@ -3,10 +3,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Schedule, ScheduleDescription } from 'projects/model/src/lib/model';
+import { getSafe } from 'projects/model/src/public-api';
 import { AppState } from 'projects/store/src/lib/state';
 import { SchedulesActions } from 'projects/store/src/lib/state/schedule';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { getSafe } from 'projects/tools/src/public-api';
 
 export interface ScheduleDialogData {
   billUid: string;

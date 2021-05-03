@@ -13,5 +13,6 @@ import { ModelComponent } from './model.component';
 })
 export class ModelModule { }
 
+export * from './helpers';
 export * from './model';
 export * from './services';

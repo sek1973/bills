@@ -1,5 +1,5 @@
 import { Directive, Input, OnInit } from '@angular/core';
-import { getSafe } from '../../helpers';
+import { getSafe } from 'projects/model/src/public-api';
 import { DescriptionProvider } from '../inputs/input-component-base';
 
 export interface ValueProvider {

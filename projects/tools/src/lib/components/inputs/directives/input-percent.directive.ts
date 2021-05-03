@@ -1,7 +1,7 @@
 import { PercentPipe } from '@angular/common';
 import { Directive, ElementRef, forwardRef, HostListener, Renderer2 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { percentToNumber, percentToString } from '../../../helpers';
+import { percentToNumber, percentToString } from 'projects/model/src/public-api';
 
 export const APP_PERCENT_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

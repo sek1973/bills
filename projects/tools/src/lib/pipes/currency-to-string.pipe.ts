@@ -1,6 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-
-import { currencyToString } from '../helpers';
+import { currencyToString } from 'projects/model/src/public-api';
 
 @Pipe({
   name: 'currencyToString'

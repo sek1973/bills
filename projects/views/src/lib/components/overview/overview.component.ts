@@ -3,8 +3,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
+import { addDays, getSafe } from 'projects/model/src/public-api';
 import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
-import { addDays, getSafe, TableComponent } from 'projects/tools/src/public-api';
+import { TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
 
 @Component({

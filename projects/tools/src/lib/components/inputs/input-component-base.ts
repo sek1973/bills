@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FieldDescription } from 'projects/model/src/lib/model';
-import { getSafe } from '../../helpers';
+import { getSafe } from 'projects/model/src/public-api';
 
 export interface DescriptionProvider {
   getDescriptionObj: (...path: string[]) => FieldDescription;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { currencyToNumber, stringToDate } from 'projects/tools/src/public-api';
 import { Observable } from 'rxjs';
+import { currencyToNumber, stringToDate } from '../helpers';
 import { Schedule } from '../model';
 
 @Injectable({
