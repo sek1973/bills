@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { ConfirmDialogComponent, ConfirmDialogInputType, ConfirmDialogModel, ConfirmDialogResponse } from '../components';
+import { ConfirmDialogComponent, ConfirmDialogInputType, ConfirmDialogModel, ConfirmDialogResponse } from '../components/confirm-dialog';
 
 @Injectable({
   providedIn: 'root'
