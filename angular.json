@@ -1,34 +1,37 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bills-java": {
+    "bills-java-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/bills-java",
-      "sourceRoot": "projects/bills-java/src",
+      "root": "projects/bills-java-app",
+      "sourceRoot": "projects/bills-java-app/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/bills-java",
-            "index": "projects/bills-java/src/index.html",
-            "main": "projects/bills-java/src/main.ts",
-            "polyfills": "projects/bills-java/src/polyfills.ts",
-            "tsConfig": "projects/bills-java/tsconfig.app.json",
+            "outputPath": "dist/bills-java-app",
+            "index": "projects/bills-java-app/src/index.html",
+            "main": "projects/bills-java-app/src/main.ts",
+            "polyfills": "projects/bills-java-app/src/polyfills.ts",
+            "tsConfig": "projects/bills-java-app/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "projects/bills-java/src/favicon.ico",
-              "projects/bills-java/src/assets"
+              "projects/bills-java-app/src/favicon.ico",
+              "projects/bills-java-app/src/assets"
             ],
             "styles": [
-              "projects/bills-java/src/styles.scss"
+              "projects/bills-java-app/src/styles.scss"
             ],
             "scripts": []
           },
@@ -36,8 +39,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/bills-java/src/environments/environment.ts",
-                  "with": "projects/bills-java/src/environments/environment.prod.ts"
+                  "replace": "projects/bills-java-app/src/environments/environment.ts",
+                  "with": "projects/bills-java-app/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -65,33 +68,33 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "bills-java:build"
+            "browserTarget": "bills-java-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "bills-java:build:production"
+              "browserTarget": "bills-java-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bills-java:build"
+            "browserTarget": "bills-java-app:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/bills-java/src/test.ts",
-            "polyfills": "projects/bills-java/src/polyfills.ts",
-            "tsConfig": "projects/bills-java/tsconfig.spec.json",
-            "karmaConfig": "projects/bills-java/karma.conf.js",
+            "main": "projects/bills-java-app/src/test.ts",
+            "polyfills": "projects/bills-java-app/src/polyfills.ts",
+            "tsConfig": "projects/bills-java-app/tsconfig.spec.json",
+            "karmaConfig": "projects/bills-java-app/karma.conf.js",
             "assets": [
-              "projects/bills-java/src/favicon.ico",
-              "projects/bills-java/src/assets"
+              "projects/bills-java-app/src/favicon.ico",
+              "projects/bills-java-app/src/assets"
             ],
             "styles": [
-              "projects/bills-java/src/styles.scss"
+              "projects/bills-java-app/src/styles.scss"
             ],
             "scripts": []
           }
@@ -100,9 +103,9 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/bills-java/tsconfig.app.json",
-              "projects/bills-java/tsconfig.spec.json",
-              "projects/bills-java/e2e/tsconfig.json"
+              "projects/bills-java-app/tsconfig.app.json",
+              "projects/bills-java-app/tsconfig.spec.json",
+              "projects/bills-java-app/e2e/tsconfig.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -112,12 +115,12 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "projects/bills-java/e2e/protractor.conf.js",
-            "devServerTarget": "bills-java:serve"
+            "protractorConfig": "projects/bills-java-app/e2e/protractor.conf.js",
+            "devServerTarget": "bills-java-app:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "bills-java:serve:production"
+              "devServerTarget": "bills-java-app:serve:production"
             }
           }
         }
@@ -284,5 +287,5 @@
       }
     }
   },
-  "defaultProject": "bills-java"
+  "defaultProject": "bills-java-app"
 }
