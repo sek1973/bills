@@ -12,7 +12,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BillsServiceImpl, PaymentsServiceImpl, SchedulesServiceImpl } from './services';
 import { AuthServiceImpl } from './services/auth.service';
-import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 
 @NgModule({
   declarations: [
@@ -30,8 +29,7 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
       maxAge: 25,
       logOnly: environment.production
     }),
-    EffectsModule.forRoot([]),
-    MatPasswordStrengthModule
+    EffectsModule.forRoot([])
   ],
   providers: [
     { provide: AuthService, useExisting: AuthServiceImpl },
