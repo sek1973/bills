@@ -96,7 +96,7 @@ import { ToolsComponent } from './tools.component';
     MatNativeDateModule,
     MatMomentDateModule,
     MatSelectModule,
-    MatMenuModule,
+    MatMenuModule
   ],
   exports: [
     InputBaseComponent,
