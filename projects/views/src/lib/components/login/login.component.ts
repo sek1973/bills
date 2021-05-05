@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     Validators.required,
     Validators.minLength(6),
   ]);
-  loginForm = new FormGroup({ email: this.userFormControl, password: this.passwordFormControl });
+  loginForm = new FormGroup({ user: this.userFormControl, password: this.passwordFormControl });
 
   formDescription = new Map<string, FieldDescription>([
     ['user', {
