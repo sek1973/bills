@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BrowserModule } from '@angular/platform-browser';
@@ -37,6 +38,7 @@ import { ViewsComponent } from './views.component';
     ToolsModule,
     MatDialogModule,
     MatProgressBarModule,
+    MatButtonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
