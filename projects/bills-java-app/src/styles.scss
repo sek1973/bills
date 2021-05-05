@@ -1,1 +1,31 @@
 /* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+.mat-input-element:disabled {
+  color: black;
+}
+
+.mat-select-disabled .mat-select-value {
+  color: black;
+}
+
+.snackbar-style-error {
+  color: red;
+  font-weight: bold;
+}

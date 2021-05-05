@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { PreviousUrlService } from './previous-url.service';
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class NavigationService {
 
   constructor(private router: Router, private previousUrlService: PreviousUrlService) {
