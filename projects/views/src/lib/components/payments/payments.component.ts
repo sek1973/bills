@@ -106,8 +106,10 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   }
 
   onRowActivated(row: Payment): void {
-    this.table.canDelete = row ? true : false;
-    this.table.canEdit = row ? true : false;
+    if (this.table) {
+      this.table.canDelete = row ? true : false;
+      this.table.canEdit = row ? true : false;
+    }
   }
 
   pasteData(): void {

@@ -101,8 +101,10 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   }
 
   onRowActivated(row: Schedule): void {
-    this.table.canDelete = row ? true : false;
-    this.table.canEdit = row ? true : false;
+    if (this.table) {
+      this.table.canDelete = row ? true : false;
+      this.table.canEdit = row ? true : false;
+    }
   }
 
   pasteData(): void {
