@@ -7,6 +7,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  isDevMode,
   OnDestroy,
   OnInit,
   Output,
@@ -386,7 +387,23 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
       type: 'text/csv;charset=utf-8;'
     });
     const fileName = this.exportFileName + '.csv';
-    window.navigator.msSaveOrOpenBlob(blob, fileName);
+    try {
+      window.navigator.msSaveOrOpenBlob(blob, fileName);
+    } catch (e) {
+      if (isDevMode()) { console.warn('window.navigator.msSaveOrOpenBlob not found', e); }
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      if (link.download !== undefined) {
+        link.setAttribute('href', URL.createObjectURL(blob));
+        link.setAttribute('download', fileName);
+        link.click();
+      } else {
+        csv = 'data:text/csv;charset=utf-8,' + csv;
+        window.open(encodeURI(csv));
+      }
+      document.body.removeChild(link);
+    }
   }
 
   public exportToCsv(): void {
