@@ -1,15 +1,12 @@
 import { AppState } from '../app/app.state';
 
+
 export const BillsSelectors = {
 
-  selectBillId: (state: AppState) => {
-    return state.currentBill;
-  },
+  selectBillId: (state: AppState) => state.data.currentBill,
 
-  selectBill: (state: AppState) => {
-    return state.bills.find(b => b.id === state.currentBill);
-  },
+  selectBill: (state: AppState) => state.data.bills.find(b => b.id === state.data.currentBill),
 
-  selectAll: (state: AppState) => state.bills,
+  selectAll: (state: AppState) => state.data.bills,
 
 };

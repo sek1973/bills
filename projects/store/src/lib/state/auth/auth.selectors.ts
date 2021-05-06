@@ -1,5 +1,5 @@
 import { AppState } from '../app/app.state';
 
 export const AuthSelectors = {
-  selectAuth: (state: AppState) => state.loggedIn
+  selectAuth: (state: AppState) => state.data.loggedIn
 };

@@ -1,20 +1,20 @@
 import { createReducer, on } from '@ngrx/store';
 import { AuthActions } from '.';
-import { appInitialState, AppState } from '../app/app.state';
+import { AppData, appInitialState } from '../app/app.state';
 
-export const authReducer = createReducer<AppState>(
+export const authReducer = createReducer<AppData>(
   appInitialState,
 
-  on(AuthActions.login, (state): AppState => {
+  on(AuthActions.login, (data: AppData) => {
     return {
-      ...state,
+      ...data,
       loggedIn: true
     };
   }),
 
-  on(AuthActions.logout, (state): AppState => {
+  on(AuthActions.logout, (data: AppData) => {
     return {
-      ...state,
+      ...data,
       loggedIn: false
     };
   })

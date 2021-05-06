@@ -11,7 +11,7 @@ import { StoreComponent } from './store.component';
     StoreComponent
   ],
   imports: [
-    StoreModule.forRoot(authReducer),
+    StoreModule.forRoot({ data: authReducer }),
     StoreDevtoolsModule.instrument({
       name: 'Bills',
       maxAge: 25,

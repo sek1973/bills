@@ -1,6 +1,6 @@
 import { Bill, Payment, Schedule } from 'projects/model/src/lib/model';
 
-export interface AppState {
+export interface AppData {
     loggedIn: boolean;
     bills: Bill[];
     currentBill: number;
@@ -11,7 +11,11 @@ export interface AppState {
     error?: string;
 }
 
-export const appInitialState: AppState = {
+export interface AppState {
+    data: AppData;
+}
+
+export const appInitialState: AppData = {
     loggedIn: false,
     bills: [],
     currentBill: -1,
