@@ -18,6 +18,7 @@ import {
   SchedulesComponent
 } from './components';
 import { ViewsComponent } from './views.component';
+import { ViewsRoutingModule } from './views.routing';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ViewsComponent } from './views.component';
     PageNotFoundComponent
   ],
   imports: [
+    ViewsRoutingModule,
     BrowserModule,
     ToolsModule,
     MatDialogModule,
