@@ -22,7 +22,10 @@ export class BillComponent implements OnInit, OnDestroy {
     private router: Router,
     private store: Store<AppState>) {
     this.subscription = this.store.select(BillsSelectors.selectBill)
-      .subscribe(bill => this.bill = bill);
+      .subscribe(bill => {
+        this.bill = bill;
+        this.handleData();
+      });
   }
 
   ngOnInit(): void {
@@ -34,8 +37,7 @@ export class BillComponent implements OnInit, OnDestroy {
     });
   }
 
-  private handleData(bills: Bill[], id: number): void {
-    this.bill = bills.find(b => b.id === id);
+  private handleData(): void {
     if (!this.bill) {
       this.createBill();
       this.editMode = true;

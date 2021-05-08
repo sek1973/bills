@@ -3,19 +3,6 @@ import { Bill } from 'projects/model/src/lib/model';
 
 export const BillsActions = {
 
-  setCurrentBill: createAction(
-    '[Bills] Set Current Bill',
-    props<{ currentBillId: number }>()
-  ),
-
-  clearCurrentBill: createAction(
-    '[Bills] Clear Current Bill'
-  ),
-
-  initializeCurrentBill: createAction(
-    '[Bills] Initialize Current Bill'
-  ),
-
   loadBills: createAction(
     '[Bills] Load'
   ),
