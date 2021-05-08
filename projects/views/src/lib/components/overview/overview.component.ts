@@ -20,7 +20,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     { name: 'deadline', header: 'Termin' },
     { name: 'sum', header: 'Kwota' }
   ];
-  loading = false;
   private dataSubscription = Subscription.EMPTY;
 
   @ViewChild('table')
@@ -48,8 +47,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   onRowClicked(row: Bill): void {
-    this.table.canDelete = row ? true : false;
-    this.table.canEdit = row ? true : false;
+    if (this.table) {
+      this.table.canDelete = row ? true : false;
+      this.table.canEdit = row ? true : false;
+    }
   }
 
   getValue(row: Bill, column: string): string {

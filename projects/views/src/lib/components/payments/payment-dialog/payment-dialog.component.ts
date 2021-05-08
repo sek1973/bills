@@ -22,7 +22,6 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   billId: number;
   dialogTitle: string;
   dialogMode: 'add' | 'edit' = 'add';
-  loading = true;
   canSave = false;
 
   form: FormGroup = new FormGroup({
@@ -44,7 +43,6 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     this.dialogTitle = (this.payment ? 'Edytuj' : 'Dodaj') + ' zrealizowaną płatność';
     this.dialogMode = this.payment ? 'edit' : 'add';
     this.form.statusChanges.subscribe(status => this.setEditStatus(status));
-    this.loading = false;
   }
 
   ngOnInit(): void { }

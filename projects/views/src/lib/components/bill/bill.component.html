@@ -19,22 +19,14 @@
 
   <app-bill-edit class="bill-details"
                  [editMode]="editMode"
-                 [newBill]="newBill"
-                 (loading)="onLoading($event)"></app-bill-edit>
+                 [newBill]="newBill">
+  </app-bill-edit>
 
   <app-schedules *ngIf="!newBill"
                  class="bill-schedules">
   </app-schedules>
 
   <app-payments *ngIf="!newBill"
-                class="bill-payments"
-                (loading)="onLoading($event)"></app-payments>
+                class="bill-payments">
+  </app-payments>
 </div>
-
-<app-spinner color="primary"
-             mode="indeterminate"
-             [value]="50"
-             [backdropEnabled]="true"
-             [positionGloballyCenter]="true"
-             [displayProgressSpinner]="loading">
-</app-spinner>

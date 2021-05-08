@@ -19,6 +19,7 @@ import {
 } from './components';
 import { ViewsComponent } from './views.component';
 import { ViewsRoutingModule } from './views.routing';
+import { RootComponent } from './components/root/root.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { ViewsRoutingModule } from './views.routing';
     ScheduleDialogComponent,
     PaymentDialogComponent,
     LoginComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    RootComponent
   ],
   imports: [
     ViewsRoutingModule,

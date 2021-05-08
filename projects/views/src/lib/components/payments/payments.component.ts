@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Payment } from 'projects/model/src/lib/model';
@@ -17,7 +17,6 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
 export class PaymentsComponent implements OnInit, OnDestroy {
   @ViewChild('table', { read: TableComponent })
   table!: TableComponent<Payment>;
-  @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   activeRow?: Payment;
 

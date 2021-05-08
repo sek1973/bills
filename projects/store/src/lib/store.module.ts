@@ -3,7 +3,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'projects/bills-java-app/src/environments/environment';
-import { authReducer } from './state/auth/auth.reducers';
+import { appReducer } from './state';
 import { StoreComponent } from './store.component';
 
 @NgModule({
@@ -11,7 +11,7 @@ import { StoreComponent } from './store.component';
     StoreComponent
   ],
   imports: [
-    StoreModule.forRoot({ data: authReducer }),
+    StoreModule.forRoot({ data: appReducer }),
     StoreDevtoolsModule.instrument({
       name: 'Bills',
       maxAge: 25,

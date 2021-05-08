@@ -16,7 +16,6 @@ export class BillComponent implements OnInit, OnDestroy {
   editMode = false;
   newBill = false;
   bill?: Bill;
-  loading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -41,11 +40,9 @@ export class BillComponent implements OnInit, OnDestroy {
       this.createBill();
       this.editMode = true;
       this.newBill = true;
-      this.loading = false;
     } else {
       this.editMode = false;
       this.newBill = false;
-      this.loading = false;
     }
   }
 
@@ -60,10 +57,6 @@ export class BillComponent implements OnInit, OnDestroy {
   getTitle(): string {
     const title = this.bill?.name;
     return title || 'Rachunek bez nazwy';
-  }
-
-  onLoading(event: boolean): void {
-    this.loading = event;
   }
 
 }

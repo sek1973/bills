@@ -18,7 +18,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, SortDirection } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { fromEvent, Observable, of, Subscription } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
@@ -214,13 +214,8 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
     // workaround for mixed context (numbers & strings) sorting - see: https://github.com/angular/material2/issues/9966:
     this._dataSource.sortingDataAccessor = (data, header) => data[header as keyof T];
 
-    this.loadingSubscription = this._dataSource.loading$
-      .subscribe(val => {
-        if (val === false && this.table) {
-          this.activeRow = undefined;
-          this.rowActivated.emit(undefined);
-        }
-      });
+    this.activeRow = undefined;
+    this.rowActivated.emit(undefined);
   }
 
   ngAfterViewInit(): void {
@@ -260,13 +255,6 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
     } else {
       return defaultTemplate;
     }
-  }
-
-  isDataSourceLoading(): Observable<boolean> {
-    if (this.dataSource) {
-      return this.dataSource.loading$;
-    }
-    return of(false);
   }
 
   applyFilter(filterValue: string): void {

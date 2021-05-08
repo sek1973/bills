@@ -23,7 +23,6 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   billUid: string;
   dialogTitle: string;
   dialogMode: 'add' | 'edit' = 'add';
-  loading = true;
   canSave = false;
 
   form: FormGroup = new FormGroup({
@@ -42,7 +41,6 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     this.dialogTitle = (this.schedule ? 'Edytuj' : 'Dodaj') + ' planowaną płatność';
     this.dialogMode = this.schedule ? 'edit' : 'add';
     this.form.statusChanges.subscribe(status => this.setEditStatus(status));
-    this.loading = false;
   }
 
   ngOnInit(): void { }

@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { BillsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, validateBillName } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap } from 'rxjs/operators';
+import { AppState } from '../app';
 import { BillApiActions } from './bill-api.actions';
 import { BillDetailsActions } from './bill-details.actions';
 import { BillsActions } from './bill.actions';
@@ -15,7 +17,8 @@ export class BillEffects {
   constructor(
     private actions$: Actions,
     private billsService: BillsService,
-    private confirmationService: ConfirmationService) { }
+    private confirmationService: ConfirmationService,
+    private store: Store<AppState>) { }
 
   loadBills$ = createEffect(() => {
     return this.actions$

@@ -8,6 +8,7 @@ export interface AppData {
     currentPayment: number;
     schedules: Schedule[];
     currentSchedule: number;
+    loading: boolean;
     error?: string;
 }
 
@@ -23,5 +24,6 @@ export const appInitialState: AppData = {
     currentPayment: -1,
     schedules: [],
     currentSchedule: -1,
+    loading: false,
     error: undefined
 };

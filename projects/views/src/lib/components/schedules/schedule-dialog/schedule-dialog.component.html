@@ -1,37 +1,36 @@
-    <div class="dialog-title">
-      {{dialogTitle}}
-    </div>
-    <mat-progress-bar *ngIf="loading"
-                      mode="indeterminate">
-    </mat-progress-bar>
-    <ng-container>
-      <app-input-date [formGroup]="form"
-                      [path]="['date']"
+<div class="dialog-title">
+  {{dialogTitle}}
+</div>
+
+<ng-container>
+  <app-input-date [formGroup]="form"
+                  [path]="['date']"
+                  [descriptionProvider]="getDescriptionProvider()">
+  </app-input-date>
+  <app-input-currency [formGroup]="form"
+                      [path]="['sum']"
                       [descriptionProvider]="getDescriptionProvider()">
-      </app-input-date>
-      <app-input-currency [formGroup]="form"
-                          [path]="['sum']"
-                          [descriptionProvider]="getDescriptionProvider()">
-      </app-input-currency>
-      <app-input-text [formGroup]="form"
-                      [path]="['remarks']"
-                      [descriptionProvider]="getDescriptionProvider()">
-      </app-input-text>
-    </ng-container>
-    <div class="buttons-panel">
-      <button mat-raised-button
-              color="warn"
-              class="toolbar-button"
-              (click)="closeDialog()">Anuluj</button>
-      <button *ngIf="dialogMode==='edit'"
-              mat-raised-button
-              color="primary"
-              class="toolbar-button"
-              [disabled]="!canSave"
-              (click)="cloneData()">Klonuj</button>
-      <button mat-raised-button
-              color="primary"
-              class="toolbar-button"
-              [disabled]="!canSave"
-              (click)="saveData()">Zapisz</button>
-    </div>
+  </app-input-currency>
+  <app-input-text [formGroup]="form"
+                  [path]="['remarks']"
+                  [descriptionProvider]="getDescriptionProvider()">
+  </app-input-text>
+</ng-container>
+
+<div class="buttons-panel">
+  <button mat-raised-button
+          color="warn"
+          class="toolbar-button"
+          (click)="closeDialog()">Anuluj</button>
+  <button *ngIf="dialogMode==='edit'"
+          mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          [disabled]="!canSave"
+          (click)="cloneData()">Klonuj</button>
+  <button mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          [disabled]="!canSave"
+          (click)="saveData()">Zapisz</button>
+</div>

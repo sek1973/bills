@@ -43,8 +43,7 @@
   </button>
 
   <ng-container *ngIf="exportable">
-    <button [disabled]="isDataSourceLoading() | async"
-            mat-menu-item
+    <button mat-menu-item
             matTooltip="Drukuj"
             class="menu-button"
             (click)="onPrintClicked($event)">
@@ -53,8 +52,7 @@
       Drukuj
     </button>
 
-    <button [disabled]="isDataSourceLoading() | async"
-            mat-menu-item
+    <button mat-menu-item
             class="material-icons"
             matTooltip="Eksportuj"
             class="menu-button"
@@ -95,14 +93,13 @@
 
     <div>
       <ng-container [ngTemplateOutlet]="middleToolbarPanelTemplate || null"
-                    [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow, $loading: isDataSourceLoading()}">
+                    [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow}">
       </ng-container>
     </div>
 
     <mat-form-field class="filter-field"
                     *ngIf="showFilter">
       <input matInput
-             [disabled]="isDataSourceLoading() | async"
              #filterInput
              (click)="$event.stopPropagation();"
              placeholder="Filter">
@@ -142,16 +139,14 @@
         </button>
 
         <ng-container *ngIf="exportable">
-          <button [disabled]="isDataSourceLoading() | async"
-                  mat-icon-button
+          <button mat-icon-button
                   matTooltip="Drukuj"
                   (click)="onPrintClicked($event)">
             <span class="material-icons"
                   inline=true>print</span>
           </button>
 
-          <button [disabled]="isDataSourceLoading() | async"
-                  mat-icon-button
+          <button mat-icon-button
                   matTooltip="Eksportuj"
                   (click)="onExportClicked($event)">
             <span class="material-icons"
@@ -171,7 +166,7 @@
 
       <ng-container *ngIf="rightToolbarPanelTemplate"
                     [ngTemplateOutlet]="rightToolbarPanelTemplate"
-                    [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow, $loading: isDataSourceLoading()}">
+                    [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow}">
       </ng-container>
 
       <div *ngIf="menuVisible"
@@ -186,10 +181,6 @@
     </div>
 
   </div>
-
-  <mat-progress-bar *ngIf="isDataSourceLoading() | async"
-                    mode="indeterminate">
-  </mat-progress-bar>
 
   <div class="table-container">
     <table *ngIf="dataSource"

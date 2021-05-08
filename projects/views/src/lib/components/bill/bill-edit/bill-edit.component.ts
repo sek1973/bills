@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -23,7 +23,6 @@ export class BillEditComponent implements OnInit {
   get editMode(): boolean {
     return this._editMode;
   }
-  @Output() loading: EventEmitter<boolean> = new EventEmitter<boolean>();
   canSave = false;
 
   unitEnumItems: SelectItem<Unit>[] = [];
@@ -93,9 +92,7 @@ export class BillEditComponent implements OnInit {
   }
 
   editBill(): void {
-    this.loading.emit(true);
     this.editMode = true;
-    this.loading.emit(false);
   }
 
   payBill(): void {
