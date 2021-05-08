@@ -87,7 +87,7 @@ export class BillEffects {
   payBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillsActions.deleteBill, BillDetailsActions.payBill),
+        ofType(BillsActions.payBill, BillDetailsActions.payBill),
         filter(action => action.bill.id >= 0),
         mergeMap(action => this.confirmationService
           .confirm('Rachunek opłacony',
