@@ -21,8 +21,6 @@ export abstract class BillsService {
 
   abstract getBills(): Bill[];
 
-  abstract fetchBills(): Observable<Bill[]>;
-
   private createBillData(bill: any): Bill {
     if (bill.id === -1) {
       const bills = this.getBills();
