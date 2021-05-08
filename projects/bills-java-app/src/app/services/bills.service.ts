@@ -38,8 +38,8 @@ function createBill(
 
 const bills: Bill[] = [
   createBill(1, 1, 'Gaz', 'Opłaty za gaz', 'https://www.wp.pl/', 'gaz_login', 'gaz_haslo', 199.50, 0.5),
-  createBill(1, 1, 'Prąd', 'Opłaty za prąd', 'https://www.wp.pl/', 'prad_login', 'prad_haslo', 45.70, 0.5),
-  createBill(1, 1, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 'woda_haslo', 25, 0.66),
+  createBill(2, 2, 'Prąd', 'Opłaty za prąd', 'https://www.wp.pl/', 'prad_login', 'prad_haslo', 45.70, 0.5),
+  createBill(3, 3, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 'woda_haslo', 25, 0.66),
 ];
 
 @Injectable({
