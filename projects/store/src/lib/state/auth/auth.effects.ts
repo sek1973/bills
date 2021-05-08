@@ -28,12 +28,18 @@ export class AuthEffects {
           .pipe(
             map(() => this.snackBar.open('Zalogowano do aplikacji!', 'Ukryj', { duration: 3000 })),
             map(() => this.navigationService.goToPreviousPage('/zestawienie')),
-            map(() => this.store.dispatch(BillsActions.loadBills())),
             map(() => AuthActions.loginSuccess({ user: userData.user })),
             catchError(error => of(AuthActions.loginFailure({ error })))
           )
         )
       );
+  });
+
+  loginSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(AuthActions.login),
+        switchMap(() => of(BillsActions.loadBills())));
   });
 
   logout$ = createEffect(() => {
