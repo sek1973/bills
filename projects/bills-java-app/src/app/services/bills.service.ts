@@ -16,7 +16,7 @@ export abstract class BillsServiceImpl extends BillsService {
     super(paymentsService, schedulesService);
   }
 
-  load(): Observable<Bill[]> { return of([]); }
+  load(): Observable<Bill[]> { return of([]).pipe(delay(1000)); }
 
   fetchItem(id: number): Observable<Bill | null> { return of(null).pipe(delay(1000)); }
 

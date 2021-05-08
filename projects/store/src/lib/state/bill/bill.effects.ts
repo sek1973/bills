@@ -24,11 +24,12 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillsActions.loadBills, BillDetailsActions.loadBills),
-        mergeMap(() => this.billsService.load()
-          .pipe(
-            map(bills => BillApiActions.loadBillsSuccess({ bills })),
-            catchError(error => of(BillApiActions.loadBillsFailure({ error })))
-          )
+        mergeMap(() =>
+          this.billsService.load()
+            .pipe(
+              map(bills => BillApiActions.loadBillsSuccess({ bills })),
+              catchError(error => of(BillApiActions.loadBillsFailure({ error })))
+            )
         )
       );
   });

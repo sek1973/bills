@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppSelectors, AppState } from 'projects/store/src/lib/state';
-import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +8,7 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./root.component.css']
 })
 export class RootComponent implements OnInit {
-  public loading$ = this.store.select(AppSelectors.selectLoading).pipe(map(val => { console.log('loding value: ', val); return val; }));
+  public loading$ = this.store.select(AppSelectors.selectLoading);
 
   constructor(private store: Store<AppState>) { }
 

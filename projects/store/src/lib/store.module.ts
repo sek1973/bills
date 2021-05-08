@@ -3,7 +3,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'projects/bills-java-app/src/environments/environment';
-import { appReducer } from './state';
+import { appReducer, BillEffects } from './state';
 import { StoreComponent } from './store.component';
 
 @NgModule({
@@ -17,7 +17,7 @@ import { StoreComponent } from './store.component';
       maxAge: 25,
       logOnly: environment.production
     }),
-    EffectsModule.forRoot([])
+    EffectsModule.forRoot([BillEffects])
   ],
   exports: [
     StoreComponent
