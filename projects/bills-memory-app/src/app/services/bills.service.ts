@@ -36,16 +36,16 @@ function createBill(
   return result;
 }
 
-const bills: Bill[] = [
-  createBill(1, 1, 'Gaz', 'Opłaty za gaz', 'https://www.wp.pl/', 'gaz_login', 'gaz_haslo', 199.50, 0.5),
-  createBill(2, 2, 'Prąd', 'Opłaty za prąd', 'https://www.wp.pl/', 'prad_login', 'prad_haslo', 45.70, 0.5),
-  createBill(3, 3, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 'woda_haslo', 25, 0.66),
-];
-
 @Injectable({
   providedIn: 'root',
 })
 export class BillsServiceImpl extends BillsService {
+
+  private bills: Bill[] = [
+    createBill(1, 1, 'Gaz', 'Opłaty za gaz', 'https://www.wp.pl/', 'gaz_login', 'gaz_haslo', 199.50, 0.5),
+    createBill(2, 2, 'Prąd', 'Opłaty za prąd', 'https://www.wp.pl/', 'prad_login', 'prad_haslo', 45.70, 0.5),
+    createBill(3, 3, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 'woda_haslo', 25, 0.66),
+  ];
 
   constructor(
     paymentsService: PaymentsServiceImpl,
@@ -54,27 +54,28 @@ export class BillsServiceImpl extends BillsService {
   }
 
   load(): Observable<Bill[]> {
-    return of(bills).pipe(delay(1000));
+    return of(this.bills).pipe(delay(1000));
   }
 
   fetchItem(id: number): Observable<Bill | null> {
-    const result = bills.find(b => b.id === id);
+    const result = this.bills.find(b => b.id === id);
     return of(result || null).pipe(delay(1000));
   }
 
-  getBills(): Bill[] { return bills; }
+  getBills(): Bill[] { return this.bills; }
 
   add(bill: Bill): Observable<number> {
-    const result = this.findNextId();
-    bill.id = result;
-    bills.push(bill);
-    return of(result).pipe(delay(1000));
+    const id = this.findNextId();
+    const result = { ...bill, id };
+    const bills = [...this.bills, result];
+    this.bills = bills;
+    return of(id).pipe(delay(1000));
   }
 
   update(bill: Bill): Observable<boolean> {
-    const index = bills.findIndex(b => b.id === bill.id);
+    const index = this.bills.findIndex(b => b.id === bill.id);
     if (index > -1) {
-      bills[index] = bill;
+      this.bills[index] = bill;
       return of(true).pipe(delay(1000));
     }
     return of(false).pipe(delay(1000));
@@ -85,7 +86,7 @@ export class BillsServiceImpl extends BillsService {
   }
 
   private findNextId(): number {
-    const ids: number[] = bills.map(b => b.id);
+    const ids: number[] = this.bills.map(b => b.id);
     ids.sort((a: number, b: number) => a > b ? 1 : -1);
     return ids.length ? ids[ids.length - 1] + 1 : 1;
   }
