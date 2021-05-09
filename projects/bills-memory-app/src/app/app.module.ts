@@ -1,14 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AuthServiceImpl, BillsServiceImpl, PaymentsServiceImpl, SchedulesServiceImpl } from 'projects/bills-java-app/src/app/services';
 import { AuthService, BillsService, PaymentsService, SchedulesService } from 'projects/model/src/public-api';
 import { BillsStoreModule } from 'projects/store/src/public-api';
 import { ToolsModule } from 'projects/tools/src/public-api';
 import { ViewsModule } from 'projects/views/src/public-api';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
+import { AuthServiceImpl, BillsServiceImpl, PaymentsServiceImpl, SchedulesServiceImpl } from './services';
 
 @NgModule({
   declarations: [

@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { BillsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, validateBillName } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { AppState } from '../app';
 import { BillApiActions } from './bill-api.actions';
 import { BillDetailsActions } from './bill-details.actions';
@@ -60,6 +60,13 @@ export class BillEffects {
             )
         )
       );
+  });
+
+  createBillSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(BillApiActions.createBillSuccess),
+        switchMap(() => of(BillsActions.loadBills())));
   });
 
   deleteBill$ = createEffect(() => {
