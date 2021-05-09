@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { BillsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, validateBillName } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
-import { AppState } from '../app';
 import { BillApiActions } from './bill-api.actions';
-import { BillDetailsActions } from './bill-details.actions';
 import { BillsActions } from './bill.actions';
 
 @Injectable()
@@ -18,12 +17,13 @@ export class BillEffects {
     private actions$: Actions,
     private billsService: BillsService,
     private confirmationService: ConfirmationService,
-    private store: Store<AppState>) { }
+    private snackBar: MatSnackBar,
+    private router: Router) { }
 
   loadBills$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillsActions.loadBills, BillDetailsActions.loadBills),
+        ofType(BillsActions.loadBills),
         mergeMap(() =>
           this.billsService.load()
             .pipe(
@@ -37,7 +37,7 @@ export class BillEffects {
   updateBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillsActions.updateBill, BillDetailsActions.updateBill),
+        ofType(BillsActions.updateBill),
         concatMap(action =>
           this.billsService.update(action.bill)
             .pipe(
@@ -51,7 +51,7 @@ export class BillEffects {
   createBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillsActions.createBill, BillDetailsActions.createBill),
+        ofType(BillsActions.createBill),
         concatMap(action =>
           this.billsService.add(action.bill)
             .pipe(
@@ -66,13 +66,15 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillApiActions.createBillSuccess),
+        map(() => this.snackBar.open('Utworzono nowy rachunek', 'Ukryj', { duration: 3000 })),
+        map(() => this.router.navigate(['/zestawienie'])),
         switchMap(() => of(BillsActions.loadBills())));
   });
 
   deleteBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillsActions.deleteBill, BillDetailsActions.deleteBill),
+        ofType(BillsActions.deleteBill),
         filter(action => action.bill.id >= 0),
         mergeMap(action => this.confirmationService
           .confirm('Usuń rachunek',
@@ -94,7 +96,7 @@ export class BillEffects {
   payBill$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(BillsActions.payBill, BillDetailsActions.payBill),
+        ofType(BillsActions.payBill),
         filter(action => action.bill.id >= 0),
         mergeMap(action => this.confirmationService
           .confirm('Rachunek opłacony',

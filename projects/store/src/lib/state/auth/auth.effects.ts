@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { AuthService } from 'projects/model/src/public-api';
 import { NavigationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
-import { AppState } from '../app';
 import { AuthActions } from '../auth';
 import { BillsActions } from '../bill';
 
@@ -17,7 +15,6 @@ export class AuthEffects {
     private actions$: Actions,
     private authService: AuthService,
     private snackBar: MatSnackBar,
-    private store: Store<AppState>,
     private navigationService: NavigationService) { }
 
   login$ = createEffect(() => {

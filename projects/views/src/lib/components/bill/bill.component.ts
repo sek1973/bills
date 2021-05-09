@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
-import { AppState, BillDetailsActions, BillsSelectors } from 'projects/store/src/lib/state';
+import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -33,7 +33,7 @@ export class BillComponent implements OnInit, OnDestroy {
     this.subscription = this.route.paramMap.subscribe(param => {
       const val = param.get('id');
       id = val?.length ? Number.parseInt(val, undefined) : -1;
-      this.store.dispatch(BillDetailsActions.setCurrentBill({ billId: id }));
+      this.store.dispatch(BillsActions.setCurrentBill({ billId: id }));
     });
   }
 

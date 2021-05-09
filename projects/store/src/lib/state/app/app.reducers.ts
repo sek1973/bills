@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
 import { AuthActions } from '../auth';
-import { BillApiActions, BillDetailsActions, BillsActions } from '../bill';
+import { BillApiActions, BillsActions } from '../bill';
 import { AppData, appInitialState } from './app.state';
 
 export const appReducer = createReducer<AppData>(
@@ -43,8 +43,12 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: false };
   }),
 
-  on(BillDetailsActions.setCurrentBill, (data: AppData, action: { billId: number }) => {
+  on(BillsActions.setCurrentBill, (data: AppData, action: { billId: number }) => {
     return { ...data, currentBill: action.billId, loading: false };
+  }),
+
+  on(BillsActions.createBill, (data: AppData) => {
+    return { ...data, loading: true };
   }),
 
 );
