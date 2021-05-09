@@ -50,14 +50,13 @@ export class InputPercentDirective implements ControlValueAccessor {
       // Allow: Ctrl+X
       (event.key.toUpperCase() === 'X' && (event.ctrlKey || event.metaKey)) ||
       // Allow: home, end, left, right
-      (['Home', 'End', 'ArrowLeft', 'ArrowRight'].indexOf(event.key)) !== -1) {
+      (['Home', 'End', 'ArrowLeft', 'ArrowRight'].indexOf(event.key)) !== -1 ||
+      // any digit
+      (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(event.key)) !== -1) {
       // let it happen, don't do anything
       return;
     }
-    // number
-    if (event.shiftKey || ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].indexOf(event.key) !== -1) {
-      event.preventDefault();
-    }
+    event.preventDefault();
   }
 
   constructor(
