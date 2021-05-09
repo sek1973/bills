@@ -59,7 +59,9 @@ export abstract class BillsServiceImpl extends BillsService {
 
   getBills(): Bill[] { return bills; }
 
-  add(bill: Bill): Observable<number> { return of(0).pipe(delay(1000)); }
+  add(bill: Bill): Observable<number> {
+    return of(0).pipe(delay(1000));
+  }
 
   update(bill: Bill): Observable<void> { return of(); }
 
