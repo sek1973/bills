@@ -7,7 +7,7 @@ import { SchedulesServiceImpl } from './schedules.service';
 @Injectable({
   providedIn: 'root',
 })
-export abstract class BillsServiceImpl extends BillsService {
+export class BillsServiceImpl extends BillsService {
 
   constructor(
     paymentsService: PaymentsServiceImpl,

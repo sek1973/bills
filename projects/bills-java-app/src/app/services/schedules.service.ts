@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export abstract class SchedulesServiceImpl extends SchedulesService {
+export class SchedulesServiceImpl extends SchedulesService {
 
   constructor() { super(); }
 

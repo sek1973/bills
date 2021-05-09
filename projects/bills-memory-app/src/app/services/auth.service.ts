@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
-export abstract class AuthServiceImpl extends AuthService {
+export class AuthServiceImpl extends AuthService {
   private authStateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public authState$: Observable<boolean> = this.authStateSubject.asObservable();
 
