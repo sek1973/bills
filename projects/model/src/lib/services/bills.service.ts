@@ -52,9 +52,9 @@ export abstract class BillsService {
 
   abstract add(bill: Bill): Observable<number>;
 
-  abstract update(bill: Bill): Observable<void>;
+  abstract update(bill: Bill): Observable<boolean>;
 
-  abstract delete(billId: number): Observable<void>;
+  abstract delete(billId: number): Observable<boolean>;
 
   calculateNextDeadline(bill: Bill): Date {
     const result = bill.deadline;
@@ -77,7 +77,7 @@ export abstract class BillsService {
     return result;
   }
 
-  pay(bill: Bill, paid: number): Observable<void> {
+  pay(bill: Bill, paid: number): Observable<boolean> {
     const payment = this.createPaymentData(bill, paid);
     const billCopy = this.createBillData(bill);
     let schedule: Schedule | undefined;

@@ -16,9 +16,9 @@ export abstract class PaymentsService {
 
   abstract add(payment: Payment): Observable<number>;
 
-  abstract update(payment: Payment): Observable<void>;
+  abstract update(payment: Payment): Observable<boolean>;
 
-  abstract delete(payment: Payment): Observable<void>;
+  abstract delete(payment: Payment): Observable<boolean>;
 
   importPayments(data: string, billId: number, lineSeparator: string = '\n', columnSeparator: string = '\t'): Observable<string> {
     const errors: string[] = [];

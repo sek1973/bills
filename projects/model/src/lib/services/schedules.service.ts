@@ -16,9 +16,9 @@ export abstract class SchedulesService {
 
   abstract add(schedule: Schedule, billId: number): Observable<number>;
 
-  abstract update(schedule: Schedule, billId: number): Observable<void>;
+  abstract update(schedule: Schedule, billId: number): Observable<boolean>;
 
-  abstract delete(schedule: Schedule, billId: number): Observable<void>;
+  abstract delete(schedule: Schedule, billId: number): Observable<boolean>;
 
   importSchedules(data: string, lineSeparator: string = '\n', columnSeparator: string = '\t'): { schedules: Schedule[], errors: string[] } {
     const schedules: Schedule[] = [];
