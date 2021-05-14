@@ -81,8 +81,16 @@ export class BillsServiceImpl extends BillsService {
     return of(false).pipe(delay(1000));
   }
 
-  delete(billId: number): Observable<false> {
-    return of();
+  delete(billId: number): Observable<boolean> {
+    const id = this.bills.findIndex(b => b.id === billId);
+    if (id >= 0) {
+      const bills = [...this.bills];
+      bills.splice(id, 1);
+      this.bills = bills;
+      return of(true).pipe(delay(1000));
+    } else {
+      return of(false).pipe(delay(1000));
+    }
   }
 
   private findNextId(): number {

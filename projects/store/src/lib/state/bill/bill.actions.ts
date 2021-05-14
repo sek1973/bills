@@ -22,6 +22,11 @@ export const BillsActions = {
     props<{ bill: Bill }>()
   ),
 
+  deleteBillConfirmed: createAction(
+    '[Bills] Delete Bill Confirmed',
+    props<{ bill: Bill }>()
+  ),
+
   payBill: createAction(
     '[Bills] Pay Bill',
     props<{ bill: Bill }>()

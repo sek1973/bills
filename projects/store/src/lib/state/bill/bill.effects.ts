@@ -85,12 +85,29 @@ export class BillEffects {
             'Nazwa rachunku', 'Nazwa rachunku')
           .pipe(
             filter(response => !!response),
-            mergeMap(() => this.billsService.delete(action.bill.id)),
-            map(() => BillApiActions.deleteBillSuccess({ billId: action.bill.id })),
-            catchError(error => of(BillApiActions.deleteBillFailure({ error })))
+            map(() => BillsActions.deleteBillConfirmed({ bill: action.bill }))
           )
         )
       );
+  });
+
+  deleteBillConfirmed$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(BillsActions.deleteBillConfirmed),
+        switchMap(action => this.billsService.delete(action.bill.id)
+          .pipe(map(() => BillApiActions.deleteBillSuccess({ billId: action.bill.id })),
+            catchError(error => of(BillApiActions.deleteBillFailure({ error })))
+          )));
+  });
+
+  deleteBillSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(BillApiActions.deleteBillSuccess),
+        map(() => this.snackBar.open('Usunięto rachunek', 'Ukryj', { duration: 3000 })),
+        map(() => this.router.navigate(['/zestawienie'])),
+        switchMap(() => of(BillsActions.loadBills())));
   });
 
   payBill$ = createEffect(() => {

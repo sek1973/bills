@@ -51,4 +51,12 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: true };
   }),
 
+  on(BillsActions.deleteBill, (data: AppData) => {
+    return { ...data, loading: false };
+  }),
+
+  on(BillsActions.deleteBillConfirmed, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
 );
