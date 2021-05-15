@@ -50,9 +50,12 @@
 
   <ng-template #expandedRowTemplate
                let-row="row">
-    <app-bill-edit [newBill]="false"
+    <app-bill-edit [bill]="row"
+                   [bills]="data"
+                   [newBill]="false"
                    [editMode]="false"
-                   class="bill-details"></app-bill-edit>
+                   class="bill-details">
+    </app-bill-edit>
   </ng-template>
 
 </app-table>

@@ -66,16 +66,14 @@ export class BillsServiceImpl extends BillsService {
 
   add(bill: Bill): Observable<number> {
     const id = this.findNextId();
-    const result = { ...bill, id };
-    const bills = [...this.bills, result];
-    this.bills = bills;
+    this.modifyBills((bills: Bill[]) => bills.push({ ...bill, id }));
     return of(id).pipe(delay(1000));
   }
 
   update(bill: Bill): Observable<boolean> {
     const index = this.bills.findIndex(b => b.id === bill.id);
     if (index > -1) {
-      this.bills[index] = bill;
+      this.modifyBills((bills: Bill[]) => bills[index] = bill);
       return of(true).pipe(delay(1000));
     }
     return of(false).pipe(delay(1000));
@@ -84,13 +82,17 @@ export class BillsServiceImpl extends BillsService {
   delete(billId: number): Observable<boolean> {
     const id = this.bills.findIndex(b => b.id === billId);
     if (id >= 0) {
-      const bills = [...this.bills];
-      bills.splice(id, 1);
-      this.bills = bills;
+      this.modifyBills((bills: Bill[]) => bills.splice(id, 1));
       return of(true).pipe(delay(1000));
     } else {
       return of(false).pipe(delay(1000));
     }
+  }
+
+  private modifyBills(operation: (bills: Bill[]) => void): void {
+    const bills = [...this.bills];
+    operation(bills);
+    this.bills = bills;
   }
 
   private findNextId(): number {

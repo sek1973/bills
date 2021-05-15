@@ -48,6 +48,16 @@ export class BillEffects {
       );
   });
 
+  updateBillSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(BillApiActions.updateBillSuccess),
+        map(() => this.snackBar.open('Zapisano zmiany dla rachunku', 'Ukryj', { duration: 3000 })),
+        map(() => this.router.navigate(['/zestawienie'])),
+        switchMap(() => of(BillsActions.loadBills())));
+  });
+
+
   createBill$ = createEffect(() => {
     return this.actions$
       .pipe(
