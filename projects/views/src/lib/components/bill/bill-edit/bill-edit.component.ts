@@ -60,7 +60,7 @@ export class BillEditComponent implements OnInit {
 
   private loadBill(bill?: Bill): void {
     this.bill = bill ? bill : new Bill();
-    this.form.patchValue({
+    const value = {
       id: this.bill.id,
       name: this.bill.name,
       description: this.bill.description,
@@ -74,11 +74,12 @@ export class BillEditComponent implements OnInit {
       url: this.bill.url,
       login: this.bill.login,
       password: this.bill.password
-    });
+    };
+    this.form.patchValue(value, { emitEvent: false, onlySelf: true });
+    this.form.markAllAsTouched();
   }
 
   private init(): void {
-    this.setEditStatus(this.form.status);
     this.billSubscription.unsubscribe();
     this.billSubscription = this.store.select(BillsSelectors.selectBill)
       .subscribe(bill => this.loadBill(bill));
