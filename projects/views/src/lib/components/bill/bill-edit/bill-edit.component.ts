@@ -117,7 +117,7 @@ export class BillEditComponent implements OnInit {
       this.router.navigate(['/zestawienie']);
     } else {
       this.editMode = false;
-      this.loadBill();
+      this.loadBill(this.bill);
     }
   }
 
