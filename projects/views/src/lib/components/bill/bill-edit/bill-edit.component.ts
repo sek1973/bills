@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
-import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
+import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 import { SelectItem, unitsToSelectItems, validateDistinctBillName } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
@@ -13,22 +13,24 @@ import { Subscription } from 'rxjs';
   templateUrl: './bill-edit.component.html',
   styleUrls: ['./bill-edit.component.scss']
 })
-export class BillEditComponent implements OnInit {
-  bill!: Bill;
+export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() bill?: Bill;
+  @Input() bills?: Bill[];
   @Input() newBill: boolean = false;
   private _editMode = false;
+
   @Input() set editMode(val: boolean) {
     this._editMode = val;
   }
   get editMode(): boolean {
     return this._editMode;
   }
+
   canSave = false;
 
   unitEnumItems: SelectItem<Unit>[] = [];
 
-  private billSubscription = Subscription.EMPTY;
-  private billsSubscription = Subscription.EMPTY;
+  private statusSubscription = Subscription.EMPTY;
 
   form: FormGroup = new FormGroup({
     uid: new FormControl(),
@@ -50,47 +52,47 @@ export class BillEditComponent implements OnInit {
   constructor(
     private store: Store<AppState>,
     private router: Router) {
-    this.form.statusChanges.subscribe({ next: status => this.setEditStatus(status) });
+    this.statusSubscription = this.form.statusChanges
+      .subscribe({ next: status => this.setEditStatus(status) });
     this.setUnitEnumItems();
   }
 
-  ngOnInit(): void {
-    this.init();
+  ngOnInit(): void { }
+
+  ngOnDestroy(): void {
+    this.statusSubscription.unsubscribe();
   }
 
-  private loadBill(bill?: Bill): void {
-    this.bill = bill ? bill : new Bill();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.editMode) { this.form.enable(); } else { this.form.disable(); }
+    this.loadBill();
+    this.setNameValidators();
+  }
+
+  private loadBill(): void {
+    const bill = this.bill ? this.bill : new Bill();
     const value = {
-      id: this.bill.id,
-      name: this.bill.name,
-      description: this.bill.description,
-      active: this.bill.active,
-      deadline: this.bill.deadline,
-      repeat: this.bill.repeat,
-      unit: this.bill.unit,
-      reminder: this.bill.reminder,
-      sum: this.bill.sum,
-      share: this.bill.share,
-      url: this.bill.url,
-      login: this.bill.login,
-      password: this.bill.password
+      id: bill.id,
+      name: bill.name,
+      description: bill.description,
+      active: bill.active,
+      deadline: bill.deadline,
+      repeat: bill.repeat,
+      unit: bill.unit,
+      reminder: bill.reminder,
+      sum: bill.sum,
+      share: bill.share,
+      url: bill.url,
+      login: bill.login,
+      password: bill.password
     };
     this.form.patchValue(value, { emitEvent: false, onlySelf: true });
+    this.setNameValidators();
     this.form.markAllAsTouched();
   }
 
-  private init(): void {
-    this.billSubscription.unsubscribe();
-    this.billSubscription = this.store.select(BillsSelectors.selectBill)
-      .subscribe(bill => this.loadBill(bill));
-    this.billsSubscription.unsubscribe();
-    this.billsSubscription = this.store.select(BillsSelectors.selectAll)
-      .subscribe(bills => this.setNameValidators(bills));
-    if (this.editMode) { this.form.enable(); } else { this.form.disable(); }
-  }
-
-  private setNameValidators(bills: Bill[]): void {
-    const billsNames = bills.map(b => b.name).filter(n => this.newBill ? true : n !== this.bill.name);
+  private setNameValidators(): void {
+    const billsNames = this.bills?.map(b => b.name).filter(n => this.newBill ? true : n !== this.bill?.name) || [];
     const name = this.form.get('name');
     name?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
     name?.updateValueAndValidity();
@@ -101,7 +103,9 @@ export class BillEditComponent implements OnInit {
   }
 
   payBill(): void {
-    this.store.dispatch(BillsActions.payBill({ bill: this.bill }));
+    if (this.bill) {
+      this.store.dispatch(BillsActions.payBill({ bill: this.bill }));
+    }
   }
 
   saveBill(): void {
@@ -114,7 +118,9 @@ export class BillEditComponent implements OnInit {
   }
 
   deleteBill(): void {
-    this.store.dispatch(BillsActions.deleteBill({ bill: this.bill }));
+    if (this.bill) {
+      this.store.dispatch(BillsActions.deleteBill({ bill: this.bill }));
+    }
   }
 
   cancel(): void {
@@ -122,7 +128,7 @@ export class BillEditComponent implements OnInit {
       this.router.navigate(['/zestawienie']);
     } else {
       this.editMode = false;
-      this.loadBill(this.bill);
+      this.loadBill();
     }
   }
 

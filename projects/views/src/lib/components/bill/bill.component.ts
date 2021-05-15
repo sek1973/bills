@@ -12,27 +12,34 @@ import { Subscription } from 'rxjs';
 })
 export class BillComponent implements OnInit, OnDestroy {
 
-  private subscription = Subscription.EMPTY;
+  private billSubscription = Subscription.EMPTY;
+  private billsSubscription = Subscription.EMPTY;
   editMode = false;
   newBill = false;
   bill?: Bill;
+  bills?: Bill[];
+  routeParamId: number = -1;
 
   constructor(
     private route: ActivatedRoute,
     private store: Store<AppState>) {
-    this.subscription = this.store.select(BillsSelectors.selectBill)
+    this.billSubscription = this.store.select(BillsSelectors.selectBill)
       .subscribe(bill => {
         this.bill = bill;
         this.handleData();
       });
+    this.billsSubscription = this.store.select(BillsSelectors.selectAll)
+      .subscribe((bills) => {
+        this.bills = bills;
+        this.store.dispatch(BillsActions.setCurrentBill({ billId: this.routeParamId }));
+      });
   }
 
   ngOnInit(): void {
-    let id: number;
-    this.subscription = this.route.paramMap.subscribe(param => {
+    this.billSubscription = this.route.paramMap.subscribe(param => {
       const val = param.get('id');
-      id = val?.length ? Number.parseInt(val, undefined) : -1;
-      this.store.dispatch(BillsActions.setCurrentBill({ billId: id }));
+      this.routeParamId = val?.length ? Number.parseInt(val, undefined) : -1;
+      this.store.dispatch(BillsActions.setCurrentBill({ billId: this.routeParamId }));
     });
   }
 
@@ -52,7 +59,7 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.billSubscription.unsubscribe();
   }
 
   getTitle(): string {
