@@ -84,11 +84,15 @@ export class BillEditComponent implements OnInit {
       .subscribe(bill => this.loadBill(bill));
     this.billsSubscription.unsubscribe();
     this.billsSubscription = this.store.select(BillsSelectors.selectAll)
-      .subscribe(bills => {
-        const billsNames = bills.map(b => b.name);
-        this.form.get('name')?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
-      });
+      .subscribe(bills => this.setNameValidators(bills));
     if (this.editMode) { this.form.enable(); } else { this.form.disable(); }
+  }
+
+  private setNameValidators(bills: Bill[]): void {
+    const billsNames = bills.map(b => b.name).filter(n => this.newBill ? true : n !== this.bill.name);
+    const name = this.form.get('name');
+    name?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
+    name?.updateValueAndValidity();
   }
 
   editBill(): void {
