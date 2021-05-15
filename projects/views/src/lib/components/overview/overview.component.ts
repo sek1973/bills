@@ -110,7 +110,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   payBill(): void {
     if (this.table.activeRow) {
       const bill = this.table.activeRow;
-      this.store.dispatch(BillsActions.payBill({ bill: bill.id }));
+      this.store.dispatch(BillsActions.payBill({ bill }));
     }
   }
 

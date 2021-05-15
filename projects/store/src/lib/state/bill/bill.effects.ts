@@ -6,7 +6,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { BillsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, validateBillName } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { BillApiActions } from './bill-api.actions';
 import { BillsActions } from './bill.actions';
 
@@ -56,7 +56,6 @@ export class BillEffects {
         map(() => this.router.navigate(['/zestawienie'])),
         switchMap(() => of(BillsActions.loadBills())));
   });
-
 
   createBill$ = createEffect(() => {
     return this.actions$
@@ -124,19 +123,39 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillsActions.payBill),
+        tap((action) => console.log('pay effect called', action)),
         filter(action => action.bill.id >= 0),
+        tap(() => console.log('pay effect filtered')),
         mergeMap(action => this.confirmationService
           .confirm('Rachunek opłacony',
             'Podaj kwotę do zapłacenia (udział zostanie wyliczony automatycznie):', 'Anuluj', 'OK',
             ConfirmDialogInputType.InputTypeCurrency, action.bill.sum, [Validators.required], 'Kwota', 'Kwota')
           .pipe(
             filter(response => response !== false),
-            mergeMap(response => this.billsService.pay(action.bill, (response as ConfirmDialogResponse).value)),
-            map(() => BillApiActions.payBillSuccess({ billId: action.bill.id })),
+            map(response => BillsActions.payBillConfirmed({ bill: action.bill, value: (response as ConfirmDialogResponse).value })),
             catchError(error => of(BillApiActions.payBillFailure({ error })))
           )
         )
       );
+  });
+
+  payBillConfirmed$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(BillsActions.payBillConfirmed),
+        switchMap(action => this.billsService.pay(action.bill, action.value)
+          .pipe(map(() => BillApiActions.payBillSuccess({ billId: action.bill.id })),
+            catchError(error => of(BillApiActions.payBillFailure({ error })))
+          )));
+  });
+
+  payBillSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(BillApiActions.payBillSuccess),
+        map(() => this.snackBar.open('Opłacono rachunek', 'Ukryj', { duration: 3000 })),
+        map(() => this.router.navigate(['/zestawienie'])),
+        switchMap(() => of(BillsActions.loadBills())));
   });
 
 }
