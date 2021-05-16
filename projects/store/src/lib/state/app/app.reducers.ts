@@ -84,4 +84,12 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: true };
   }),
 
+  on(PaymentsActions.deletePaymentConfirmed, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(PaymentApiActions.deletePaymentSuccess, (data: AppData) => {
+    return { ...data, loading: false };
+  }),
+
 );

@@ -51,7 +51,15 @@ export class PaymentsServiceImpl extends PaymentsService {
 
   update(payment: Payment): Observable<boolean> { return of(false); }
 
-  delete(payment: Payment): Observable<boolean> { return of(false); }
+  delete(payment: Payment): Observable<boolean> {
+    const index = this.payments.findIndex(p => p === payment);
+    if (index > -1) {
+      this.modifyPayments((payments: Payment[]) => payments.splice(index, 1));
+      return of(true).pipe(delay(1000));
+    } else {
+      return of(false).pipe(delay(1000));
+    }
+  }
 
   private modifyPayments(operation: (payments: Payment[]) => void): void {
     const payments = [...this.payments];

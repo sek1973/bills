@@ -35,7 +35,7 @@ export const PaymentApiActions = {
 
   deletePaymentSuccess: createAction(
     '[Payment API] Delete Payment Success',
-    props<{ paymentId: number }>()
+    props<{ billId: number }>()
   ),
 
   deletePaymentFailure: createAction(

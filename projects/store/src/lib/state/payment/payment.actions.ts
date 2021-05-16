@@ -23,6 +23,11 @@ export const PaymentsActions = {
     props<{ payment: Payment }>()
   ),
 
+  deletePaymentConfirmed: createAction(
+    '[Payments] Delete Payment Confirmed',
+    props<{ payment: Payment }>()
+  ),
+
   importPayments: createAction(
     '[Payments] Import Payments',
     props<{ billId: number }>()

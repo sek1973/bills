@@ -80,12 +80,31 @@ export class PaymentEffects {
             'Czy na pewno chcesz usunąć bieżącą płatność? Operacji nie będzie można cofnąć! ')
           .pipe(
             filter(response => !!response),
-            mergeMap(() => this.paymentsService.delete(action.payment)),
-            map(() => PaymentApiActions.deletePaymentSuccess({ paymentId: action.payment.id })),
-            catchError(error => of(PaymentApiActions.deletePaymentFailure({ error })))
+            map(() => PaymentsActions.deletePaymentConfirmed({ payment: action.payment }))
           )
         )
       );
+  });
+
+  deletePaymentConfirmed$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(PaymentsActions.deletePaymentConfirmed),
+        switchMap(action => this.paymentsService.delete(action.payment)
+          .pipe(map(() => PaymentApiActions.deletePaymentSuccess({ billId: action.payment.billId || -1 })),
+            catchError(error => of(PaymentApiActions.deletePaymentFailure({ error })))
+          )));
+  });
+
+  deletePaymentSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(PaymentApiActions.deletePaymentSuccess),
+        map(action => {
+          this.snackBar.open('Usunięto płatność', 'Ukryj', { duration: 3000 });
+          return action;
+        }),
+        switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
   });
 
   importPayments$ = createEffect(() => {
