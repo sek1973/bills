@@ -28,22 +28,21 @@ export abstract class BillsService {
         bill.id = Math.max(...bills.map(b => b.id ? b.id : 0)) + 1;
       } else { bill.id = 0; }
     }
-    const result: Bill = {
-      lp: bill.lp || bill.id,
-      id: bill.id,
-      name: bill.name || '',
-      description: bill.description || '',
-      active: bill.active || false,
-      sum: bill.sum || 0,
-      share: bill.share || 1,
-      deadline: bill.deadline || new Date(),
-      reminder: bill.reminder || addDays(-7, bill.deadline),
-      repeat: bill.repeat || 1,
-      unit: bill.unit || Unit.Month,
-      url: bill.url || '',
-      login: bill.login || '',
-      password: bill.password || ''
-    };
+    const result: Bill = new Bill(
+      bill.lp || bill.id,
+      bill.name || '',
+      bill.description || '',
+      bill.active || false,
+      bill.url || '',
+      bill.login || '',
+      bill.password || '',
+      bill.sum || 0,
+      bill.share || 1,
+      bill.deadline || new Date(),
+      bill.repeat || 1,
+      bill.unit || Unit.Month,
+      bill.reminder || addDays(-7, bill.deadline),
+      bill.id);
     if (result.deadline && result.reminder && result.reminder > result.deadline) {
       result.reminder = addDays(-7, result.deadline);
     }
