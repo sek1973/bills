@@ -82,7 +82,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     payment.share = val.share;
     payment.paiddate = val.paiddate;
     payment.remarks = val.remarks;
-    payment.billId = val.billid;
+    payment.billId = this.billId;
     if (this.payment) {
       this.store.dispatch(PaymentsActions.updatePayment({ payment }));
     } else {

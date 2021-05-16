@@ -91,7 +91,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   private openDialog(payment?: Payment): void {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       width: '500px',
-      data: { payment, billUid: this.billId }
+      data: { payment, billId: this.billId }
     });
 
     dialogRef.afterClosed().subscribe();

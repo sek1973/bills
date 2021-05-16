@@ -40,8 +40,7 @@ export class PaymentsServiceImpl extends PaymentsService {
     const payments = this.payments.filter(p => p.billId === payment.billId);
     const ids = payments.map(p => p.id).sort((a: number, b: number) => a > b ? 1 : -1);
     const id = ids.length ? ids[ids.length - 1] + 1 : 1;
-    payment.id = id;
-    return payment;
+    return { ...payment, id };
   }
 
   add(payment: Payment): Observable<number> {
