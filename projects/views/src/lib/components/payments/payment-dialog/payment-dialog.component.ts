@@ -76,7 +76,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
   saveData(): void {
     const val = this.form.value;
-    const payment = this.payment ? { ...this.payment } : new Payment();
+    const payment = this.payment ? this.payment.clone() : new Payment();
     payment.deadline = val.deadline;
     payment.sum = val.sum;
     payment.share = val.share;

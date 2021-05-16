@@ -1,7 +1,6 @@
 import { FieldDescription } from './field-description';
 
 export class Payment {
-  id: number = -1;
 
   constructor(
     public deadline = new Date(),
@@ -9,8 +8,13 @@ export class Payment {
     public share: number = 1,
     public paiddate?: Date,
     public remarks?: string,
-    public billId?: number
+    public billId?: number,
+    public id: number = -1
   ) { }
+
+  clone(id?: number): Payment {
+    return new Payment(this.deadline, this.sum, this.share, this.paiddate, this.remarks, this.billId, id);
+  }
 }
 
 export const PaymentDescription = new Map<string, FieldDescription>([

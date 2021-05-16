@@ -38,7 +38,7 @@ export class PaymentsServiceImpl extends PaymentsService {
 
   createPaymentData(payment: Payment): Payment {
     const id = this.findNextId();
-    return { ...payment, id };
+    return payment.clone(id);
   }
 
   add(payment: Payment): Observable<number> {
