@@ -6,7 +6,8 @@ export class Schedule {
   constructor(
     public date: Date,
     public sum: number = 0,
-    public remarks?: string) { }
+    public remarks?: string,
+    public billId: number = -1) { }
 }
 
 export const ScheduleDescription = new Map<string, FieldDescription>([

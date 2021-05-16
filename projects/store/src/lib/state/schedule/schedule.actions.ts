@@ -23,4 +23,9 @@ export const SchedulesActions = {
     props<{ schedule: Schedule }>()
   ),
 
+  deleteScheduleConfirmed: createAction(
+    '[Schedules] Delete Schedule Confirmed',
+    props<{ schedule: Schedule }>()
+  ),
+
 };

@@ -1,8 +1,9 @@
 import { createReducer, on } from '@ngrx/store';
-import { Bill, Payment } from 'projects/model/src/lib/model';
+import { Bill, Payment, Schedule } from 'projects/model/src/lib/model';
 import { AuthActions } from '../auth';
 import { BillApiActions, BillsActions } from '../bill';
 import { PaymentApiActions, PaymentsActions } from '../payment';
+import { ScheduleApiActions, SchedulesActions } from '../schedule';
 import { AppData, appInitialState } from './app.state';
 
 export const appReducer = createReducer<AppData>(
@@ -93,6 +94,30 @@ export const appReducer = createReducer<AppData>(
   }),
 
   on(PaymentsActions.updatePayment, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(SchedulesActions.loadSchedules, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(ScheduleApiActions.loadSchedulesSuccess, (data: AppData, action: { schedules: Schedule[] }) => {
+    return { ...data, schedules: action.schedules, loading: false };
+  }),
+
+  on(SchedulesActions.createSchedule, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(SchedulesActions.deleteScheduleConfirmed, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(ScheduleApiActions.deleteScheduleSuccess, (data: AppData) => {
+    return { ...data, loading: false };
+  }),
+
+  on(SchedulesActions.updateSchedule, (data: AppData) => {
     return { ...data, loading: true };
   }),
 

@@ -6,6 +6,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'projects/bills-java-app/src/environments/environment';
 import { appReducer, BillEffects, PaymentEffects } from './state';
 import { AuthEffects } from './state/auth/auth.effects';
+import { ScheduleEffects } from './state/schedule';
 import { StoreComponent } from './store.component';
 
 @NgModule({
@@ -23,7 +24,8 @@ import { StoreComponent } from './store.component';
     EffectsModule.forRoot([
       AuthEffects,
       BillEffects,
-      PaymentEffects
+      PaymentEffects,
+      ScheduleEffects
     ])
   ],
   exports: [

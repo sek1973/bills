@@ -86,7 +86,7 @@ export abstract class BillsService {
         schedule = sch;
         this.paymentsService.add(payment);
         this.adjustBillData(billCopy, schedule);
-        if (schedule) { this.schedulesService.delete(schedule, bill?.id || 0); }
+        if (schedule) { this.schedulesService.delete(schedule); }
         return this.update(billCopy);
       }));
   }

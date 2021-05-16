@@ -37,9 +37,7 @@ export class PaymentsServiceImpl extends PaymentsService {
   }
 
   createPaymentData(payment: Payment): Payment {
-    const payments = this.payments.filter(p => p.billId === payment.billId);
-    const ids = payments.map(p => p.id).sort((a: number, b: number) => a > b ? 1 : -1);
-    const id = ids.length ? ids[ids.length - 1] + 1 : 1;
+    const id = this.findNextId(payment.billId || -1);
     return { ...payment, id };
   }
 
@@ -72,6 +70,13 @@ export class PaymentsServiceImpl extends PaymentsService {
     const payments = [...this.payments];
     operation(payments);
     this.payments = payments;
+  }
+
+  private findNextId(billId: number): number {
+    const payments = this.payments.filter(p => p.billId === billId);
+    const ids = payments.map(p => p.id);
+    ids.sort((a: number, b: number) => a > b ? 1 : -1);
+    return ids.length ? ids[ids.length - 1] + 1 : 1;
   }
 
 }

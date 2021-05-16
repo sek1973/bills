@@ -12,13 +12,13 @@ export abstract class SchedulesService {
 
   abstract fetchComming(billId: number): Observable<Schedule | undefined>;
 
-  abstract fetch(billId: number): Observable<Schedule[]>;
+  abstract load(billId: number): Observable<Schedule[]>;
 
-  abstract add(schedule: Schedule, billId: number): Observable<number>;
+  abstract add(schedule: Schedule): Observable<number>;
 
-  abstract update(schedule: Schedule, billId: number): Observable<boolean>;
+  abstract update(schedule: Schedule): Observable<boolean>;
 
-  abstract delete(schedule: Schedule, billId: number): Observable<boolean>;
+  abstract delete(schedule: Schedule): Observable<boolean>;
 
   importSchedules(data: string, lineSeparator: string = '\n', columnSeparator: string = '\t'): { schedules: Schedule[], errors: string[] } {
     const schedules: Schedule[] = [];

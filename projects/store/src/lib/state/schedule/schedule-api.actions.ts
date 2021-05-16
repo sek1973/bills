@@ -35,7 +35,7 @@ export const ScheduleApiActions = {
 
   deleteScheduleSuccess: createAction(
     '[Schedule API] Delete Schedule Success',
-    props<{ scheduleId: number }>()
+    props<{ billId: number }>()
   ),
 
   deleteScheduleFailure: createAction(
