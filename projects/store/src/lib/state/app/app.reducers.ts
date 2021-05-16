@@ -1,7 +1,8 @@
 import { createReducer, on } from '@ngrx/store';
-import { Bill } from 'projects/model/src/lib/model';
+import { Bill, Payment } from 'projects/model/src/lib/model';
 import { AuthActions } from '../auth';
 import { BillApiActions, BillsActions } from '../bill';
+import { PaymentApiActions, PaymentsActions } from '../payment';
 import { AppData, appInitialState } from './app.state';
 
 export const appReducer = createReducer<AppData>(
@@ -69,6 +70,14 @@ export const appReducer = createReducer<AppData>(
 
   on(BillsActions.payBillConfirmed, (data: AppData) => {
     return { ...data, loading: true };
+  }),
+
+  on(PaymentsActions.loadPayments, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(PaymentApiActions.loadPaymentsSuccess, (data: AppData, action: { payments: Payment[] }) => {
+    return { ...data, payments: action.payments, loading: false };
   }),
 
 );

@@ -81,13 +81,14 @@ export abstract class BillsService {
     const payment = this.createPaymentData(bill, paid);
     const billCopy = this.createBillData(bill);
     let schedule: Schedule | undefined;
-    return this.schedulesService.fetchComming(bill.id).pipe(switchMap(sch => {
-      schedule = sch;
-      this.paymentsService.add(payment);
-      this.adjustBillData(billCopy, schedule);
-      if (schedule) { this.schedulesService.delete(schedule, bill?.id || 0); }
-      return this.update(billCopy);
-    }));
+    return this.schedulesService.fetchComming(bill.id)
+      .pipe(switchMap(sch => {
+        schedule = sch;
+        this.paymentsService.add(payment);
+        this.adjustBillData(billCopy, schedule);
+        if (schedule) { this.schedulesService.delete(schedule, bill?.id || 0); }
+        return this.update(billCopy);
+      }));
   }
 
   private createPaymentData(bill: Bill, paid: number): Payment {

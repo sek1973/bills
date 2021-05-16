@@ -4,7 +4,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'projects/bills-java-app/src/environments/environment';
-import { appReducer, BillEffects } from './state';
+import { appReducer, BillEffects, PaymentEffects } from './state';
 import { AuthEffects } from './state/auth/auth.effects';
 import { StoreComponent } from './store.component';
 
@@ -20,7 +20,11 @@ import { StoreComponent } from './store.component';
       maxAge: 25,
       logOnly: environment.production
     }),
-    EffectsModule.forRoot([AuthEffects, BillEffects])
+    EffectsModule.forRoot([
+      AuthEffects,
+      BillEffects,
+      PaymentEffects
+    ])
   ],
   exports: [
     StoreComponent

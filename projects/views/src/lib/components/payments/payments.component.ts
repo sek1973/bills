@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Payment } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
-import { SchedulesActions } from 'projects/store/src/lib/state/schedule';
 import { TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -57,7 +56,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: billId => {
           this.billId = billId;
-          this.store.dispatch(SchedulesActions.loadSchedules({ billId: this.billId }));
+          this.store.dispatch(PaymentsActions.loadPayments({ billId: this.billId }));
         }
       });
   }
