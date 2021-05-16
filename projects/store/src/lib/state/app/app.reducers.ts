@@ -80,4 +80,8 @@ export const appReducer = createReducer<AppData>(
     return { ...data, payments: action.payments, loading: false };
   }),
 
+  on(PaymentsActions.createPayment, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
 );

@@ -76,17 +76,19 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
   saveData(): void {
     const val = this.form.value;
-    this.payment.deadline = val.deadline;
-    this.payment.sum = val.sum;
-    this.payment.share = val.share;
-    this.payment.paiddate = val.paiddate;
-    this.payment.remarks = val.remarks;
-    this.payment.billId = val.billid;
-    if (this.payment.id === -1) {
-      this.store.dispatch(PaymentsActions.updatePayment({ payment: this.payment }));
+    const payment = this.payment ? this.payment : new Payment();
+    payment.deadline = val.deadline;
+    payment.sum = val.sum;
+    payment.share = val.share;
+    payment.paiddate = val.paiddate;
+    payment.remarks = val.remarks;
+    payment.billId = val.billid;
+    if (!this.payment) {
+      this.store.dispatch(PaymentsActions.updatePayment({ payment }));
     } else {
-      this.store.dispatch(PaymentsActions.createPayment({ payment: this.payment }));
+      this.store.dispatch(PaymentsActions.createPayment({ payment }));
     }
+    this.dialogRef.close(payment);
   }
 
   getDescriptionProvider(): DescriptionProvider {

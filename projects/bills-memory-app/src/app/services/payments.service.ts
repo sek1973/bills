@@ -36,12 +36,28 @@ export class PaymentsServiceImpl extends PaymentsService {
     return of(this.payments.filter(p => p.billId === billId)).pipe(delay(1000));
   }
 
-  createPaymentData(payment: Payment): Payment { return new Payment(); }
+  createPaymentData(payment: Payment): Payment {
+    const payments = this.payments.filter(p => p.billId === payment.billId);
+    const ids = payments.map(p => p.id).sort((a: number, b: number) => a > b ? 1 : -1);
+    const id = ids.length ? ids[ids.length - 1] + 1 : 1;
+    payment.id = id;
+    return payment;
+  }
 
-  add(payment: Payment): Observable<number> { return of(0); }
+  add(payment: Payment): Observable<number> {
+    const result = this.createPaymentData(payment);
+    this.modifyPayments((payments: Payment[]) => payments.push(result));
+    return of(result.id).pipe(delay(1000));
+  }
 
   update(payment: Payment): Observable<boolean> { return of(false); }
 
   delete(payment: Payment): Observable<boolean> { return of(false); }
+
+  private modifyPayments(operation: (payments: Payment[]) => void): void {
+    const payments = [...this.payments];
+    operation(payments);
+    this.payments = payments;
+  }
 
 }

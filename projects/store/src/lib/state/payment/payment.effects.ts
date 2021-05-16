@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PaymentsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { PaymentApiActions } from './payment-api.actions';
 import { PaymentsActions } from './payment.actions';
 
@@ -14,7 +15,8 @@ export class PaymentEffects {
   constructor(
     private actions$: Actions,
     private paymentsService: PaymentsService,
-    private confirmationService: ConfirmationService) { }
+    private confirmationService: ConfirmationService,
+    private snackBar: MatSnackBar) { }
 
   loadPayments$ = createEffect(() => {
     return this.actions$
@@ -55,6 +57,17 @@ export class PaymentEffects {
             )
         )
       );
+  });
+
+  createPaymentSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(PaymentApiActions.createPaymentSuccess),
+        map(action => {
+          this.snackBar.open('Utworzono nową płatność', 'Ukryj', { duration: 3000 });
+          return action;
+        }),
+        switchMap(action => of(PaymentsActions.loadPayments({ billId: action.payment.billId || -1 }))));
   });
 
   deletePayment$ = createEffect(() => {
