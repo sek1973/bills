@@ -49,7 +49,14 @@ export class PaymentsServiceImpl extends PaymentsService {
     return of(result.id).pipe(delay(1000));
   }
 
-  update(payment: Payment): Observable<boolean> { return of(false); }
+  update(payment: Payment): Observable<boolean> {
+    const index = this.payments.findIndex(p => p.id === payment.id);
+    if (index > -1) {
+      this.modifyPayments((payments: Payment[]) => payments[index] = payment);
+      return of(true).pipe(delay(1000));
+    }
+    return of(false).pipe(delay(1000));
+  }
 
   delete(payment: Payment): Observable<boolean> {
     const index = this.payments.findIndex(p => p === payment);

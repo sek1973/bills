@@ -92,4 +92,8 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: false };
   }),
 
+  on(PaymentsActions.updatePayment, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
 );

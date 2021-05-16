@@ -45,6 +45,17 @@ export class PaymentEffects {
       );
   });
 
+  updatePaymentSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(PaymentApiActions.updatePaymentSuccess),
+        map(action => {
+          this.snackBar.open('Zapisano zmiany dla płatności', 'Ukryj', { duration: 3000 });
+          return action;
+        }),
+        switchMap(action => of(PaymentsActions.loadPayments({ billId: action.payment.billId || -1 }))));
+  });
+
   createPayment$ = createEffect(() => {
     return this.actions$
       .pipe(
