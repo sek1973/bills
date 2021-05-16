@@ -12,7 +12,7 @@ export class Bill {
   password?: string;
   sum: number = 0;
   share: number = 1;
-  deadline: Date = new Date();
+  deadline?: Date = new Date();
   repeat: number = 1;
   unit: Unit = Unit.Month;
   reminder?: Date;

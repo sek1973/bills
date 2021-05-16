@@ -44,7 +44,7 @@ export abstract class BillsService {
       login: bill.login || '',
       password: bill.password || ''
     };
-    if (result.reminder && result.reminder > result.deadline) {
+    if (result.deadline && result.reminder && result.reminder > result.deadline) {
       result.reminder = addDays(-7, result.deadline);
     }
     return result;
@@ -56,23 +56,25 @@ export abstract class BillsService {
 
   abstract delete(billId: number): Observable<boolean>;
 
-  calculateNextDeadline(bill: Bill): Date {
+  calculateNextDeadline(bill: Bill): Date | undefined {
     const result = bill.deadline;
-    switch (bill.unit) {
-      case Unit.Day:
-        result.setDate(result.getDate() + bill.repeat);
-        break;
-      case Unit.Month:
-        result.setMonth(result.getMonth() + bill.repeat);
-        break;
-      case Unit.Week:
-        result.setDate(result.getDate() + 7 * bill.repeat);
-        break;
-      case Unit.Year:
-        result.setFullYear(result.getFullYear() + bill.repeat);
-        break;
-      default:
-        break;
+    if (result !== undefined) {
+      switch (bill.unit) {
+        case Unit.Day:
+          result.setDate(result.getDate() + bill.repeat);
+          break;
+        case Unit.Month:
+          result.setMonth(result.getMonth() + bill.repeat);
+          break;
+        case Unit.Week:
+          result.setDate(result.getDate() + 7 * bill.repeat);
+          break;
+        case Unit.Year:
+          result.setFullYear(result.getFullYear() + bill.repeat);
+          break;
+        default:
+          break;
+      }
     }
     return result;
   }

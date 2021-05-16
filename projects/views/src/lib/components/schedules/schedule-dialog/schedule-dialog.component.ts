@@ -9,7 +9,7 @@ import { SchedulesActions } from 'projects/store/src/lib/state/schedule';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 
 export interface ScheduleDialogData {
-  billUid: string;
+  billId: string;
   schedule?: Schedule;
 }
 @Component({
@@ -20,7 +20,7 @@ export interface ScheduleDialogData {
 export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
   schedule: Schedule;
-  billUid: string;
+  billId: number;
   dialogTitle: string;
   dialogMode: 'add' | 'edit' = 'add';
   canSave = false;
@@ -36,7 +36,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: ScheduleDialogData,
     public dialogRef: MatDialogRef<ScheduleDialogComponent>,
     private store: Store<AppState>) {
-    this.billUid = getSafe(() => data.billUid);
+    this.billId = getSafe(() => data.billId);
     this.schedule = getSafe(() => data.schedule);
     this.dialogTitle = (this.schedule ? 'Edytuj' : 'Dodaj') + ' planowaną płatność';
     this.dialogMode = this.schedule ? 'edit' : 'add';
@@ -71,15 +71,22 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   }
 
   saveData(): void {
-    if (this.schedule) {
-      this.store.dispatch(SchedulesActions.updateSchedule({ schedule: this.schedule }));
+    const val = this.form.value;
+    const schedule = this.schedule ? this.schedule.clone() : new Schedule();
+    schedule.date = val.date;
+    schedule.sum = val.sum;
+    schedule.remarks = val.remarks;
+    schedule.billId = this.billId;
+    if (schedule.id > -1) {
+      this.store.dispatch(SchedulesActions.updateSchedule({ schedule }));
     } else {
-      this.store.dispatch(SchedulesActions.createSchedule({ schedule: this.schedule }));
+      this.store.dispatch(SchedulesActions.createSchedule({ schedule }));
     }
+    this.dialogRef.close(schedule);
   }
 
   cloneData(): void {
-    this.schedule.id = -1;
+    this.schedule = this.schedule.clone();
     this.saveData();
   }
 

@@ -2,12 +2,12 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Schedule } from 'projects/model/src/lib/model';
-import { AppState, BillsSelectors, PaymentsActions } from 'projects/store/src/lib/state';
-import { SchedulesActions, SchedulesSelectors } from 'projects/store/src/lib/state/schedule';
+import { AppState, BillsSelectors, SchedulesActions, SchedulesSelectors } from 'projects/store/src/lib/state';
 import { TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
+
 
 @Component({
   selector: 'app-schedules',
@@ -83,19 +83,20 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   }
 
   editSchedule(): void {
-    if (this.table.activeRow) { this.openDialog(); }
+    if (this.table.activeRow) { this.openDialog(this.table.activeRow); }
   }
 
-  private openDialog(): void {
+  private openDialog(schedule?: Schedule): void {
     const dialogRef = this.dialog.open(ScheduleDialogComponent, {
-      width: '500px'
+      width: '500px',
+      data: { schedule, billId: this.billId }
     });
     dialogRef.afterClosed().subscribe();
   }
 
   deleteSchedule(): void {
     if (this.table.activeRow) {
-      this.store.dispatch(PaymentsActions.deletePayment({ payment: this.table.activeRow }));
+      this.store.dispatch(SchedulesActions.deleteSchedule({ schedule: this.table.activeRow }));
     }
   }
 
@@ -107,7 +108,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   }
 
   pasteData(): void {
-    this.store.dispatch(PaymentsActions.importPayments({ billId: this.billId }));
+    this.store.dispatch(SchedulesActions.importSchedules({ billId: this.billId }));
   }
 
 }
