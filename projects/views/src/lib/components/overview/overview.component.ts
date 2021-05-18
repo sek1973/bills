@@ -102,8 +102,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   formatColor(row: Bill): string {
     const color = this.formatActiveColor(row);
     if (color !== '') { return color; }
-    if (row.deadline < new Date()) { return 'red'; }
-    if (row.deadline < addDays()) { return 'darkgoldenrod'; }
+    if (row.deadline && row.deadline < new Date()) { return 'red'; }
+    if (row.deadline && row.deadline < addDays()) { return 'darkgoldenrod'; }
     return '';
   }
 

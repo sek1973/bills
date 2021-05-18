@@ -37,8 +37,8 @@ export class SchedulesServiceImpl extends SchedulesService {
   }
 
   createScheduleData(schedule: Schedule): Schedule {
-    const id = this.findNextId(schedule.billId || -1);
-    return { ...schedule, id };
+    const id = this.findNextId();
+    return schedule.clone(id);
   }
 
   add(schedule: Schedule): Observable<number> {
@@ -72,9 +72,8 @@ export class SchedulesServiceImpl extends SchedulesService {
     this.schedules = schedules;
   }
 
-  private findNextId(billId: number): number {
-    const payments = this.schedules.filter(s => s.billId === billId);
-    const ids = payments.map(s => s.id);
+  private findNextId(): number {
+    const ids = this.schedules.map(s => s.id);
     ids.sort((a: number, b: number) => a > b ? 1 : -1);
     return ids.length ? ids[ids.length - 1] + 1 : 1;
   }

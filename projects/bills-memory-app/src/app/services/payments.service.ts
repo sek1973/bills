@@ -37,8 +37,8 @@ export class PaymentsServiceImpl extends PaymentsService {
   }
 
   createPaymentData(payment: Payment): Payment {
-    const id = this.findNextId(payment.billId || -1);
-    return { ...payment, id };
+    const id = this.findNextId();
+    return payment.clone(id);
   }
 
   add(payment: Payment): Observable<number> {
@@ -72,9 +72,8 @@ export class PaymentsServiceImpl extends PaymentsService {
     this.payments = payments;
   }
 
-  private findNextId(billId: number): number {
-    const payments = this.payments.filter(p => p.billId === billId);
-    const ids = payments.map(p => p.id);
+  private findNextId(): number {
+    const ids = this.payments.map(p => p.id);
     ids.sort((a: number, b: number) => a > b ? 1 : -1);
     return ids.length ? ids[ids.length - 1] + 1 : 1;
   }

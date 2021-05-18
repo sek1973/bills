@@ -1,13 +1,17 @@
 import { FieldDescription } from './field-description';
 
 export class Schedule {
-  id: number = -1;
 
   constructor(
-    public date: Date,
+    public date?: Date,
     public sum: number = 0,
     public remarks?: string,
-    public billId: number = -1) { }
+    public billId: number = -1,
+    public id: number = -1) { }
+
+  clone(id?: number): Schedule {
+    return new Schedule(this.date, this.sum, this.remarks, this.billId, id);
+  }
 }
 
 export const ScheduleDescription = new Map<string, FieldDescription>([

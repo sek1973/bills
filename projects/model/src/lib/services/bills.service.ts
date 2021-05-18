@@ -28,23 +28,22 @@ export abstract class BillsService {
         bill.id = Math.max(...bills.map(b => b.id ? b.id : 0)) + 1;
       } else { bill.id = 0; }
     }
-    const result: Bill = {
-      lp: bill.lp || bill.id,
-      id: bill.id,
-      name: bill.name || '',
-      description: bill.description || '',
-      active: bill.active || false,
-      sum: bill.sum || 0,
-      share: bill.share || 1,
-      deadline: bill.deadline || new Date(),
-      reminder: bill.reminder || addDays(-7, bill.deadline),
-      repeat: bill.repeat || 1,
-      unit: bill.unit || Unit.Month,
-      url: bill.url || '',
-      login: bill.login || '',
-      password: bill.password || ''
-    };
-    if (result.reminder && result.reminder > result.deadline) {
+    const result: Bill = new Bill(
+      bill.lp || bill.id,
+      bill.name || '',
+      bill.description || '',
+      bill.active || false,
+      bill.url || '',
+      bill.login || '',
+      bill.password || '',
+      bill.sum || 0,
+      bill.share || 1,
+      bill.deadline || new Date(),
+      bill.repeat || 1,
+      bill.unit || Unit.Month,
+      bill.reminder || addDays(-7, bill.deadline),
+      bill.id);
+    if (result.deadline && result.reminder && result.reminder > result.deadline) {
       result.reminder = addDays(-7, result.deadline);
     }
     return result;
@@ -56,23 +55,25 @@ export abstract class BillsService {
 
   abstract delete(billId: number): Observable<boolean>;
 
-  calculateNextDeadline(bill: Bill): Date {
+  calculateNextDeadline(bill: Bill): Date | undefined {
     const result = bill.deadline;
-    switch (bill.unit) {
-      case Unit.Day:
-        result.setDate(result.getDate() + bill.repeat);
-        break;
-      case Unit.Month:
-        result.setMonth(result.getMonth() + bill.repeat);
-        break;
-      case Unit.Week:
-        result.setDate(result.getDate() + 7 * bill.repeat);
-        break;
-      case Unit.Year:
-        result.setFullYear(result.getFullYear() + bill.repeat);
-        break;
-      default:
-        break;
+    if (result !== undefined) {
+      switch (bill.unit) {
+        case Unit.Day:
+          result.setDate(result.getDate() + bill.repeat);
+          break;
+        case Unit.Month:
+          result.setMonth(result.getMonth() + bill.repeat);
+          break;
+        case Unit.Week:
+          result.setDate(result.getDate() + 7 * bill.repeat);
+          break;
+        case Unit.Year:
+          result.setFullYear(result.getFullYear() + bill.repeat);
+          break;
+        default:
+          break;
+      }
     }
     return result;
   }

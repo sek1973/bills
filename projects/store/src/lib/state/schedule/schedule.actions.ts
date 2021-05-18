@@ -28,4 +28,9 @@ export const SchedulesActions = {
     props<{ schedule: Schedule }>()
   ),
 
+  importSchedules: createAction(
+    '[Schedules] Import Schedules',
+    props<{ billId: number }>()
+  ),
+
 };

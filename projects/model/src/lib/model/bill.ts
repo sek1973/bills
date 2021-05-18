@@ -2,22 +2,40 @@ import { FieldDescription } from './field-description';
 import { Unit } from './unit';
 
 export class Bill {
-  id: number = -1;
-  lp?: number;
-  name: string = 'Nowy rachunek';
-  description?: string;
-  active: boolean = true;
-  url?: string;
-  login?: string;
-  password?: string;
-  sum: number = 0;
-  share: number = 1;
-  deadline: Date = new Date();
-  repeat: number = 1;
-  unit: Unit = Unit.Month;
-  reminder?: Date;
 
-  constructor() { }
+  constructor(
+    public lp?: number,
+    public name: string = 'Nowy rachunek',
+    public description?: string,
+    public active: boolean = true,
+    public url?: string,
+    public login?: string,
+    public password?: string,
+    public sum: number = 0,
+    public share: number = 1,
+    public deadline?: Date,
+    public repeat: number = 1,
+    public unit: Unit = Unit.Month,
+    public reminder?: Date,
+    public id: number = -1) { }
+
+  clone(id?: number): Bill {
+    return new Bill(
+      this.lp,
+      this.name,
+      this.description,
+      this.active,
+      this.url,
+      this.login,
+      this.password,
+      this.sum,
+      this.share,
+      this.deadline,
+      this.repeat,
+      this.unit,
+      this.reminder,
+      id);
+  }
 }
 
 export const BillDescription = new Map<string, FieldDescription>([
