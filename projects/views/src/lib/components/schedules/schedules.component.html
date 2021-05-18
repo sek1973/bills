@@ -16,7 +16,11 @@
     <span class="table-title">Planowane płatności</span>
   </ng-template>
   <ng-template cellTemplateForColumn="date"
-               let-row="row">{{row.date | timespanToString}}</ng-template>
+               let-row="row">
+    {{row.date | timespanToString}}
+  </ng-template>
   <ng-template cellTemplateForColumn="sum"
-               let-row="row">{{row.sum | currencyToString}}</ng-template>
+               let-row="row">
+    {{row.sum | currencyToString}}
+  </ng-template>
 </app-table>

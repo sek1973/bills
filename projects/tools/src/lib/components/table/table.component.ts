@@ -117,7 +117,7 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
 
   @Input() showFilter = false;
   @Input() sortable = true;
-  @Input() expandable = true;
+  @Input() expandable = false;
   @Input() pageable = true;
 
   @Input() editable = false;

@@ -16,11 +16,19 @@
     <span class="table-title">Historia płatności</span>
   </ng-template>
   <ng-template cellTemplateForColumn="deadline"
-               let-row="row">{{row.deadline | timespanToString}}</ng-template>
+               let-row="row">
+    {{row.deadline | timespanToString}}
+  </ng-template>
   <ng-template cellTemplateForColumn="paiddate"
-               let-row="row">{{row.paiddate | timespanToString}}</ng-template>
+               let-row="row">
+    {{row.paiddate | timespanToString}}
+  </ng-template>
   <ng-template cellTemplateForColumn="sum"
-               let-row="row">{{row.sum | currencyToString}}</ng-template>
+               let-row="row">
+    {{row.sum | currencyToString}}
+  </ng-template>
   <ng-template cellTemplateForColumn="share"
-               let-row="row">{{row.share | currencyToString}}</ng-template>
+               let-row="row">
+    {{row.share | currencyToString}}
+  </ng-template>
 </app-table>
