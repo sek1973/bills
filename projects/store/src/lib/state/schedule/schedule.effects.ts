@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SchedulesService } from 'projects/model/src/public-api';
-import { ConfirmationService } from 'projects/tools/src/public-api';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { ScheduleApiActions } from './schedule-api.actions';
@@ -87,7 +88,7 @@ export class ScheduleEffects {
         filter(action => action.schedule.id >= 0),
         mergeMap(action => this.confirmationService
           .confirm('Usuń płatność',
-            'Czy na pewno chcesz usunąć bieżącą planowaną płatność? Operacji nie będzie można cofnąć! ')
+            'Czy na pewno chcesz usunąć bieżącą planowaną płatność? Operacji nie będzie można cofnąć!', 'Nie', 'Tak')
           .pipe(
             filter(response => !!response),
             map(() => SchedulesActions.deleteScheduleConfirmed({ schedule: action.schedule }))
@@ -115,6 +116,31 @@ export class ScheduleEffects {
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.billId }))));
+  });
+
+  importSchedules$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(SchedulesActions.importSchedules),
+        mergeMap(action => this.confirmationService
+          .confirm('Importuj historyczne płatności',
+            'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',
+            ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
+          .pipe(
+            filter(response => !!response),
+            mergeMap(response => {
+              const data = (response as ConfirmDialogResponse).value as string;
+              if (!data || data === null || data === undefined || data === '') {
+                return of('Brak danych do zaimportowania');
+              } else {
+                return this.schedulesService.importSchedules(data, action.billId);
+              }
+            }),
+            map(report => ScheduleApiActions.importSchedulesSuccess({ report })),
+            catchError(report => of(ScheduleApiActions.importSchedulesFailure({ report })))
+          )
+        )
+      );
   });
 
 }

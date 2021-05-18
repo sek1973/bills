@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Schedule } from 'projects/model/src/lib/model';
+import { ImportReport } from 'projects/model/src/public-api';
 
 export const ScheduleApiActions = {
 
@@ -41,6 +42,16 @@ export const ScheduleApiActions = {
   deleteScheduleFailure: createAction(
     '[Schedule API] Delete Schedule Failure',
     props<{ error: string }>()
+  ),
+
+  importSchedulesSuccess: createAction(
+    '[Schedule API] Import Schedules Success',
+    props<{ report: string | ImportReport[] }>()
+  ),
+
+  importSchedulesFailure: createAction(
+    '[Schedule API] Import Schedules Failure',
+    props<{ report: string | ImportReport[] }>()
   ),
 
 };

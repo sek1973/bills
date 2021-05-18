@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Payment } from 'projects/model/src/lib/model';
+import { ImportReport } from 'projects/model/src/public-api';
 
 export const PaymentApiActions = {
 
@@ -45,12 +46,12 @@ export const PaymentApiActions = {
 
   importPaymentsSuccess: createAction(
     '[Payment API] Import Payments Success',
-    props<{ report: string }>()
+    props<{ report: string | ImportReport[] }>()
   ),
 
   importPaymentsFailure: createAction(
     '[Payment API] Import Payments Failure',
-    props<{ report: string }>()
+    props<{ report: string | ImportReport[] }>()
   ),
 
 };

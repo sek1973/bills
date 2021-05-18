@@ -88,7 +88,7 @@ export class PaymentEffects {
         filter(action => action.payment.id >= 0),
         mergeMap(action => this.confirmationService
           .confirm('Usuń płatność',
-            'Czy na pewno chcesz usunąć bieżącą płatność? Operacji nie będzie można cofnąć! ')
+            'Czy na pewno chcesz usunąć bieżącą płatność? Operacji nie będzie można cofnąć!', 'Nie', 'Tak')
           .pipe(
             filter(response => !!response),
             map(() => PaymentsActions.deletePaymentConfirmed({ payment: action.payment }))
