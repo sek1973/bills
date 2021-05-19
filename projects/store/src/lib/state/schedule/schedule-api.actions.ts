@@ -46,12 +46,12 @@ export const ScheduleApiActions = {
 
   importSchedulesSuccess: createAction(
     '[Schedule API] Import Schedules Success',
-    props<{ report: string | ImportReport[] }>()
+    props<{ billId: number, report: string | ImportReport[] }>()
   ),
 
   importSchedulesFailure: createAction(
     '[Schedule API] Import Schedules Failure',
-    props<{ report: string | ImportReport[] }>()
+    props<{ error: string }>()
   ),
 
 };

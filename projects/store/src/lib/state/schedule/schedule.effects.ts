@@ -123,24 +123,44 @@ export class ScheduleEffects {
       .pipe(
         ofType(SchedulesActions.importSchedules),
         mergeMap(action => this.confirmationService
-          .confirm('Importuj historyczne płatności',
+          .confirm('Importuj planowane płatności',
             'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',
             ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
           .pipe(
             filter(response => !!response),
-            mergeMap(response => {
+            map(response => {
               const data = (response as ConfirmDialogResponse).value as string;
               if (!data || data === null || data === undefined || data === '') {
-                return of('Brak danych do zaimportowania');
+                this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { duration: 3000 });
+                return ScheduleApiActions.importSchedulesFailure({ error: 'Brak danych do zaimportowania' });
               } else {
-                return this.schedulesService.importSchedules(data, action.billId);
+                return SchedulesActions.importSchedulesConfirmed({ data, billId: action.billId });
               }
-            }),
-            map(report => ScheduleApiActions.importSchedulesSuccess({ report })),
-            catchError(report => of(ScheduleApiActions.importSchedulesFailure({ report })))
+            })
           )
         )
       );
+  });
+
+  importPaymentsConfirmed$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(SchedulesActions.importSchedulesConfirmed),
+        switchMap(action => this.schedulesService.importSchedules(action.data, action.billId)
+          .pipe(map(report => ScheduleApiActions.importSchedulesSuccess({ report, billId: action.billId })),
+            catchError(error => of(ScheduleApiActions.importSchedulesFailure({ error })))
+          )));
+  });
+
+  importPaymentsSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(ScheduleApiActions.importSchedulesSuccess),
+        map(action => {
+          this.snackBar.open('Zaimportowano planowane płatności', 'Ukryj', { duration: 3000 });
+          return action;
+        }),
+        switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.billId }))));
   });
 
 }
