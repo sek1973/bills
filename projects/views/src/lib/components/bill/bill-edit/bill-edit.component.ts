@@ -69,9 +69,8 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
     this.setNameValidators();
   }
 
-  private loadBill(): void {
-    const bill = this.bill ? this.bill : new Bill();
-    const value = {
+  private createFormValueFromBill(bill: Bill): any {
+    return {
       id: bill.id,
       name: bill.name,
       description: bill.description,
@@ -86,6 +85,31 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
       login: bill.login,
       password: bill.password
     };
+  }
+
+  private createBillFromFormValue(value: any): Bill {
+    return new Bill(
+      value.lp,
+      value.name,
+      value.description,
+      value.active,
+      value.url,
+      value.login,
+      value.password,
+      value.sum,
+      value.share,
+      value.deadline,
+      value.repeat,
+      value.unit,
+      value.reminder,
+      value.id
+    );
+  }
+
+
+  private loadBill(): void {
+    const bill = this.bill ? this.bill : new Bill();
+    const value = this.createFormValueFromBill(bill);
     this.form.patchValue(value, { emitEvent: false, onlySelf: true });
     this.setNameValidators();
     this.form.markAllAsTouched();
@@ -109,7 +133,7 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   saveBill(): void {
-    const bill = this.form.value;
+    const bill = this.createBillFromFormValue(this.form.value);
     if (this.newBill) {
       this.store.dispatch(BillsActions.createBill({ bill }));
     } else {
