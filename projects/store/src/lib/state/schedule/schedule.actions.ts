@@ -33,4 +33,9 @@ export const SchedulesActions = {
     props<{ billId: number }>()
   ),
 
+  importSchedulesConfirmed: createAction(
+    '[Schedules] Import Schedules Confirmed',
+    props<{ data: string, billId: number }>()
+  ),
+
 };

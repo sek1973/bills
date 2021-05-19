@@ -101,6 +101,10 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: true };
   }),
 
+  on(PaymentsActions.importPaymentsConfirmed, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
   on(ScheduleApiActions.loadSchedulesSuccess, (data: AppData, action: { schedules: Schedule[] }) => {
     return { ...data, schedules: action.schedules, loading: false };
   }),
@@ -118,6 +122,10 @@ export const appReducer = createReducer<AppData>(
   }),
 
   on(SchedulesActions.updateSchedule, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(SchedulesActions.importSchedulesConfirmed, (data: AppData) => {
     return { ...data, loading: true };
   }),
 

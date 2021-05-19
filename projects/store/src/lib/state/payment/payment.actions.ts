@@ -33,4 +33,9 @@ export const PaymentsActions = {
     props<{ billId: number }>()
   ),
 
+  importPaymentsConfirmed: createAction(
+    '[Payments] Import Payments Confirmed',
+    props<{ data: string, billId: number }>()
+  ),
+
 };

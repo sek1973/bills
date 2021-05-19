@@ -128,19 +128,39 @@ export class PaymentEffects {
             ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
           .pipe(
             filter(response => !!response),
-            mergeMap(response => {
+            map(response => {
               const data = (response as ConfirmDialogResponse).value as string;
               if (!data || data === null || data === undefined || data === '') {
-                return of('Brak danych do zaimportowania');
+                this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { duration: 3000 });
+                return PaymentApiActions.importPaymentsFailure({ error: 'Brak danych do zaimportowania' });
               } else {
-                return this.paymentsService.importPayments(data, action.billId);
+                return PaymentsActions.importPaymentsConfirmed({ data, billId: action.billId });
               }
-            }),
-            map(report => PaymentApiActions.importPaymentsSuccess({ report })),
-            catchError(report => of(PaymentApiActions.importPaymentsFailure({ report })))
+            })
           )
         )
       );
+  });
+
+  importPaymentsConfirmed$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(PaymentsActions.importPaymentsConfirmed),
+        switchMap(action => this.paymentsService.importPayments(action.data, action.billId)
+          .pipe(map(report => PaymentApiActions.importPaymentsSuccess({ report, billId: action.billId })),
+            catchError(error => of(PaymentApiActions.importPaymentsFailure({ error })))
+          )));
+  });
+
+  importPaymentsSuccess$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(PaymentApiActions.importPaymentsSuccess),
+        map(action => {
+          this.snackBar.open('Zaimportowano płatności', 'Ukryj', { duration: 3000 });
+          return action;
+        }),
+        switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
   });
 
 }

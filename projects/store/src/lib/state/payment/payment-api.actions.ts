@@ -46,12 +46,12 @@ export const PaymentApiActions = {
 
   importPaymentsSuccess: createAction(
     '[Payment API] Import Payments Success',
-    props<{ report: string | ImportReport[] }>()
+    props<{ billId: number, report: string | ImportReport[] }>()
   ),
 
   importPaymentsFailure: createAction(
     '[Payment API] Import Payments Failure',
-    props<{ report: string | ImportReport[] }>()
+    props<{ error: string }>()
   ),
 
 };
