@@ -24,11 +24,15 @@
                  [newBill]="newBill">
   </app-bill-edit>
 
-  <app-schedules *ngIf="!newBill"
-                 class="bill-schedules">
-  </app-schedules>
+  <mat-tab-group *ngIf="!newBill">
+    <mat-tab label="Historia płatności">
+      <app-payments class="bill-payments">
+      </app-payments>
+    </mat-tab>
+    <mat-tab label="Planowane płatności">
+      <app-schedules class="bill-schedules">
+      </app-schedules>
+    </mat-tab>
+  </mat-tab-group>
 
-  <app-payments *ngIf="!newBill"
-                class="bill-payments">
-  </app-payments>
 </div>

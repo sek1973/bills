@@ -87,7 +87,7 @@ export class ScheduleEffects {
         ofType(SchedulesActions.deleteSchedule),
         filter(action => action.schedule.id >= 0),
         mergeMap(action => this.confirmationService
-          .confirm('Usuń płatność',
+          .confirm('Usuń planowaną płatność',
             'Czy na pewno chcesz usunąć bieżącą planowaną płatność? Operacji nie będzie można cofnąć!', 'Nie', 'Tak')
           .pipe(
             filter(response => !!response),

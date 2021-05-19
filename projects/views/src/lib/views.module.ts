@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ToolsModule } from 'projects/tools/src/public-api';
@@ -17,9 +18,9 @@ import {
   ScheduleDialogComponent,
   SchedulesComponent
 } from './components';
+import { RootComponent } from './components/root/root.component';
 import { ViewsComponent } from './views.component';
 import { ViewsRoutingModule } from './views.routing';
-import { RootComponent } from './components/root/root.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { RootComponent } from './components/root/root.component';
     ToolsModule,
     MatDialogModule,
     MatProgressBarModule,
+    MatTabsModule,
     MatButtonModule,
     RouterModule,
     FormsModule,
