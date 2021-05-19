@@ -44,6 +44,7 @@ import { InputBaseComponent } from './components/inputs/input-component-base';
 import { TableCellDirective } from './components/table/directives';
 import { CurrencyToStringPipe } from './pipes/currency-to-string.pipe';
 import { DynamicPipe } from './pipes/dynamic.pipe';
+import { NumberToPercentPipe } from './pipes/number-to-percent.pipe';
 import { DateToStringPipe } from './pipes/timespan-to-string.pipe';
 import { ToolsComponent } from './tools.component';
 
@@ -73,6 +74,7 @@ import { ToolsComponent } from './tools.component';
     ViewFieldTextComponent,
     ViewFieldToggleComponent,
     DynamicPipe,
+    NumberToPercentPipe,
   ],
   imports: [
     BrowserModule,
@@ -119,6 +121,7 @@ import { ToolsComponent } from './tools.component';
     InputDateComponent,
     DateToStringPipe,
     CurrencyToStringPipe,
+    NumberToPercentPipe,
     ConfirmDialogComponent,
     ViewFieldTextComponent,
     ViewFieldToggleComponent,

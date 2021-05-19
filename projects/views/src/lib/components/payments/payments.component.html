@@ -25,10 +25,10 @@
   </ng-template>
   <ng-template cellTemplateForColumn="sum"
                let-row="row">
-    {{row.sum | currencyToString}}
+    {{row.sum | currencyToString }}
   </ng-template>
   <ng-template cellTemplateForColumn="share"
                let-row="row">
-    {{row.share | currencyToString}}
+    {{row.share | numberToPercent }}
   </ng-template>
 </app-table>
