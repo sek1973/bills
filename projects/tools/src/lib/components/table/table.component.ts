@@ -46,6 +46,7 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
   private sort?: MatSort;
   private paginator?: MatPaginator;
   private _columnsDefinition: TableColumn[] = [];
+  private _expandable: boolean = false;
   private subscription = Subscription.EMPTY;
   private loadingSubscription = Subscription.EMPTY;
 
@@ -117,7 +118,6 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
 
   @Input() showFilter = false;
   @Input() sortable = true;
-  @Input() expandable = false;
   @Input() pageable = true;
 
   @Input() editable = false;
@@ -142,6 +142,18 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
   @Input() exportFileName = 'data';
 
   @Input() disableExpand: (dataRow: any) => boolean = () => false;
+
+  @Input() set expandable(val: boolean) {
+    this._expandable = val;
+    if (this.expandable) {
+      this._columnsDefinition = [{ name: '_expand', header: '' }, ...this._columnsDefinition];
+    } else {
+      this._columnsDefinition.splice(this._columnsDefinition.findIndex(e => e.name === '_expand'), 1);
+    }
+  }
+  get expandable(): boolean {
+    return this._expandable;
+  }
 
   @Input()
   set columnsDefinition(value: TableColumn[]) {
