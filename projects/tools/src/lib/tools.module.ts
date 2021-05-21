@@ -2,7 +2,6 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -96,7 +95,6 @@ import { ToolsComponent } from './tools.component';
     MatTooltipModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatMomentDateModule,
     MatSelectModule,
     MatMenuModule
   ],

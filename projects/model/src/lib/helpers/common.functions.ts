@@ -9,7 +9,7 @@ export function getSafe(fn: () => any): any {
 }
 
 export function dateToString(val: Date): string | undefined {
-  return val ? val.toLocaleDateString('pl-PL') : undefined;
+  return (val !== undefined && val !== null) ? val.toLocaleDateString('pl-PL') : undefined;
 }
 
 /** Tries to read formats:
@@ -73,6 +73,6 @@ export function percentToNumber(val: string): number | undefined {
 
 export function addDays(days: number = 7, date: Date = new Date()): Date {
   const result = date;
-  result.setDate( date.getDate() + days);
+  result.setDate(date.getDate() + days);
   return result;
 }
