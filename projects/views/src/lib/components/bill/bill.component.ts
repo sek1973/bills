@@ -31,7 +31,8 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billsSubscription = this.store.select(BillsSelectors.selectAll)
       .subscribe((bills) => {
         this.bills = bills;
-        this.store.dispatch(BillsActions.setCurrentBill({ billId: this.routeParamId }));
+        const bill = this.bills?.find(b => b.id === +this.routeParamId || -1);
+        this.store.dispatch(BillsActions.setCurrentBill({ bill }));
       });
   }
 
@@ -39,7 +40,8 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billSubscription = this.route.paramMap.subscribe(param => {
       const val = param.get('id');
       this.routeParamId = val?.length ? Number.parseInt(val, undefined) : -1;
-      this.store.dispatch(BillsActions.setCurrentBill({ billId: this.routeParamId }));
+      const bill = this.bills?.find(b => b.id === +this.routeParamId || -1);
+      this.store.dispatch(BillsActions.setCurrentBill({ bill }));
     });
   }
 

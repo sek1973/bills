@@ -45,8 +45,8 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: false };
   }),
 
-  on(BillsActions.setCurrentBill, (data: AppData, action: { billId: number }) => {
-    return { ...data, currentBill: action.billId, loading: false };
+  on(BillsActions.setCurrentBill, (data: AppData, action: { bill?: Bill }) => {
+    return { ...data, currentBill: action.bill, loading: false };
   }),
 
   on(BillsActions.createBill, (data: AppData) => {

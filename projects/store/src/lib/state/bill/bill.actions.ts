@@ -39,7 +39,7 @@ export const BillsActions = {
 
   setCurrentBill: createAction(
     '[Bills] Set Current Bill',
-    props<{ billId: number }>()
+    props<{ bill?: Bill }>()
   ),
 
 };

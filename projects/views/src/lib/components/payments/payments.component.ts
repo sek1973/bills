@@ -52,10 +52,10 @@ export class PaymentsComponent implements OnInit, OnDestroy {
 
   private subscribeToBillId(): void {
     this.billIdSubscription = this.store
-      .select(BillsSelectors.selectBillId)
+      .select(BillsSelectors.selectBill)
       .subscribe({
-        next: billId => {
-          this.billId = billId;
+        next: bill => {
+          this.billId = bill?.id || -1;
           this.store.dispatch(PaymentsActions.loadPayments({ billId: this.billId }));
         }
       });
