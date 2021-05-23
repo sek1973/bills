@@ -5,7 +5,7 @@ import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { SelectItem, unitsToSelectItems, validateDistinctBillName } from 'projects/tools/src/public-api';
+import { SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -106,12 +106,12 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-
   private loadBill(): void {
     const bill = this.bill ? this.bill : new Bill();
     const value = this.createFormValueFromBill(bill);
     this.form.patchValue(value, { emitEvent: false, onlySelf: true });
     this.setNameValidators();
+    this.setReminderValidators();
     this.form.markAllAsTouched();
   }
 
@@ -120,6 +120,13 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
     const name = this.form.get('name');
     name?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
     name?.updateValueAndValidity();
+  }
+
+  private setReminderValidators(): void {
+    const reminder = this.form.get('reminder') as FormControl;
+    const deadline = this.form.get('deadline') as FormControl;
+    reminder?.setValidators([validatePaymentReminderDate(deadline)]);
+    reminder?.updateValueAndValidity();
   }
 
   editBill(): void {
