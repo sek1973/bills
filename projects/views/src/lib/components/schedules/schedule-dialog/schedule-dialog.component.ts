@@ -49,14 +49,15 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     Promise.resolve().then(() => {
-      this.setFormValue();
       this.setDateValidators();
+      this.setFormValue();
+      this.form.markAllAsTouched();
     });
   }
 
   private setDateValidators(): void {
     const dateCtl = this.form.get('date') as FormControl;
-    dateCtl?.setValidators([Validators.required, validateDisinctScheduleDate(this.data.schedules)]);
+    dateCtl?.setValidators([Validators.required, validateDisinctScheduleDate(this.schedule, this.data.schedules)]);
     dateCtl?.updateValueAndValidity();
   }
 

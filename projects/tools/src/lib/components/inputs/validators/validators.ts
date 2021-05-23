@@ -1,5 +1,6 @@
 import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
 import { Schedule } from 'projects/model/src/lib/model';
+import { compareDates } from '../../../helpers/date.adapter';
 
 export function validateBillName(billName: string): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -48,9 +49,10 @@ export function validateScheduleDate(deadline: Date | null = null): ValidatorFn 
   };
 }
 
-export function validateDisinctScheduleDate(schedules: Schedule[]): ValidatorFn {
+export function validateDisinctScheduleDate(schedule: Schedule, schedules: Schedule[]): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    if (control.value && schedules && schedules.map(s => s.date).indexOf(control.value) >= 0) {
+    const dates = schedules.filter(s => s !== schedule).map(s => s.date);
+    if (control.value && dates && dates.findIndex(d => compareDates(control.value, d) === 0) >= 0) {
       return { scheduleDateNotDistinct: { value: control.value } };
     } else {
       return null;

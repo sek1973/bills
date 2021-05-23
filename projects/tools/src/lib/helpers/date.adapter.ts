@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { MatDateFormats, MAT_NATIVE_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
 
 export const BILLS_DATE_FORMATS: MatDateFormats = {
@@ -35,4 +36,25 @@ export class BillsDateAdapter extends NativeDateAdapter {
     const dateTime = value.split('.');
     return new Date(+dateTime[2], +dateTime[1] - 1, +dateTime[0]);
   }
+}
+
+/**
+ * Compares date parts only of two dates.
+ * Returns:
+ *   0 if dates are equal.
+ *   1 if date1 is greater than date2
+ *   -1 if date1 is smaller than date2
+ * Empty date is treated as smaller.
+ * If both dates are empty returns 0.
+ * @param date1 first date to compare
+ * @param date2 second date to compare
+ */
+export function compareDates(date1: Date | null = null, date2: Date | null = null): number {
+  if (date1 === null && date2 === null) { return 0; }
+  if (date1 === null) { return -1; }
+  if (date2 === null) { return 1; }
+  const a = formatDate(date1, 'YYYY-MM-dd', 'en-US');
+  const b = formatDate(date2, 'YYYY-MM-dd', 'en-US');
+  if (a === b) { return 0; }
+  if (a > b) { return 1; } else { return -1; }
 }
