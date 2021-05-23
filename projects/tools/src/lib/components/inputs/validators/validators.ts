@@ -49,7 +49,7 @@ export function validateScheduleDate(deadline: Date | null = null): ValidatorFn 
   };
 }
 
-export function validateDisinctScheduleDate(schedule: Schedule, schedules: Schedule[]): ValidatorFn {
+export function validateDisinctScheduleDate(schedules: Schedule[], schedule?: Schedule): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const dates = schedules.filter(s => s !== schedule).map(s => s.date);
     if (control.value && dates && dates.findIndex(d => compareDates(control.value, d) === 0) >= 0) {

@@ -2,15 +2,14 @@ import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Schedule, ScheduleDescription } from 'projects/model/src/lib/model';
-import { getSafe } from 'projects/model/src/public-api';
+import { Bill, Schedule, ScheduleDescription } from 'projects/model/src/lib/model';
 import { AppState } from 'projects/store/src/lib/state';
 import { SchedulesActions } from 'projects/store/src/lib/state/schedule';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { validateDisinctScheduleDate } from 'projects/tools/src/public-api';
+import { validateDisinctScheduleDate, validateScheduleDate } from 'projects/tools/src/public-api';
 
 export interface ScheduleDialogData {
-  billId: string;
+  bill: Bill;
   schedule?: Schedule;
   schedules: Schedule[];
 }
@@ -21,8 +20,8 @@ export interface ScheduleDialogData {
 })
 export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
-  schedule: Schedule;
-  billId: number;
+  schedule?: Schedule;
+  bill?: Bill;
   dialogTitle: string;
   dialogMode: 'add' | 'edit' = 'add';
   canSave = false;
@@ -38,8 +37,8 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: ScheduleDialogData,
     public dialogRef: MatDialogRef<ScheduleDialogComponent>,
     private store: Store<AppState>) {
-    this.billId = getSafe(() => data.billId);
-    this.schedule = getSafe(() => data.schedule);
+    this.bill = data?.bill;
+    this.schedule = data?.schedule;
     this.dialogTitle = (this.schedule ? 'Edytuj' : 'Dodaj') + ' planowaną płatność';
     this.dialogMode = this.schedule ? 'edit' : 'add';
     this.form.statusChanges.subscribe(status => this.setEditStatus(status));
@@ -57,7 +56,10 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
   private setDateValidators(): void {
     const dateCtl = this.form.get('date') as FormControl;
-    dateCtl?.setValidators([Validators.required, validateDisinctScheduleDate(this.schedule, this.data.schedules)]);
+    dateCtl?.setValidators([
+      Validators.required,
+      validateDisinctScheduleDate(this.data.schedules, this.schedule),
+      validateScheduleDate(this.bill?.deadline || null)]);
     dateCtl?.updateValueAndValidity();
   }
 
@@ -84,11 +86,11 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
   saveData(): void {
     const val = this.form.value;
-    const schedule = this.schedule ? this.schedule.clone() : new Schedule();
+    const schedule = this.schedule ? this.schedule.clone(this.schedule.id) : new Schedule();
     schedule.date = val.date;
     schedule.sum = val.sum;
     schedule.remarks = val.remarks;
-    schedule.billId = this.billId;
+    schedule.billId = this.bill?.id || -1;
     if (schedule.id > -1) {
       this.store.dispatch(SchedulesActions.updateSchedule({ schedule }));
     } else {
@@ -98,7 +100,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   }
 
   cloneData(): void {
-    this.schedule = this.schedule.clone();
+    this.schedule = this.schedule?.clone();
     this.saveData();
   }
 

@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Schedule } from 'projects/model/src/lib/model';
+import { Bill, Schedule } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, SchedulesActions, SchedulesSelectors } from 'projects/store/src/lib/state';
 import { TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
     { name: 'sum', header: 'Kwota' },
     { name: 'remarks', header: 'Uwagi' }
   ];
-  billId: number = -1;
+  bill?: Bill;
 
   private dataSubscription: Subscription = Subscription.EMPTY;
   private billIdSubscription: Subscription = Subscription.EMPTY;
@@ -47,7 +47,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   private subscribeToData(): void {
     this.dataSubscription = this.store
       .select(SchedulesSelectors.selectAll)
-      .pipe(filter(() => this.billId > -1))
+      .pipe(filter(() => (this.bill?.id || -1) > -1))
       .subscribe({
         next: schedules => this.data = schedules || []
       });
@@ -58,8 +58,8 @@ export class SchedulesComponent implements OnInit, OnDestroy {
       .select(BillsSelectors.selectBill)
       .subscribe({
         next: bill => {
-          this.billId = bill?.id || -1;
-          this.store.dispatch(SchedulesActions.loadSchedules({ billId: this.billId }));
+          this.bill = bill;
+          this.store.dispatch(SchedulesActions.loadSchedules({ billId: bill?.id || -1 }));
         }
       });
   }
@@ -75,7 +75,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   }
 
   refresh(): void {
-    this.store.dispatch(SchedulesActions.loadSchedules({ billId: this.billId }));
+    this.store.dispatch(SchedulesActions.loadSchedules({ billId: this.bill?.id || -1 }));
   }
 
   addSchedule(): void {
@@ -89,7 +89,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   private openDialog(schedule?: Schedule): void {
     const dialogRef = this.dialog.open(ScheduleDialogComponent, {
       width: '500px',
-      data: { schedule, billId: this.billId, schedules: this.data }
+      data: { schedule, bill: this.bill, schedules: this.data }
     });
     dialogRef.afterClosed().subscribe();
   }
@@ -108,7 +108,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   }
 
   pasteData(): void {
-    this.store.dispatch(SchedulesActions.importSchedules({ billId: this.billId }));
+    this.store.dispatch(SchedulesActions.importSchedules({ billId: this.bill?.id || -1 }));
   }
 
 }
