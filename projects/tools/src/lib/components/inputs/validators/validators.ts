@@ -1,4 +1,5 @@
 import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
+import { Schedule } from 'projects/model/src/lib/model';
 
 export function validateBillName(billName: string): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
@@ -22,13 +23,35 @@ export function validateDistinctBillName(billNames: string[]): ValidatorFn {
 
 export function validatePaymentReminderDate(deadlineCtl: FormControl): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const paymentDate = deadlineCtl.value;
-    const deadlineEmpty = paymentDate === null || paymentDate === undefined;
-    const reminderDateEmpty = control.value === null || control.value === undefined;
-    if (deadlineEmpty && !reminderDateEmpty) {
+    const deadline = deadlineCtl.value || null;
+    const reminder = control.value || null;
+    if (deadline === null && reminder !== null) {
       return { noPaymentDate: { value: control.value } };
-    } else if (!deadlineEmpty && !reminderDateEmpty && control.value <= paymentDate) {
+    } else if (deadline !== null && reminder !== null && reminder <= deadline) {
       return { reminderDateTooEarly: { value: control.value } };
+    } else {
+      return null;
+    }
+  };
+}
+
+export function validateScheduleDate(deadline: Date | null = null): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const date = control.value || null;
+    if (deadline === null && date !== null) {
+      return { noPaymentDate: { value: control.value } };
+    } else if (deadline !== null && date !== null && date <= deadline) {
+      return { reminderDateTooEarly: { value: control.value } };
+    } else {
+      return null;
+    }
+  };
+}
+
+export function validateDisinctScheduleDate(schedules: Schedule[]): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    if (control.value && schedules && schedules.map(s => s.date).indexOf(control.value) >= 0) {
+      return { scheduleDateNotDistinct: { value: control.value } };
     } else {
       return null;
     }

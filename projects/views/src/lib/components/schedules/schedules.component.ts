@@ -89,7 +89,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   private openDialog(schedule?: Schedule): void {
     const dialogRef = this.dialog.open(ScheduleDialogComponent, {
       width: '500px',
-      data: { schedule, billId: this.billId }
+      data: { schedule, billId: this.billId, schedules: this.data }
     });
     dialogRef.afterClosed().subscribe();
   }

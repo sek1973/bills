@@ -7,10 +7,12 @@ import { getSafe } from 'projects/model/src/public-api';
 import { AppState } from 'projects/store/src/lib/state';
 import { SchedulesActions } from 'projects/store/src/lib/state/schedule';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
+import { validateDisinctScheduleDate } from 'projects/tools/src/public-api';
 
 export interface ScheduleDialogData {
   billId: string;
   schedule?: Schedule;
+  schedules: Schedule[];
 }
 @Component({
   selector: 'app-schedule-dialog',
@@ -26,7 +28,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   canSave = false;
 
   form: FormGroup = new FormGroup({
-    uid: new FormControl(),
+    id: new FormControl(),
     date: new FormControl(new Date(), Validators.required),
     sum: new FormControl(),
     remarks: new FormControl()
@@ -46,7 +48,16 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   ngOnInit(): void { }
 
   ngAfterViewInit(): void {
-    Promise.resolve().then(() => this.setFormValue());
+    Promise.resolve().then(() => {
+      this.setFormValue();
+      this.setDateValidators();
+    });
+  }
+
+  private setDateValidators(): void {
+    const dateCtl = this.form.get('date') as FormControl;
+    dateCtl?.setValidators([Validators.required, validateDisinctScheduleDate(this.data.schedules)]);
+    dateCtl?.updateValueAndValidity();
   }
 
   private setFormValue(): void {
