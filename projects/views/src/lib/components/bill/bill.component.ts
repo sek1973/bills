@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
@@ -31,18 +31,22 @@ export class BillComponent implements OnInit, OnDestroy {
     this.billsSubscription = this.store.select(BillsSelectors.selectAll)
       .subscribe((bills) => {
         this.bills = bills;
-        const bill = this.bills?.find(b => b.id === +this.routeParamId || -1);
-        this.store.dispatch(BillsActions.setCurrentBill({ bill }));
+        const val = this.route.snapshot.params['id' as keyof Params];
+        this.dispatchSelectedBill(val);
       });
   }
 
   ngOnInit(): void {
     this.billSubscription = this.route.paramMap.subscribe(param => {
       const val = param.get('id');
-      this.routeParamId = val?.length ? Number.parseInt(val, undefined) : -1;
-      const bill = this.bills?.find(b => b.id === +this.routeParamId || -1);
-      this.store.dispatch(BillsActions.setCurrentBill({ bill }));
+      this.dispatchSelectedBill(val as string);
     });
+  }
+
+  private dispatchSelectedBill(val: string): void {
+    this.routeParamId = val?.length ? Number.parseInt(val, undefined) : -1;
+    const bill = this.bills?.find(b => b.id === this.routeParamId);
+    this.store.dispatch(BillsActions.setCurrentBill({ bill }));
   }
 
   private handleData(): void {
