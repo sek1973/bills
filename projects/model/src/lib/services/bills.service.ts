@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { addDays } from '../helpers';
+import { addDays, calculateNextDeadline } from '../helpers';
 import { Bill, Payment, Schedule, Unit } from '../model';
 import { PaymentsService } from './payments.service';
 import { SchedulesService } from './schedules.service';
@@ -56,26 +56,7 @@ export abstract class BillsService {
   abstract delete(billId: number): Observable<boolean>;
 
   calculateNextDeadline(bill: Bill): Date | undefined {
-    const result = bill.deadline;
-    if (result !== undefined) {
-      switch (bill.unit) {
-        case Unit.Day:
-          result.setDate(result.getDate() + bill.repeat);
-          break;
-        case Unit.Month:
-          result.setMonth(result.getMonth() + bill.repeat);
-          break;
-        case Unit.Week:
-          result.setDate(result.getDate() + 7 * bill.repeat);
-          break;
-        case Unit.Year:
-          result.setFullYear(result.getFullYear() + bill.repeat);
-          break;
-        default:
-          break;
-      }
-    }
-    return result;
+    return calculateNextDeadline(bill.deadline, bill.unit, bill.repeat);
   }
 
   pay(bill: Bill, paid: number): Observable<boolean> {

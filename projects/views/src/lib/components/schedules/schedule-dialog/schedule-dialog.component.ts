@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Schedule, ScheduleDescription } from 'projects/model/src/lib/model';
+import { calculateNextScheduleDate } from 'projects/model/src/public-api';
 import { AppState } from 'projects/store/src/lib/state';
 import { SchedulesActions } from 'projects/store/src/lib/state/schedule';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
@@ -22,9 +23,10 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
   schedule?: Schedule;
   bill?: Bill;
-  dialogTitle: string;
+  dialogTitle: string = '';
   dialogMode: 'add' | 'edit' = 'add';
   canSave = false;
+  canClone = false;
 
   form: FormGroup = new FormGroup({
     id: new FormControl(),
@@ -39,8 +41,6 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     private store: Store<AppState>) {
     this.bill = data?.bill;
     this.schedule = data?.schedule;
-    this.dialogTitle = (this.schedule ? 'Edytuj' : 'Dodaj') + ' planowaną płatność';
-    this.dialogMode = this.schedule ? 'edit' : 'add';
     this.form.statusChanges.subscribe(status => this.setEditStatus(status));
   }
 
@@ -78,6 +78,9 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
   private setEditStatus(status: string): void {
     this.canSave = status === 'VALID' ? true : false;
+    this.canClone = status === 'VALID' && this.schedule ? true : false;
+    this.dialogTitle = (this.schedule ? 'Edytuj' : 'Dodaj') + ' planowaną płatność';
+    this.dialogMode = this.schedule ? 'edit' : 'add';
   }
 
   closeDialog(): void {
@@ -100,8 +103,11 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   }
 
   cloneData(): void {
-    this.schedule = this.schedule?.clone();
-    this.saveData();
+    this.schedule = undefined;
+    this.setDateValidators();
+    const dateCtl = this.form.get('date');
+    dateCtl?.setValue(
+      calculateNextScheduleDate(this.bill, dateCtl.value, this.data.schedules));
   }
 
   getDescriptionProvider(): DescriptionProvider {
