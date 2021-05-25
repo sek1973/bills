@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { getSafe } from 'projects/model/src/public-api';
@@ -10,30 +10,16 @@ export interface DescriptionProvider {
   selector: 'app-input-base',
   template: ''
 })
-export class InputBaseComponent implements OnInit {
+export class InputBaseComponent implements OnInit, OnChanges {
   tooltipShowDelayValue = 1000;
   tooltipHideDelayValue = 2000;
   fieldFormGroup!: FormGroup;
 
   @Input() autoHide: boolean = true;
-  private _formGroup!: FormGroup;
-  @Input() set formGroup(val: FormGroup) {
-    this._formGroup = val;
-    this.setFieldFormGroup();
-  }
-  get formGroup(): FormGroup {
-    return this._formGroup;
-  }
-  @Input()
-  descriptionProvider!: DescriptionProvider;
-  private _editMode: boolean = true;
-  @Input() set editMode(val: boolean) {
-    this._editMode = val;
-    this.setFormGroupState();
-  }
-  get editMode(): boolean {
-    return this._editMode;
-  }
+  @Input() formGroup!: FormGroup;
+  @Input() descriptionProvider!: DescriptionProvider;
+  @Input() editMode: boolean = true;
+  @Input() path!: string[];
 
   get labelText(): string {
     return getSafe(() => this.descriptionProvider.getDescriptionObj(...this.path).labelText) || '';
@@ -53,17 +39,6 @@ export class InputBaseComponent implements OnInit {
       return !this.formControl || controlValue === undefined || controlValue === null || controlValue === '' ? false : true;
     }
     return this.formControl ? true : false;
-  }
-
-  private _path!: string[];
-  @Input()
-  set path(val: string[]) {
-    this._path = val;
-    this.setFieldName();
-    this.setFieldFormGroup();
-  }
-  get path(): string[] {
-    return this._path;
   }
 
   get formControl(): FormControl {
@@ -87,9 +62,19 @@ export class InputBaseComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-    this.setFormGroupState();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.path) {
+      this.setFieldName();
+    }
+    if (changes.path || changes.formGroup) {
+      this.setFieldFormGroup();
+    }
+    if (changes.editMode || changes.formGroup) {
+      this.setFormGroupState();
+    }
   }
+
+  ngOnInit(): void { }
 
   private setFieldName(): void {
     if (this.path && this.path.length) {
