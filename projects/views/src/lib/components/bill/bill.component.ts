@@ -66,11 +66,16 @@ export class BillComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.billSubscription.unsubscribe();
+    this.billsSubscription.unsubscribe();
   }
 
   getTitle(): string {
     const title = this.bill?.name;
     return title || 'Rachunek bez nazwy';
+  }
+
+  onEditModeChange(event: boolean): void {
+    this.editMode = event;
   }
 
 }

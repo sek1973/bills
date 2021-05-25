@@ -25,7 +25,7 @@ export class InputTextComponent extends InputBaseComponent implements OnInit {
 
   constructor() { super(); }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

@@ -78,9 +78,9 @@ export class InputBaseComponent implements OnInit {
   private setFormGroupState(): void {
     if (this.fieldFormGroup) {
       if (this.editMode) {
-        this.fieldFormGroup.enable();
+        this.fieldFormGroup.enable({ emitEvent: false, onlySelf: true });
       } else {
-        this.fieldFormGroup.disable();
+        this.fieldFormGroup.disable({ emitEvent: false, onlySelf: true });
       }
     }
   }

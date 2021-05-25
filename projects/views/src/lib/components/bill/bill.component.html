@@ -21,7 +21,8 @@
                  [bill]="bill"
                  [bills]="bills"
                  [editMode]="editMode"
-                 [newBill]="newBill">
+                 [newBill]="newBill"
+                 (editModeChange)="onEditModeChange($event)">
   </app-bill-edit>
 
   <mat-tab-group *ngIf="!newBill">

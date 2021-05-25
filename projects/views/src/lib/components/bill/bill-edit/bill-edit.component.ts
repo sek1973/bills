@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
+import { addDays } from 'projects/model/src/public-api';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 import { SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
@@ -17,20 +18,14 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
   @Input() bill?: Bill;
   @Input() bills?: Bill[];
   @Input() newBill: boolean = false;
-  private _editMode = false;
-
-  @Input() set editMode(val: boolean) {
-    this._editMode = val;
-  }
-  get editMode(): boolean {
-    return this._editMode;
-  }
-
+  @Input() editMode: boolean = false;
+  @Output() editModeChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   canSave = false;
 
   unitEnumItems: SelectItem<Unit>[] = [];
 
   private statusSubscription = Subscription.EMPTY;
+  private deadlineSubscription = Subscription.EMPTY;
 
   form: FormGroup = new FormGroup({
     uid: new FormControl(),
@@ -59,14 +54,23 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void { }
 
+  private subscribeToDeadlineChange(): void {
+    const deadlineCtl = this.form.get('deadline') as FormControl;
+    const reminderCtl = this.form.get('reminder') as FormControl;
+    this.deadlineSubscription = deadlineCtl.valueChanges
+      .subscribe((val: Date) => {
+        console.log('deadline value changes fired');
+        reminderCtl.setValue(addDays(-7, val));
+      });
+  }
+
   ngOnDestroy(): void {
     this.statusSubscription.unsubscribe();
+    this.deadlineSubscription.unsubscribe();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.editMode) { this.form.enable(); } else { this.form.disable(); }
     this.loadBill();
-    this.setNameValidators();
   }
 
   private createFormValueFromBill(bill: Bill): any {
@@ -107,12 +111,14 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private loadBill(): void {
+    this.deadlineSubscription.unsubscribe();
     const bill = this.bill ? this.bill : new Bill();
     const value = this.createFormValueFromBill(bill);
     this.form.patchValue(value, { emitEvent: false, onlySelf: true });
     this.setNameValidators();
     this.setReminderValidators();
     this.form.markAllAsTouched();
+    this.subscribeToDeadlineChange();
   }
 
   private setNameValidators(): void {
@@ -130,7 +136,7 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   editBill(): void {
-    this.editMode = true;
+    this.editModeChange.emit(true);
   }
 
   payBill(): void {
@@ -158,7 +164,7 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
     if (this.newBill) {
       this.router.navigate(['/zestawienie']);
     } else {
-      this.editMode = false;
+      this.editModeChange.emit(false);
       this.loadBill();
     }
   }

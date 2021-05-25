@@ -28,7 +28,7 @@ export function validatePaymentReminderDate(deadlineCtl: FormControl): Validator
     const reminder = control.value || null;
     if (deadline === null && reminder !== null) {
       return { noPaymentDate: { value: control.value } };
-    } else if (deadline !== null && reminder !== null && reminder <= deadline) {
+    } else if (deadline !== null && reminder !== null && reminder > deadline) {
       return { reminderDateTooEarly: { value: control.value } };
     } else {
       return null;
