@@ -41,7 +41,7 @@ export class BillEffects {
         concatMap(action =>
           this.billsService.update(action.bill)
             .pipe(
-              map(() => BillApiActions.updateBillSuccess({ bill: action.bill })),
+              map(() => BillApiActions.updateBillSuccess({ bill: action.bill, redirect: action.redirect })),
               catchError(error => of(BillApiActions.updateBillFailure({ error })))
             )
         )
@@ -52,8 +52,10 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillApiActions.updateBillSuccess),
-        map(() => this.snackBar.open('Zapisano zmiany dla rachunku', 'Ukryj', { duration: 3000 })),
-        map(() => this.router.navigate(['/zestawienie'])),
+        map((action) => {
+          this.snackBar.open('Zapisano zmiany dla rachunku', 'Ukryj', { duration: 3000 });
+          if (action.redirect) { this.router.navigate(['/zestawienie']); }
+        }),
         switchMap(() => of(BillsActions.loadBills())));
   });
 

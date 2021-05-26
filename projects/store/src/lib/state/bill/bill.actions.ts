@@ -9,7 +9,7 @@ export const BillsActions = {
 
   updateBill: createAction(
     '[Bills] Update Bill',
-    props<{ bill: Bill }>()
+    props<{ bill: Bill, redirect: boolean }>()
   ),
 
   createBill: createAction(

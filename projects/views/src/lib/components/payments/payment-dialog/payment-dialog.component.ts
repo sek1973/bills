@@ -2,13 +2,13 @@ import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Payment, PaymentDescription } from 'projects/model/src/lib/model';
+import { Bill, Payment, PaymentDescription } from 'projects/model/src/lib/model';
 import { getSafe } from 'projects/model/src/public-api';
 import { AppState, PaymentsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 
 export interface PaymentDialogData {
-  billId: string;
+  bill: Bill;
   payment?: Payment;
 }
 @Component({
@@ -19,7 +19,7 @@ export interface PaymentDialogData {
 export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
   payment: Payment;
-  billId: number;
+  bill?: Bill;
   dialogTitle: string;
   dialogMode: 'add' | 'edit' = 'add';
   canSave = false;
@@ -38,7 +38,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: PaymentDialogData,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
     private store: Store<AppState>) {
-    this.billId = getSafe(() => data.billId);
+    this.bill = getSafe(() => data.bill);
     this.payment = getSafe(() => data.payment);
     this.dialogTitle = (this.payment ? 'Edytuj' : 'Dodaj') + ' zrealizowaną płatność';
     this.dialogMode = this.payment ? 'edit' : 'add';
@@ -56,8 +56,9 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   }
 
   private setFormValue(): void {
+    let value: any;
     if (this.payment) {
-      const value = {
+      value = {
         id: this.payment.id,
         deadline: this.payment.deadline,
         paiddate: this.payment.paiddate,
@@ -65,8 +66,15 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
         share: this.payment.share,
         remarks: this.payment.remarks
       };
-      this.form.patchValue(value);
+    } else {
+      value = {
+        deadline: this.bill?.deadline ? new Date(this.bill?.deadline) : new Date(),
+        paiddate: new Date(),
+        sum: this.bill?.sum,
+        share: this.bill?.share
+      };
     }
+    this.form.patchValue(value);
     this.setEditStatus(this.form.status);
   }
 
@@ -76,13 +84,13 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
   saveData(): void {
     const val = this.form.value;
-    const payment = this.payment ? this.payment.clone() : new Payment();
+    const payment = this.payment ? this.payment.clone(this.payment.id) : new Payment();
     payment.deadline = val.deadline;
     payment.sum = val.sum;
     payment.share = val.share;
     payment.paiddate = val.paiddate;
     payment.remarks = val.remarks;
-    payment.billId = this.billId;
+    payment.billId = this.bill?.id || -1;
     if (this.payment) {
       this.store.dispatch(PaymentsActions.updatePayment({ payment }));
     } else {

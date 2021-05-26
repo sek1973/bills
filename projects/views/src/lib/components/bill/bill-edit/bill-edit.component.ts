@@ -150,7 +150,16 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
     if (this.newBill) {
       this.store.dispatch(BillsActions.createBill({ bill }));
     } else {
-      this.store.dispatch(BillsActions.updateBill({ bill }));
+      this.store.dispatch(BillsActions.updateBill({ bill, redirect: false }));
+    }
+  }
+
+  saveBillAndClose(): void {
+    const bill = this.createBillFromFormValue(this.form.value);
+    if (this.newBill) {
+      this.store.dispatch(BillsActions.createBill({ bill }));
+    } else {
+      this.store.dispatch(BillsActions.updateBill({ bill, redirect: true }));
     }
   }
 

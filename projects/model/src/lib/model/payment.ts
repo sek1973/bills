@@ -12,8 +12,8 @@ export class Payment {
     public id: number = -1
   ) { }
 
-  clone(id?: number): Payment {
-    return new Payment(this.deadline, this.sum, this.share, this.paiddate, this.remarks, this.billId, id);
+  clone(id?: number, billId = this.billId): Payment {
+    return new Payment(this.deadline, this.sum, this.share, this.paiddate, this.remarks, billId, id);
   }
 }
 

@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Payment } from 'projects/model/src/lib/model';
+import { Bill, Payment } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
 import { TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
@@ -27,7 +27,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
     { name: 'share', header: 'Udział' },
     { name: 'remarks', header: 'Uwagi' }
   ];
-  billId: number = -1;
+  bill?: Bill;
 
   private dataSubscription: Subscription = Subscription.EMPTY;
   private billIdSubscription: Subscription = Subscription.EMPTY;
@@ -37,26 +37,26 @@ export class PaymentsComponent implements OnInit, OnDestroy {
     private store: Store<AppState>) { }
 
   ngOnInit(): void {
-    this.subscribeToBillId();
+    this.subscribeToBill();
     this.subscribeToData();
   }
 
   private subscribeToData(): void {
     this.dataSubscription = this.store
       .select(PaymentsSelectors.selectAll)
-      .pipe(filter(() => this.billId > -1))
+      .pipe(filter(() => !!this.bill))
       .subscribe({
         next: payments => this.data = payments || []
       });
   }
 
-  private subscribeToBillId(): void {
+  private subscribeToBill(): void {
     this.billIdSubscription = this.store
       .select(BillsSelectors.selectBill)
       .subscribe({
         next: bill => {
-          this.billId = bill?.id || -1;
-          this.store.dispatch(PaymentsActions.loadPayments({ billId: this.billId }));
+          this.bill = bill;
+          this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill?.id || -1 }));
         }
       });
   }
@@ -77,7 +77,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   }
 
   refresh(): void {
-    this.store.dispatch(PaymentsActions.loadPayments({ billId: this.billId }));
+    this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill?.id || -1 }));
   }
 
   addPayment(): void {
@@ -91,7 +91,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   private openDialog(payment?: Payment): void {
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       width: '500px',
-      data: { payment, billId: this.billId }
+      data: { payment, bill: this.bill }
     });
 
     dialogRef.afterClosed().subscribe();
@@ -111,7 +111,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   }
 
   pasteData(): void {
-    this.store.dispatch(PaymentsActions.importPayments({ billId: this.billId }));
+    this.store.dispatch(PaymentsActions.importPayments({ billId: this.bill?.id || -1 }));
   }
 
 }
