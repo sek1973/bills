@@ -1,4 +1,5 @@
 import { formatDate } from '@angular/common';
+import { Injectable } from '@angular/core';
 import { MatDateFormats, MAT_NATIVE_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
 
 export const BILLS_DATE_FORMATS: MatDateFormats = {
@@ -14,6 +15,7 @@ export const BILLS_DATE_FORMATS: MatDateFormats = {
   }
 };
 
+@Injectable()
 export class BillsDateAdapter extends NativeDateAdapter {
   format(date: Date, displayFormat: any): string {
 
