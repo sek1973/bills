@@ -156,7 +156,6 @@ export class BillEffects {
       .pipe(
         ofType(BillApiActions.payBillSuccess),
         map(() => this.snackBar.open('Opłacono rachunek', 'Ukryj', { duration: 3000 })),
-        map(() => this.router.navigate(['/zestawienie'])),
         switchMap(() => of(BillsActions.loadBills())));
   });
 

@@ -71,7 +71,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
         deadline: this.bill?.deadline ? new Date(this.bill?.deadline) : new Date(),
         paiddate: new Date(),
         sum: this.bill?.sum,
-        share: this.bill?.share
+        share: (this.bill?.sum || 0) * (this.bill?.share || 1)
       };
     }
     this.form.patchValue(value);

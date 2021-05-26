@@ -29,6 +29,6 @@
   </ng-template>
   <ng-template cellTemplateForColumn="share"
                let-row="row">
-    {{row.share | numberToPercent }}
+    {{row.share | currencyToString }}
   </ng-template>
 </app-table>

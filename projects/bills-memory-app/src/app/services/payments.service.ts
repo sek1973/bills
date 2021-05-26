@@ -22,12 +22,12 @@ function createPayment(
 export class PaymentsServiceImpl extends PaymentsService {
 
   private payments: Payment[] = [
-    createPayment(1, new Date(), 25, 1, new Date(), 'pierwsza płatność za gaz', 1),
-    createPayment(2, new Date(), 35, 0.5, new Date(), 'druga płatność za gaz', 1),
-    createPayment(3, new Date(), 15, 0.25, new Date(), 'trzecia płatność za gaz', 1),
-    createPayment(4, new Date(), 100, 1, new Date(), 'pierwsza płatność za prąd', 2),
-    createPayment(5, new Date(), 200, 0.5, new Date(), 'druga płatność za prąd', 2),
-    createPayment(6, new Date(), 300, 0.25, new Date(), 'trzecia płatność za prąd', 2),
+    createPayment(1, new Date(), 25, 12.5, new Date(), 'pierwsza płatność za gaz', 1),
+    createPayment(2, new Date(), 35, 17.5, new Date(), 'druga płatność za gaz', 1),
+    createPayment(3, new Date(), 15, 7.5, new Date(), 'trzecia płatność za gaz', 1),
+    createPayment(4, new Date(), 100, 50, new Date(), 'pierwsza płatność za prąd', 2),
+    createPayment(5, new Date(), 200, 100, new Date(), 'druga płatność za prąd', 2),
+    createPayment(6, new Date(), 300, 150, new Date(), 'trzecia płatność za prąd', 2),
   ];
 
   constructor() { super(); }
