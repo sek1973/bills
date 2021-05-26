@@ -6,7 +6,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { BillsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, validateBillName } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { BillApiActions } from './bill-api.actions';
 import { BillsActions } from './bill.actions';
 
@@ -66,7 +66,7 @@ export class BillEffects {
         concatMap(action =>
           this.billsService.add(action.bill)
             .pipe(
-              map(() => BillApiActions.createBillSuccess({ bill: action.bill })),
+              map((bill) => BillApiActions.createBillSuccess({ bill, redirect: action.redirect })),
               catchError(error => of(BillApiActions.createBillFailure({ error })))
             )
         )
@@ -77,8 +77,14 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillApiActions.createBillSuccess),
-        map(() => this.snackBar.open('Utworzono nowy rachunek', 'Ukryj', { duration: 3000 })),
-        map(() => this.router.navigate(['/zestawienie'])),
+        map((action) => {
+          this.snackBar.open('Utworzono nowy rachunek', 'Ukryj', { duration: 3000 });
+          if (action.redirect) {
+            this.router.navigate(['/zestawienie']);
+          } else {
+            this.router.navigate([`/rachunek/${action.bill.id}`]);
+          }
+        }),
         switchMap(() => of(BillsActions.loadBills())));
   });
 
@@ -125,9 +131,7 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillsActions.payBill),
-        tap((action) => console.log('pay effect called', action)),
         filter(action => action.bill.id >= 0),
-        tap(() => console.log('pay effect filtered')),
         mergeMap(action => this.confirmationService
           .confirm('Rachunek opłacony',
             'Podaj kwotę do zapłacenia (udział zostanie wyliczony automatycznie):', 'Anuluj', 'OK',

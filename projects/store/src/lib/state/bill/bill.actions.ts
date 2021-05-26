@@ -14,7 +14,7 @@ export const BillsActions = {
 
   createBill: createAction(
     '[Bills] Create Bill',
-    props<{ bill: Bill }>()
+    props<{ bill: Bill, redirect: boolean }>()
   ),
 
   deleteBill: createAction(

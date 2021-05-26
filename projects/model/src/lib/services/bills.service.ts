@@ -49,7 +49,7 @@ export abstract class BillsService {
     return result;
   }
 
-  abstract add(bill: Bill): Observable<number>;
+  abstract add(bill: Bill): Observable<Bill>;
 
   abstract update(bill: Bill): Observable<boolean>;
 

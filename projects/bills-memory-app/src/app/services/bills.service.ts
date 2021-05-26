@@ -64,10 +64,11 @@ export class BillsServiceImpl extends BillsService {
 
   getBills(): Bill[] { return this.bills; }
 
-  add(bill: Bill): Observable<number> {
+  add(bill: Bill): Observable<Bill> {
     const id = this.findNextId();
-    this.modifyBills((bills: Bill[]) => bills.push(bill.clone(id)));
-    return of(id).pipe(delay(1000));
+    const result = bill.clone(id);
+    this.modifyBills((bills: Bill[]) => bills.push(result));
+    return of(result).pipe(delay(1000));
   }
 
   update(bill: Bill): Observable<boolean> {

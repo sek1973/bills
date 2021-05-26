@@ -25,8 +25,8 @@ export class BillsServiceImpl extends BillsService {
 
   getBills(): Bill[] { return []; }
 
-  add(bill: Bill): Observable<number> {
-    return of(0);
+  add(bill: Bill): Observable<Bill> {
+    return of(new Bill());
   }
 
   update(bill: Bill): Observable<boolean> {

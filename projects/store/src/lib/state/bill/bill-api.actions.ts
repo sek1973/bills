@@ -24,7 +24,7 @@ export const BillApiActions = {
 
   createBillSuccess: createAction(
     '[Bill API] Create Bill Success',
-    props<{ bill: Bill }>()
+    props<{ bill: Bill, redirect: boolean }>()
   ),
 
   createBillFailure: createAction(
