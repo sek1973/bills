@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { AuthService } from 'projects/model/src/public-api';
+import { AppState, AuthActions } from 'projects/store/src/lib/state';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AuthServiceImpl extends AuthService {
-  private authStateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private authStateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public authState$: Observable<boolean> = this.authStateSubject.asObservable();
 
-  constructor() { super(); }
+  constructor(private store: Store<AppState>) {
+    super();
+    setTimeout(() => this.store.dispatch(AuthActions.login({ user: 'user', password: 'password' })));
+  }
 
   login(user: string, password: string): Observable<boolean> {
     this.authStateSubject.next(true);
