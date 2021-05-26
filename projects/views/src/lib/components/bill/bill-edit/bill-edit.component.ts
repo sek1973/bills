@@ -20,6 +20,7 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
   @Input() newBill: boolean = false;
   @Input() editMode: boolean = false;
   @Output() editModeChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() showSaveAndClose: boolean = true;
   canSave = false;
 
   unitEnumItems: SelectItem<Unit>[] = [];
@@ -59,7 +60,6 @@ export class BillEditComponent implements OnInit, OnDestroy, OnChanges {
     const reminderCtl = this.form.get('reminder') as FormControl;
     this.deadlineSubscription = deadlineCtl.valueChanges
       .subscribe((val: Date) => {
-        console.log('deadline value changes fired');
         reminderCtl.setValue(addDays(-7, val));
       });
   }

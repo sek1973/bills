@@ -54,8 +54,10 @@
     <app-bill-edit [bill]="row"
                    [bills]="data"
                    [newBill]="false"
-                   [editMode]="false"
-                   class="bill-details">
+                   [editMode]="editMode"
+                   [showSaveAndClose]="false"
+                   class="bill-details"
+                   (editModeChange)="onEditModeChange($event)">
     </app-bill-edit>
   </ng-template>
 

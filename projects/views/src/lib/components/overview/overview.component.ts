@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit, OnDestroy {
+  editMode: boolean = false;
   data: Bill[] = [];
   columns = [
     { name: 'name', header: 'Nazwa' },
@@ -112,6 +113,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
       const bill = this.table.activeRow;
       this.store.dispatch(BillsActions.payBill({ bill }));
     }
+  }
+
+  onEditModeChange(event: boolean): void {
+    this.editMode = event;
   }
 
 }
