@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { FormControl, FormGroup } from '@angular/forms';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { getSafe } from 'projects/model/src/public-api';
+import { getErrorMessage } from './validators/validators';
 
 export interface DescriptionProvider {
   getDescriptionObj: (...path: string[]) => FieldDescription;
@@ -99,13 +100,6 @@ export class InputBaseComponent implements OnInit, OnChanges {
   }
 
   getErrorMessage(path: string[]): string {
-    const formControl = this.formGroup.get(path);
-    if (formControl !== null) {
-      const errors = formControl.errors;
-      if (errors && errors.values) {
-        return errors.values.join('\n');
-      }
-    }
-    return 'Niepoprawna wartość';
+    return getErrorMessage(path, this.formGroup);
   }
 }

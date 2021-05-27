@@ -9,4 +9,7 @@
                     [formControlName]="fieldName">
     <mat-label>{{placeholderText}}</mat-label>
   </mat-slide-toggle>
+  <mat-error>
+    {{getErrorMessage(path)}}
+  </mat-error>
 </div>

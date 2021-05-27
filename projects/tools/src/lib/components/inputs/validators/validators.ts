@@ -1,4 +1,4 @@
-import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Schedule } from 'projects/model/src/lib/model';
 import { compareDates } from '../../../helpers/date.adapter';
 
@@ -29,7 +29,7 @@ export function validatePaymentReminderDate(deadlineCtl: FormControl): Validator
     if (deadline === null && reminder !== null) {
       return { noPaymentDate: { value: control.value } };
     } else if (deadline !== null && reminder !== null && reminder > deadline) {
-      return { reminderDateTooEarly: { value: control.value } };
+      return { reminderDateTooLate: { value: control.value } };
     } else {
       return null;
     }
@@ -42,7 +42,7 @@ export function validateScheduleDate(deadline: Date | null = null): ValidatorFn 
     if (deadline === null && date !== null) {
       return { noPaymentDate: { value: control.value } };
     } else if (deadline !== null && date !== null && date <= deadline) {
-      return { reminderDateTooEarly: { value: control.value } };
+      return { dateBeforeDeadline: { value: control.value } };
     } else {
       return null;
     }
@@ -58,4 +58,22 @@ export function validateDisinctScheduleDate(schedules: Schedule[], schedule?: Sc
       return null;
     }
   };
+}
+
+export function getErrorMessage(path: string[], formGroup: FormGroup): string {
+  const formControl = formGroup.get(path);
+  let result: string = '';
+  if (formControl !== null && formControl.errors) {
+    const errors = formControl.errors;
+    if (errors.minlength) { result = 'Minimalna ilość znaków ' + errors.minlength.requiredLength; }
+    else if (errors.wrongName) { result = 'Błędna nazwa rachunku'; }
+    else if (errors.nameNotDistinct) { result = 'Powtórzona nazwa rachunku'; }
+    else if (errors.noPaymentDate) { result = 'Brak daty dla płatności'; }
+    else if (errors.reminderDateTooLate) { result = 'Przypomnienie za późno'; }
+    else if (errors.dateBeforeDeadline) { result = 'Data musi być po terminie płatności w rachunku'; }
+    else if (errors.minlength) { result = 'Maksymalna ilość znaków ' + errors.maxLength.requiredLength; }
+    else if (errors.scheduleDateNotDistinct) { result = 'Powtórzony plan płatności'; }
+    else if (errors.required) { result = 'Wartość wymagana'; }
+  }
+  return result || 'Niepoprawna wartość';
 }
