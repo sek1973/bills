@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Payment, PaymentDescription } from 'projects/model/src/lib/model';
-import { getSafe } from 'projects/model/src/public-api';
 import { AppState, PaymentsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 
@@ -18,7 +17,7 @@ export interface PaymentDialogData {
 })
 export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
-  payment: Payment;
+  payment?: Payment;
   bill?: Bill;
   dialogTitle: string;
   dialogMode: 'add' | 'edit' = 'add';
@@ -38,8 +37,8 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: PaymentDialogData,
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
     private store: Store<AppState>) {
-    this.bill = getSafe(() => data.bill);
-    this.payment = getSafe(() => data.payment);
+    this.bill = data?.bill;
+    this.payment = data?.payment;
     this.dialogTitle = (this.payment ? 'Edytuj' : 'Dodaj') + ' zrealizowaną płatność';
     this.dialogMode = this.payment ? 'edit' : 'add';
     this.form.statusChanges.subscribe(status => this.setEditStatus(status));

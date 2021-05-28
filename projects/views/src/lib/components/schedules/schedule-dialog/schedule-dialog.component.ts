@@ -64,15 +64,22 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   }
 
   private setFormValue(): void {
+    let value: any;
     if (this.schedule) {
-      const value = {
-        uid: this.schedule.id,
+      value = {
+        id: this.schedule.id,
         date: this.schedule.date,
         sum: this.schedule.sum,
         remarks: this.schedule.remarks
       };
-      this.form.patchValue(value);
+    } else {
+      value = {
+        id: -1,
+        date: calculateNextScheduleDate(this.bill, this.bill?.deadline, this.data.schedules),
+        sum: this.bill?.sum
+      };
     }
+    this.form.patchValue(value);
     this.setEditStatus(this.form.status);
   }
 
