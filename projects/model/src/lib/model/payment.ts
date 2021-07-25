@@ -6,14 +6,14 @@ export class Payment {
     public deadline = new Date(),
     public sum: number = 0,
     public share: number = 1,
-    public paiddate?: Date,
+    public paidDate?: Date,
     public remarks?: string,
     public billId?: number,
     public id: number = -1
   ) { }
 
   clone(id?: number, billId = this.billId): Payment {
-    return new Payment(this.deadline, this.sum, this.share, this.paiddate, this.remarks, billId, id);
+    return new Payment(this.deadline, this.sum, this.share, this.paidDate, this.remarks, billId, id);
   }
 }
 
