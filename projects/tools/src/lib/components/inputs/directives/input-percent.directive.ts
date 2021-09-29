@@ -59,7 +59,6 @@ export class InputPercentDirective implements ControlValueAccessor {
     event.preventDefault();
   }
 
-  // test
   constructor(
     private renderer: Renderer2,
     private element: ElementRef) {
