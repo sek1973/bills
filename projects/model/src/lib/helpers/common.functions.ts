@@ -17,6 +17,8 @@ export function dateToString(val: Date): string | undefined {
  * - yyyy.mm.dd
  * - dd.mm.yyyy
  * - dd-mm-yyyy
+ * @param {string} val
+ * @return {Date | undefined} date
  */
 export function stringToDate(val: string): Date | undefined {
   if (val === undefined || val === null || val === '') { return undefined; }
@@ -48,7 +50,7 @@ export function currencyToString(val: number, NaNvalue: any = 0): string | undef
 
 export function currencyToNumber(val: string): number | undefined {
   if (val !== undefined && val !== null) {
-    const cleaned = val.replace(/[^0-9\.,-]+/g, '').replace(',', '.');
+    const cleaned = val.replace(/[^0-9.,-]+/g, '').replace(',', '.');
     const result = Number(cleaned);
     return result;
   }
@@ -64,7 +66,7 @@ export function percentToString(val: number, NaNvalue: any = 0): string | undefi
 
 export function percentToNumber(val: string): number | undefined {
   if (val !== undefined && val !== null) {
-    const cleaned = val.replace(/[^0-9\.,-]+/g, '').replace(',', '.');
+    const cleaned = val.replace(/[^0-9.,-]+/g, '').replace(',', '.');
     const result = Number(cleaned) / 100;
     return result;
   }
@@ -107,9 +109,9 @@ export function calculateNextScheduleDate(
   bill?: Bill,
   deadline?: Date,
   schedules: Schedule[] = []): Date {
-  const dates = schedules.map(s => s.date);
+  const dates = schedules.map((s) => s.date);
   dates.push(deadline);
-  const filtered = dates.filter(d => (d !== null && d !== undefined)) as Date[];
+  const filtered = dates.filter((d) => (d !== null && d !== undefined)) as Date[];
   const sorted = filtered.sort((a, b) => a > b ? -1 : 1); // descending
   return calculateNextDeadline(sorted[0], bill?.unit, bill?.repeat);
 }
