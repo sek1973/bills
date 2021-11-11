@@ -60,7 +60,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
       value = {
         id: this.payment.id,
         deadline: this.payment.deadline,
-        paiddate: this.payment.paiddate,
+        paiddate: this.payment.paidDate,
         sum: this.payment.sum,
         share: this.payment.share,
         remarks: this.payment.remarks
@@ -87,7 +87,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     payment.deadline = val.deadline;
     payment.sum = val.sum;
     payment.share = val.share;
-    payment.paiddate = val.paiddate;
+    payment.paidDate = val.paiddate;
     payment.remarks = val.remarks;
     payment.billId = this.bill?.id || -1;
     if (this.payment) {
