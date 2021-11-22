@@ -417,6 +417,37 @@
           }
         }
       }
+    },
+    "my-schematics": {
+      "projectType": "library",
+      "root": "projects/my-schematics",
+      "sourceRoot": "projects/my-schematics/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/my-schematics/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/my-schematics/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/my-schematics/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/my-schematics/src/test.ts",
+            "tsConfig": "projects/my-schematics/tsconfig.spec.json",
+            "karmaConfig": "projects/my-schematics/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "defaultProject": "bills-memory-app"

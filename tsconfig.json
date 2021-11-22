@@ -25,6 +25,10 @@
         "dist/model/model",
         "dist/model"
       ],
+      "my-schematics": [
+        "dist/my-schematics/my-schematics",
+        "dist/my-schematics"
+      ],
       "store": [
         "dist/store/store",
         "dist/store"
