@@ -4,10 +4,9 @@ import { Store } from '@ngrx/store';
 import { Bill, Schedule } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, SchedulesActions, SchedulesSelectors } from 'projects/store/src/lib/state';
 import { TableComponent } from 'projects/tools/src/public-api';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
-
 
 @Component({
   selector: 'app-schedules',
@@ -15,8 +14,8 @@ import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.compo
   styleUrls: ['./schedules.component.scss']
 })
 export class SchedulesComponent implements OnInit, OnDestroy {
-  @ViewChild('table', { read: TableComponent })
-  table!: TableComponent<Schedule>;
+  
+  @ViewChild('table', { read: TableComponent }) table!: TableComponent<Schedule>;
 
   data: Schedule[] = [];
   activeRow?: Schedule;
@@ -27,8 +26,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   ];
   bill?: Bill;
 
-  private dataSubscription: Subscription = Subscription.EMPTY;
-  private billIdSubscription: Subscription = Subscription.EMPTY;
+  private destroyed$: Subject<void> = new Subject<void>();
 
   constructor(
     @Inject(MatDialog) public dialog: MatDialog,
@@ -40,22 +38,24 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.billIdSubscription.unsubscribe();
-    this.dataSubscription.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   private subscribeToData(): void {
-    this.dataSubscription = this.store
+    this.store
       .select(SchedulesSelectors.selectAll)
-      .pipe(filter(() => (this.bill?.id || -1) > -1))
+      .pipe(takeUntil(this.destroyed$),
+        filter(() => (this.bill?.id || -1) > -1))
       .subscribe({
         next: schedules => this.data = schedules || []
       });
   }
 
   private subscribeToBillId(): void {
-    this.billIdSubscription = this.store
+    this.store
       .select(BillsSelectors.selectBill)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: bill => {
           this.bill = bill;
