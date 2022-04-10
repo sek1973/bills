@@ -3,7 +3,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-bill',
@@ -12,8 +12,8 @@ import { Subscription } from 'rxjs';
 })
 export class BillComponent implements OnInit, OnDestroy {
 
-  private billSubscription = Subscription.EMPTY;
-  private billsSubscription = Subscription.EMPTY;
+  private destroyed$: Subject<void> = new Subject<void>();
+  
   editMode = false;
   newBill = false;
   bill?: Bill;
@@ -23,12 +23,14 @@ export class BillComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private store: Store<AppState>) {
-    this.billSubscription = this.store.select(BillsSelectors.selectBill)
+    this.store.select(BillsSelectors.selectBill)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(bill => {
         this.bill = bill;
         this.handleData();
       });
-    this.billsSubscription = this.store.select(BillsSelectors.selectAll)
+    this.store.select(BillsSelectors.selectAll)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe((bills) => {
         this.bills = bills;
         const val = this.route.snapshot.params['id' as keyof Params];
@@ -37,10 +39,12 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.billSubscription = this.route.paramMap.subscribe(param => {
-      const val = param.get('id');
-      this.dispatchSelectedBill(val as string);
-    });
+    this.route.paramMap
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(param => {
+        const val = param.get('id');
+        this.dispatchSelectedBill(val as string);
+      });
   }
 
   private dispatchSelectedBill(val: string): void {
@@ -65,8 +69,8 @@ export class BillComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.billSubscription.unsubscribe();
-    this.billsSubscription.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   getTitle(): string {
