@@ -4,8 +4,8 @@ import { Store } from '@ngrx/store';
 import { Bill, Payment } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
 import { TableComponent } from 'projects/tools/src/public-api';
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 @Component({
@@ -14,11 +14,10 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
   styleUrls: ['./payments.component.scss'],
 })
 export class PaymentsComponent implements OnInit, OnDestroy {
-  @ViewChild('table', { read: TableComponent })
-  table!: TableComponent<Payment>;
+  
+  @ViewChild('table', { read: TableComponent }) table!: TableComponent<Payment>;
 
   activeRow?: Payment;
-
   data: Payment[] = [];
   columns = [
     { name: 'deadline', header: 'Termin' },
@@ -29,8 +28,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   ];
   bill?: Bill;
 
-  private dataSubscription: Subscription = Subscription.EMPTY;
-  private billIdSubscription: Subscription = Subscription.EMPTY;
+  private destroyed$: Subject<void> = new Subject<void>();
 
   constructor(
     @Inject(MatDialog) public dialog: MatDialog,
@@ -42,17 +40,19 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToData(): void {
-    this.dataSubscription = this.store
+    this.store
       .select(PaymentsSelectors.selectAll)
-      .pipe(filter(() => !!this.bill))
+      .pipe(takeUntil(this.destroyed$),
+        filter(() => !!this.bill))
       .subscribe({
         next: payments => this.data = payments || []
       });
   }
 
   private subscribeToBill(): void {
-    this.billIdSubscription = this.store
+    this.store
       .select(BillsSelectors.selectBill)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe({
         next: bill => {
           this.bill = bill;
@@ -62,8 +62,8 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.dataSubscription.unsubscribe();
-    this.billIdSubscription.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   onRowClicked(row: any): void {
