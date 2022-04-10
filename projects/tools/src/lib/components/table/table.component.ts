@@ -6,9 +6,7 @@ import {
   ContentChildren,
   ElementRef,
   EventEmitter,
-  Input, OnDestroy,
-  OnInit,
-  Output,
+  Input, OnDestroy, Output,
   QueryList,
   TemplateRef,
   ViewChild
@@ -16,8 +14,8 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, SortDirection } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { fromEvent, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
 import { TableColumn } from './table-column.model';
@@ -35,7 +33,7 @@ import { TableDataSource } from './table-data-source';
     ])
   ]
 })
-export class TableComponent<T extends { [key: string]: any }> implements OnInit, AfterViewInit, OnDestroy {
+export class TableComponent<T extends { [key: string]: any }> implements AfterViewInit, OnDestroy {
   dataReady: boolean;
   expandedRow: any;
   activeRow: any;
@@ -45,8 +43,7 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
   private paginator?: MatPaginator;
   private _columnsDefinition: TableColumn[] = [];
   private _expandable: boolean = false;
-  private subscription = Subscription.EMPTY;
-  private loadingSubscription = Subscription.EMPTY;
+  private destroyed$: Subject<void> = new Subject<void>();
 
   @Output() rowDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output() rowActivated: EventEmitter<any> = new EventEmitter<any>();
@@ -211,8 +208,6 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
     this.dataReady = false;
   }
 
-  ngOnInit(): void { }
-
   private initDataSource(): void {
     this._dataSource = new TableDataSource(this.data);
     if (this.sort !== undefined) {
@@ -233,8 +228,9 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
       this.initDataSource();
     });
     if (this.filterInput) {
-      this.subscription = fromEvent(this.filterInput, 'keyup')
+      fromEvent(this.filterInput, 'keyup')
         .pipe(
+          takeUntil(this.destroyed$),
           debounceTime(this.filterKeyDelayMs), // before emitting last event
           distinctUntilChanged()
         )
@@ -245,8 +241,8 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-    this.loadingSubscription.unsubscribe();
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 
   getCellTemplate(column: string, defaultTemplate: TemplateRef<any>): TemplateRef<any> {
