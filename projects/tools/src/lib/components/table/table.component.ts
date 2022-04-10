@@ -6,9 +6,7 @@ import {
   ContentChildren,
   ElementRef,
   EventEmitter,
-  Input,
-  isDevMode,
-  OnDestroy,
+  Input, OnDestroy,
   OnInit,
   Output,
   QueryList,
@@ -387,24 +385,19 @@ export class TableComponent<T extends { [key: string]: any }> implements OnInit,
       type: 'text/csv;charset=utf-8;'
     });
     const fileName = this.exportFileName + '.csv';
-    try {
-      window.navigator.msSaveOrOpenBlob(blob, fileName);
-    } catch (e) {
-      if (isDevMode()) { console.warn('window.navigator.msSaveOrOpenBlob not found', e); }
-      const link = document.createElement('a');
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      if (link.download !== undefined) {
-        link.setAttribute('href', URL.createObjectURL(blob));
-        link.setAttribute('download', fileName);
-        link.click();
-      } else {
-        csv = 'data:text/csv;charset=utf-8,' + csv;
-        window.open(encodeURI(csv));
-      }
-      document.body.removeChild(link);
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    if (link.download !== undefined) {
+      link.setAttribute('href', URL.createObjectURL(blob));
+      link.setAttribute('download', fileName);
+      link.click();
+    } else {
+      csv = 'data:text/csv;charset=utf-8,' + csv;
+      window.open(encodeURI(csv));
     }
-  }
+    document.body.removeChild(link);
+  }  
 
   public exportToCsv(): void {
     const csv = this.getExportData();
