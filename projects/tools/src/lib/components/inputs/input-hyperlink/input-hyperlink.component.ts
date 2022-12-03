@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { getSafe } from 'projects/model/src/public-api';
 import { InputBaseComponent } from './../input-component-base';
@@ -8,12 +8,9 @@ import { InputBaseComponent } from './../input-component-base';
   templateUrl: './input-hyperlink.component.html',
   styleUrls: ['./input-hyperlink.component.scss']
 })
-export class InputHyperlinkComponent extends InputBaseComponent implements OnInit {
+export class InputHyperlinkComponent extends InputBaseComponent {
 
   constructor() { super(); }
-
-  ngOnInit(): void {
-  }
 
   get formControl(): UntypedFormControl {
     return getSafe(() => this.fieldFormGroup.get(this.fieldName) as UntypedFormControl);

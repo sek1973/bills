@@ -1,6 +1,6 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DescriptionProvider } from '../inputs/input-component-base';
 import { ConfirmDialogInputType, ConfirmDialogModel } from './confirm-dialog.model';
 
@@ -14,7 +14,7 @@ export interface ConfirmDialogResponse {
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.scss']
 })
-export class ConfirmDialogComponent implements OnInit {
+export class ConfirmDialogComponent {
   dialogTitle: string;
   message: string;
   cancelButtonLabel: string;
@@ -36,8 +36,6 @@ export class ConfirmDialogComponent implements OnInit {
     this.applyButtonLabel = data.applyButtonLabel;
     this.initInput(data);
   }
-
-  ngOnInit(): void { }
 
   initInput(data: ConfirmDialogModel): void {
     if (data.inputType !== undefined) {

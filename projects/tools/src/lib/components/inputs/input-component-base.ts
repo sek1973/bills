@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { getSafe } from 'projects/model/src/public-api';
@@ -11,7 +11,7 @@ export interface DescriptionProvider {
   selector: 'app-input-base',
   template: ''
 })
-export class InputBaseComponent implements OnInit, OnChanges {
+export class InputBaseComponent implements OnChanges {
   tooltipShowDelayValue = 1000;
   tooltipHideDelayValue = 2000;
   fieldFormGroup!: UntypedFormGroup;
@@ -61,8 +61,6 @@ export class InputBaseComponent implements OnInit, OnChanges {
     }
   }
 
-  constructor() { }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.path) {
       this.setFieldName();
@@ -74,8 +72,6 @@ export class InputBaseComponent implements OnInit, OnChanges {
       this.setFormGroupState();
     }
   }
-
-  ngOnInit(): void { }
 
   private setFieldName(): void {
     if (this.path && this.path.length) {

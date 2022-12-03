@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormControl, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
@@ -60,8 +60,8 @@ export class BillEditComponent implements OnDestroy, OnChanges {
   }
 
   private subscribeToDeadlineChange(): void {
-    const deadlineCtl = this.form.get('deadline') as UntypedFormControl;
-    const reminderCtl = this.form.get('reminder') as UntypedFormControl;
+    const deadlineCtl = this.form.get('deadline') as FormControl<Date>;
+    const reminderCtl = this.form.get('reminder') as FormControl<Date>;
     deadlineCtl.valueChanges
       .pipe(takeUntil(this.destroyed$),
         filter(() => !this.loadingFormValue))
