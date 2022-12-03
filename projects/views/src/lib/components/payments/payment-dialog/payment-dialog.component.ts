@@ -24,7 +24,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   canSave = false;
 
   form: UntypedFormGroup = new UntypedFormGroup({
-    uid: new UntypedFormControl(),
+    id: new UntypedFormControl(),
     deadline: new UntypedFormControl(new Date(), Validators.required),
     paiddate: new UntypedFormControl(new Date(), Validators.required),
     sum: new UntypedFormControl(0, Validators.required),
