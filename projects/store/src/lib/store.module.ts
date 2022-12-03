@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -35,3 +35,4 @@ import { StoreComponent } from './store.component';
 export class BillsStoreModule { }
 
 export * from './state';
+

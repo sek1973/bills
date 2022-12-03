@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Schedule } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, SchedulesActions, SchedulesSelectors } from 'projects/store/src/lib/state';
@@ -14,7 +14,7 @@ import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.compo
   styleUrls: ['./schedules.component.scss']
 })
 export class SchedulesComponent implements OnInit, OnDestroy {
-  
+
   @ViewChild('table', { read: TableComponent }) table!: TableComponent<Schedule>;
 
   data: Schedule[] = [];

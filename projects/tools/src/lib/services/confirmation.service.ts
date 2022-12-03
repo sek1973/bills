@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ConfirmDialogComponent, ConfirmDialogInputType, ConfirmDialogModel, ConfirmDialogResponse } from '../components/confirm-dialog';
 

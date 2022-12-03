@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Payment } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
@@ -14,7 +14,7 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
   styleUrls: ['./payments.component.scss'],
 })
 export class PaymentsComponent implements OnInit, OnDestroy {
-  
+
   @ViewChild('table', { read: TableComponent }) table!: TableComponent<Payment>;
 
   activeRow?: Payment;

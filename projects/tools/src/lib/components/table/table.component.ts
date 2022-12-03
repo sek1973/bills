@@ -11,9 +11,9 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, SortDirection } from '@angular/material/sort';
-import { MatLegacyTable as MatTable } from '@angular/material/legacy-table';
+import { MatTable } from '@angular/material/table';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { PrintService } from '../../services';
@@ -393,7 +393,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
       window.open(encodeURI(csv));
     }
     document.body.removeChild(link);
-  }  
+  }
 
   public exportToCsv(): void {
     const csv = this.getExportData();
