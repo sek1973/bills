@@ -11,9 +11,9 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort, SortDirection } from '@angular/material/sort';
-import { MatTable } from '@angular/material/table';
+import { MatLegacyTable as MatTable } from '@angular/material/legacy-table';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { PrintService } from '../../services';

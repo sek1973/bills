@@ -1,5 +1,5 @@
 
-import { MatTableDataSource } from '@angular/material/table';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { BehaviorSubject, Subscription } from 'rxjs';
 
 export class TableDataSource<T extends { [key: string]: any }> extends MatTableDataSource<T> {

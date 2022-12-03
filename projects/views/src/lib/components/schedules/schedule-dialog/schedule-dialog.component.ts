@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Schedule, ScheduleDescription } from 'projects/model/src/lib/model';
 import { calculateNextScheduleDate } from 'projects/model/src/public-api';

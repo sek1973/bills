@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from 'projects/model/src/public-api';
 import { NavigationService } from 'projects/tools/src/public-api';
