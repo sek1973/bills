@@ -12,9 +12,9 @@
               [cdkAutosizeMinRows]="inputMinRows"
               [cdkAutosizeMaxRows]="inputMaxRows"
               [id]="fieldName"
-              [formControlName]="fieldName">
+              [formControlName]="fieldName"
+              [placeholder]="placeholderText">
            </textarea>
-    <mat-placeholder class="placeholder">{{placeholderText}}</mat-placeholder>
     <mat-error>
       {{getErrorMessage(path)}}
     </mat-error>
