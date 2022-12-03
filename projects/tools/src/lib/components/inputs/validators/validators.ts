@@ -1,4 +1,4 @@
-import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, UntypedFormControl, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import { Schedule } from 'projects/model/src/lib/model';
 import { compareDates } from '../../../helpers/date.adapter';
 
@@ -22,7 +22,7 @@ export function validateDistinctBillName(billNames: string[]): ValidatorFn {
   };
 }
 
-export function validatePaymentReminderDate(deadlineCtl: FormControl): ValidatorFn {
+export function validatePaymentReminderDate(deadlineCtl: UntypedFormControl): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const deadline = deadlineCtl.value || null;
     const reminder = control.value || null;
@@ -60,7 +60,7 @@ export function validateDisinctScheduleDate(schedules: Schedule[], schedule?: Sc
   };
 }
 
-export function getErrorMessage(path: string[], formGroup: FormGroup): string {
+export function getErrorMessage(path: string[], formGroup: UntypedFormGroup): string {
   const formControl = formGroup.get(path);
   let result: string = '';
   if (formControl !== null && formControl.errors) {

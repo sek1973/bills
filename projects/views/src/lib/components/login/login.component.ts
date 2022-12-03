@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { AppState, AuthActions } from 'projects/store/src/lib/state';
@@ -13,15 +13,15 @@ import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/in
 export class LoginComponent {
   public error: string | undefined = undefined;
 
-  userFormControl = new FormControl('', [
+  userFormControl = new UntypedFormControl('', [
     Validators.required,
     Validators.minLength(5),
   ]);
-  passwordFormControl = new FormControl('', [
+  passwordFormControl = new UntypedFormControl('', [
     Validators.required,
     Validators.minLength(6),
   ]);
-  loginForm = new FormGroup({ user: this.userFormControl, password: this.passwordFormControl });
+  loginForm = new UntypedFormGroup({ user: this.userFormControl, password: this.passwordFormControl });
 
   formDescription = new Map<string, FieldDescription>([
     ['user', {
@@ -45,7 +45,7 @@ export class LoginComponent {
     this.store.dispatch(AuthActions.login({ user, password }));
   }
 
-  getErrorMessage(formControl: FormControl): string {
+  getErrorMessage(formControl: UntypedFormControl): string {
     let errorMsg = '';
     if (formControl.errors) {
       formControl.errors.array.forEach((err: string) => {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { getSafe } from 'projects/model/src/public-api';
 import { InputBaseComponent } from './../input-component-base';
 
@@ -15,8 +15,8 @@ export class InputHyperlinkComponent extends InputBaseComponent implements OnIni
   ngOnInit(): void {
   }
 
-  get formControl(): FormControl {
-    return getSafe(() => this.fieldFormGroup.get(this.fieldName) as FormControl);
+  get formControl(): UntypedFormControl {
+    return getSafe(() => this.fieldFormGroup.get(this.fieldName) as UntypedFormControl);
   }
 
   get hyperlink(): void {

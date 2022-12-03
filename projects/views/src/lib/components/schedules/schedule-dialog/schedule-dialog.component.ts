@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Schedule, ScheduleDescription } from 'projects/model/src/lib/model';
@@ -28,11 +28,11 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   canSave = false;
   canClone = false;
 
-  form: FormGroup = new FormGroup({
-    id: new FormControl(),
-    date: new FormControl(new Date(), Validators.required),
-    sum: new FormControl(),
-    remarks: new FormControl()
+  form: UntypedFormGroup = new UntypedFormGroup({
+    id: new UntypedFormControl(),
+    date: new UntypedFormControl(new Date(), Validators.required),
+    sum: new UntypedFormControl(),
+    remarks: new UntypedFormControl()
   });
 
   constructor(
@@ -55,7 +55,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   }
 
   private setDateValidators(): void {
-    const dateCtl = this.form.get('date') as FormControl;
+    const dateCtl = this.form.get('date') as UntypedFormControl;
     dateCtl?.setValidators([
       Validators.required,
       validateDisinctScheduleDate(this.data.schedules, this.schedule),

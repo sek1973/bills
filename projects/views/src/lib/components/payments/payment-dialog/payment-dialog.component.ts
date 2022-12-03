@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Payment, PaymentDescription } from 'projects/model/src/lib/model';
@@ -23,14 +23,14 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   dialogMode: 'add' | 'edit' = 'add';
   canSave = false;
 
-  form: FormGroup = new FormGroup({
-    uid: new FormControl(),
-    deadline: new FormControl(new Date(), Validators.required),
-    paiddate: new FormControl(new Date(), Validators.required),
-    sum: new FormControl(0, Validators.required),
-    share: new FormControl(0, Validators.required),
-    remarks: new FormControl(),
-    billId: new FormControl() // not visible
+  form: UntypedFormGroup = new UntypedFormGroup({
+    uid: new UntypedFormControl(),
+    deadline: new UntypedFormControl(new Date(), Validators.required),
+    paiddate: new UntypedFormControl(new Date(), Validators.required),
+    sum: new UntypedFormControl(0, Validators.required),
+    share: new UntypedFormControl(0, Validators.required),
+    remarks: new UntypedFormControl(),
+    billId: new UntypedFormControl() // not visible
   });
 
   constructor(

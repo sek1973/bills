@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DescriptionProvider } from '../inputs/input-component-base';
 import { ConfirmDialogInputType, ConfirmDialogModel } from './confirm-dialog.model';
@@ -21,7 +21,7 @@ export class ConfirmDialogComponent implements OnInit {
   applyButtonLabel: string;
   canApply: boolean = true;
 
-  form: FormGroup = new FormGroup({});
+  form: UntypedFormGroup = new UntypedFormGroup({});
   inputType?: ConfirmDialogInputType;
   confirmDialogInputType = ConfirmDialogInputType;
   descriptionProvider!: DescriptionProvider;
@@ -51,7 +51,7 @@ export class ConfirmDialogComponent implements OnInit {
           };
         }
       };
-      this.form = new FormGroup({ input: new FormControl(data.inputValue, data.inputValidators) });
+      this.form = new UntypedFormGroup({ input: new UntypedFormControl(data.inputValue, data.inputValidators) });
       this.form.statusChanges.subscribe(status => this.canApply = (status === 'VALID') ? true : false);
       this.canApply = (this.form.status === 'VALID') ? true : false;
     }

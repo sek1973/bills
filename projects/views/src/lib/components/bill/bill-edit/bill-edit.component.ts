@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
@@ -28,21 +28,21 @@ export class BillEditComponent implements OnDestroy, OnChanges {
   private destroyed$: Subject<void> = new Subject<void>();
   private loadingFormValue: boolean = true;
 
-  form: FormGroup = new FormGroup({
-    uid: new FormControl(),
-    id: new FormControl(),
-    name: new FormControl(undefined, [Validators.required, Validators.minLength(3)]),
-    description: new FormControl(),
-    active: new FormControl(undefined, Validators.required),
-    deadline: new FormControl(undefined, Validators.required),
-    repeat: new FormControl(),
-    unit: new FormControl(),
-    reminder: new FormControl(),
-    sum: new FormControl(),
-    share: new FormControl(undefined, Validators.required),
-    url: new FormControl(),
-    login: new FormControl(),
-    password: new FormControl()
+  form: UntypedFormGroup = new UntypedFormGroup({
+    uid: new UntypedFormControl(),
+    id: new UntypedFormControl(),
+    name: new UntypedFormControl(undefined, [Validators.required, Validators.minLength(3)]),
+    description: new UntypedFormControl(),
+    active: new UntypedFormControl(undefined, Validators.required),
+    deadline: new UntypedFormControl(undefined, Validators.required),
+    repeat: new UntypedFormControl(),
+    unit: new UntypedFormControl(),
+    reminder: new UntypedFormControl(),
+    sum: new UntypedFormControl(),
+    share: new UntypedFormControl(undefined, Validators.required),
+    url: new UntypedFormControl(),
+    login: new UntypedFormControl(),
+    password: new UntypedFormControl()
   });
 
   constructor(
@@ -60,8 +60,8 @@ export class BillEditComponent implements OnDestroy, OnChanges {
   }
 
   private subscribeToDeadlineChange(): void {
-    const deadlineCtl = this.form.get('deadline') as FormControl;
-    const reminderCtl = this.form.get('reminder') as FormControl;
+    const deadlineCtl = this.form.get('deadline') as UntypedFormControl;
+    const reminderCtl = this.form.get('reminder') as UntypedFormControl;
     deadlineCtl.valueChanges
       .pipe(takeUntil(this.destroyed$),
         filter(() => !this.loadingFormValue))
@@ -135,8 +135,8 @@ export class BillEditComponent implements OnDestroy, OnChanges {
   }
 
   private setReminderValidators(): void {
-    const reminder = this.form.get('reminder') as FormControl;
-    const deadline = this.form.get('deadline') as FormControl;
+    const reminder = this.form.get('reminder') as UntypedFormControl;
+    const deadline = this.form.get('deadline') as UntypedFormControl;
     reminder?.setValidators([validatePaymentReminderDate(deadline)]);
     reminder?.updateValueAndValidity();
   }

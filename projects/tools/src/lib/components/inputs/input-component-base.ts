@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { getSafe } from 'projects/model/src/public-api';
 import { getErrorMessage } from './validators/validators';
@@ -14,10 +14,10 @@ export interface DescriptionProvider {
 export class InputBaseComponent implements OnInit, OnChanges {
   tooltipShowDelayValue = 1000;
   tooltipHideDelayValue = 2000;
-  fieldFormGroup!: FormGroup;
+  fieldFormGroup!: UntypedFormGroup;
 
   @Input() autoHide: boolean = true;
-  @Input() formGroup!: FormGroup;
+  @Input() formGroup!: UntypedFormGroup;
   @Input() descriptionProvider!: DescriptionProvider;
   @Input() editMode: boolean = true;
   @Input() path!: string[];
@@ -42,8 +42,8 @@ export class InputBaseComponent implements OnInit, OnChanges {
     return this.formControl ? true : false;
   }
 
-  get formControl(): FormControl {
-    return this.fieldFormGroup.get(this.fieldName) as FormControl;
+  get formControl(): UntypedFormControl {
+    return this.fieldFormGroup.get(this.fieldName) as UntypedFormControl;
   }
 
   private _fieldName!: string;
@@ -90,7 +90,7 @@ export class InputBaseComponent implements OnInit, OnChanges {
       }
       if (this.path.length > 1) {
         const parentFgPath = this.path.slice(0, -1);
-        const parentFg = this.formGroup.get(parentFgPath) as FormGroup;
+        const parentFg = this.formGroup.get(parentFgPath) as UntypedFormGroup;
         if (parentFg !== null) {
           this.fieldFormGroup = parentFg;
         }
