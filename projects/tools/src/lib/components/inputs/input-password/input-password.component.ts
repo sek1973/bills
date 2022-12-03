@@ -13,6 +13,5 @@ export class InputPasswordComponent extends InputBaseComponent {
 
   onClick(event: Event): void {
     this.hide = !this.hide;
-    event.stopPropagation();
   }
 }
