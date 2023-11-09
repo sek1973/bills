@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from 'projects/model/src/public-api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { PreviousUrlService } from './previous-url.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard {
 
   constructor(
     private authService: AuthService,
