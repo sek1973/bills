@@ -14,12 +14,21 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, SortDirection } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { fromEvent, Subject } from 'rxjs';
+import { Subject, fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
 import { TableColumn } from './table-column.model';
 import { TableDataSource } from './table-data-source';
+
+export interface TablePanelComponent<T extends { [key: string]: any; }> extends Component {
+  dataSource: TableDataSource<T> | undefined;
+  activeRow?: any;
+}
+
+export interface ExpandedRowComponent extends Component {
+  row?: any;
+}
 
 @Component({
   selector: 'app-table',
@@ -85,9 +94,9 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
   }
 
   @ContentChild('tableTitleTemplate') tableTitleTemplate?: TemplateRef<Component>;
-  @ContentChild('expandedRowTemplate') expandedRowTemplate?: TemplateRef<Component>;
-  @ContentChild('middleToolbarPanelTemplate') middleToolbarPanelTemplate?: TemplateRef<Component>;
-  @ContentChild('rightToolbarPanelTemplate') rightToolbarPanelTemplate?: TemplateRef<Component>;
+  @ContentChild('expandedRowTemplate') expandedRowTemplate?: TemplateRef<ExpandedRowComponent>;
+  @ContentChild('middleToolbarPanelTemplate') middleToolbarPanelTemplate?: TemplateRef<TablePanelComponent<any>>;
+  @ContentChild('rightToolbarPanelTemplate') rightToolbarPanelTemplate?: TemplateRef<TablePanelComponent<any>>;
 
   @Input() sortActive: string = '';
   @Input() sortDirection: SortDirection = '';

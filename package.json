@@ -4,7 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start-memory": "ng serve --ssl true --project=bills-memory-app --verbose",
     "build": "ng build",
+    "build-memory": "ng build --configuration production --aot --project=bills-memory-app",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
