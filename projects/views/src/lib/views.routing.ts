@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, mapToCanActivate } from '@angular/router';
 import { AuthGuard } from 'projects/tools/src/public-api';
 import { BillComponent, LoginComponent, OverviewComponent, PageNotFoundComponent } from './components';
 import { RootComponent } from './components/root/root.component';
@@ -12,21 +12,21 @@ const routes: Routes = [
       {
         path: 'zestawienie',
         component: OverviewComponent,
-        canActivate: [AuthGuard]
+        canActivate: mapToCanActivate([AuthGuard])
       },
       {
         path: 'rachunek',
         component: BillComponent,
         pathMatch: 'full',
         data: { title: 'Nowy rachunek' },
-        canActivate: [AuthGuard]
+        canActivate: mapToCanActivate([AuthGuard])
       },
       {
         path: 'rachunek/:id',
         component: BillComponent,
         pathMatch: 'full',
         data: { title: 'Rachunek' },
-        canActivate: [AuthGuard]
+        canActivate: mapToCanActivate([AuthGuard])
       },
       {
         path: '',
