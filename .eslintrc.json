@@ -37,7 +37,7 @@
             "always"
         ],
         "@typescript-eslint/no-inferrable-types": [
-            2,
+            "error",
             {
                 "ignoreParameters": true,
                 "ignoreProperties": true
