@@ -1,4 +1,5 @@
-<div *ngIf="visible"
+@if (visible) {
+<div
      class="form-item"
      [formGroup]="fieldFormGroup">
   <mat-form-field class="form-field">
@@ -21,3 +22,4 @@
     </mat-error>
   </mat-form-field>
 </div>
+}

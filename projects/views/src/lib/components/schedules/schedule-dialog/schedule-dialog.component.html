@@ -22,12 +22,14 @@
           color="warn"
           class="toolbar-button"
           (click)="closeDialog()">Anuluj</button>
-  <button *ngIf="dialogMode==='edit'"
+  @if (dialogMode==='edit') {
+<button
           mat-raised-button
           color="primary"
           class="toolbar-button"
           [disabled]="!canClone"
           (click)="cloneData()">Klonuj</button>
+}
   <button mat-raised-button
           color="primary"
           class="toolbar-button"

@@ -9,20 +9,26 @@
     </div>
   </div>
 
-  <ng-container [ngSwitch]="inputType">
-    <div *ngSwitchCase="confirmDialogInputType.InputTypeText">
+  
+@switch (inputType) {
+    @case (confirmDialogInputType.InputTypeText) {
+  <div>
       <app-input-text [path]="['input']"
                       [descriptionProvider]="descriptionProvider"
                       [formGroup]="form">
       </app-input-text>
     </div>
-    <div *ngSwitchCase="confirmDialogInputType.InputTypeCurrency">
+}
+    @case (confirmDialogInputType.InputTypeCurrency) {
+  <div>
       <app-input-currency [path]="['input']"
                           [descriptionProvider]="descriptionProvider"
                           [formGroup]="form">
       </app-input-currency>
     </div>
-    <div *ngSwitchCase="confirmDialogInputType.InputTypeTextArea"
+}
+    @case (confirmDialogInputType.InputTypeTextArea) {
+  <div
          class="input-container">
       <app-input-textarea [path]="['input']"
                           [descriptionProvider]="descriptionProvider"
@@ -31,7 +37,9 @@
                           [formGroup]="form">
       </app-input-textarea>
     </div>
-  </ng-container>
+}
+  }
+
 
   <div class="buttons-panel">
     <button mat-raised-button

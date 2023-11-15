@@ -1,4 +1,5 @@
-<div *ngIf="visible"
+@if (visible) {
+<div
      class="form-item"
      [formGroup]="fieldFormGroup">
   <mat-slide-toggle class="form-item-input"
@@ -10,3 +11,4 @@
     <mat-label>{{placeholderText}}</mat-label>
   </mat-slide-toggle>
 </div>
+}

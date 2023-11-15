@@ -21,8 +21,10 @@
               color="primary"
               [disabled]="!loginForm.valid"
               (click)="onLogIn()">Zaloguj</button>
-      <span *ngIf="error"
+      @if (error) {
+<span
             class="error">{{error}}</span>
+}
     </form>
   </div>
 </div>

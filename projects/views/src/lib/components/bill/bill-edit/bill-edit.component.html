@@ -1,36 +1,48 @@
 <div class="bill-toolbar">
-        <button *ngIf="editMode"
+        @if (editMode) {
+<button
                 mat-raised-button
                 color="accent"
                 class="toolbar-button"
                 (click)="cancel()">Anuluj</button>
-        <button *ngIf="editMode"
+}
+        @if (editMode) {
+<button
                 mat-raised-button
                 color="warn"
                 class="toolbar-button"
                 (click)="deleteBill()">Usuń</button>
-        <button *ngIf="editMode"
+}
+        @if (editMode) {
+<button
                 mat-raised-button
                 color="primary"
                 class="toolbar-button"
                 [disabled]="!canSave"
                 (click)="saveBill()">Zapisz</button>
-        <button *ngIf="editMode && showSaveAndClose"
+}
+        @if (editMode && showSaveAndClose) {
+<button
                 mat-raised-button
                 color="primary"
                 class="toolbar-button"
                 [disabled]="!canSave"
                 (click)="saveBillAndClose()">Zapisz i zamknij</button>
-        <button *ngIf="!editMode"
+}
+        @if (!editMode) {
+<button
                 mat-raised-button
                 color="primary"
                 class="toolbar-button"
                 (click)="editBill()">Edytuj</button>
-        <button *ngIf="!editMode"
+}
+        @if (!editMode) {
+<button
                 mat-raised-button
                 color="primary"
                 class="toolbar-button"
                 (click)="payBill()">Zapłacony</button>
+}
 </div>
 
 <div class="form">

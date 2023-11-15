@@ -3,7 +3,8 @@
           yPosition="below"
           [overlapTrigger]="false">
 
-  <button *ngIf="showRefreshButton"
+  @if (showRefreshButton) {
+<button
           mat-menu-item
           matTooltip="Odśwież"
           class="menu-button"
@@ -11,8 +12,10 @@
     <span class="material-icons menu-icon">refresh</span>
     Odśwież
   </button>
+}
 
-  <button *ngIf="editButtonVisible"
+  @if (editButtonVisible) {
+<button
           mat-menu-item
           [disabled]="!canEdit"
           matTooltip="Edytuj"
@@ -21,8 +24,10 @@
     <span class="material-icons menu-icon">edit</span>
     Edytuj
   </button>
+}
 
-  <button *ngIf="addButtonVisible"
+  @if (addButtonVisible) {
+<button
           mat-menu-item
           [disabled]="!canAdd"
           matTooltip="Dodaj"
@@ -31,8 +36,10 @@
     <span class="material-icons menu-icon">add</span>
     Dodaj
   </button>
+}
 
-  <button *ngIf="removeButtonVisible"
+  @if (removeButtonVisible) {
+<button
           mat-menu-item
           [disabled]="!canDelete"
           matTooltip="Usuń"
@@ -41,8 +48,10 @@
     <span class="material-icons menu-icon">remove</span>
     Usuń
   </button>
+}
 
-  <ng-container *ngIf="exportable">
+  @if (exportable) {
+
     <button mat-menu-item
             matTooltip="Drukuj"
             class="menu-button"
@@ -62,7 +71,8 @@
       Eksportuj
     </button>
 
-    <button *ngIf="pasteButtonVisible"
+    @if (pasteButtonVisible) {
+<button
             mat-menu-item
             [disabled]="!canPaste"
             matTooltip="Wklej"
@@ -71,7 +81,9 @@
       <span class="material-icons menu-icon">content_paste</span>
       Wklej
     </button>
-  </ng-container>
+}
+  
+}
 </mat-menu>
 
 
@@ -86,8 +98,9 @@
 </ng-template>
 
 <div class="component-container">
-  <div class="table-header-row"
-       *ngIf="!hideHeader">
+  @if (!hideHeader) {
+<div class="table-header-row"
+      >
     <ng-container [ngTemplateOutlet]="getTableTitleTemplate(defaultTitleTemplate)">
     </ng-container>
 
@@ -97,48 +110,59 @@
       </ng-container>
     </div>
 
-    <mat-form-field class="filter-field"
-                    *ngIf="showFilter">
+    @if (showFilter) {
+<mat-form-field class="filter-field"
+                   >
       <input matInput
              #filterInput
              (click)="$event.stopPropagation();"
              placeholder="Filter">
     </mat-form-field>
+}
 
     <div class="buttons-panel">
       <div class="table-buttons-visible">
-        <button *ngIf="showRefreshButton"
+        @if (showRefreshButton) {
+<button
                 mat-icon-button
                 matTooltip="Odśwież"
                 (click)="onRefreshClicked($event)">
           <span class="material-icons">refresh</span>
         </button>
+}
 
-        <button *ngIf="editButtonVisible"
+        @if (editButtonVisible) {
+<button
                 mat-icon-button
                 [disabled]="!canEdit"
                 matTooltip="Edytuj"
                 (click)="onEditClicked($event)">
           <span class="material-icons">edit</span>
         </button>
+}
 
-        <button *ngIf="addButtonVisible"
+        @if (addButtonVisible) {
+<button
                 mat-icon-button
                 [disabled]="!canAdd"
                 matTooltip="Dodaj"
                 (click)="onAddClicked($event)">
           <span class="material-icons">add</span>
         </button>
+}
 
-        <button *ngIf="removeButtonVisible"
+        @if (removeButtonVisible) {
+<button
                 mat-icon-button
                 [disabled]="!canDelete"
                 matTooltip="Usuń"
                 (click)="onDeleteClicked($event)">
           <span class="material-icons">remove</span>
         </button>
+}
 
-        <ng-container *ngIf="exportable">
+        @if (exportable) {
+
           <button mat-icon-button
                   matTooltip="Drukuj"
                   (click)="onPrintClicked($event)">
@@ -153,7 +177,8 @@
                   inline=true>file_download</span>
           </button>
 
-          <button *ngIf="pasteButtonVisible"
+          @if (pasteButtonVisible) {
+<button
                   #pasteButton
                   mat-icon-button
                   [disabled]="!canPaste"
@@ -161,15 +186,20 @@
                   (click)="onPasteClicked($event)">
             <span class="material-icons">content_paste</span>
           </button>
-        </ng-container>
+}
+        
+}
       </div>
 
-      <ng-container *ngIf="rightToolbarPanelTemplate"
+      @if (rightToolbarPanelTemplate) {
+<ng-container
                     [ngTemplateOutlet]="rightToolbarPanelTemplate"
                     [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow}">
       </ng-container>
+}
 
-      <div *ngIf="menuVisible"
+      @if (menuVisible) {
+<div
            class="menu-button-visible">
         <button mat-icon-button
                 matTooltip="Menu"
@@ -177,13 +207,16 @@
           <span class="material-icons">menu</span>
         </button>
       </div>
+}
 
     </div>
 
   </div>
+}
 
   <div class="table-container">
-    <table *ngIf="dataSource"
+    @if (dataSource) {
+<table
            #table
            mat-table
            [dataSource]="dataSource"
@@ -193,10 +226,12 @@
            [matSortDirection]="sortDirection"
            [attr.data-ready]="dataReady">
 
-      <ng-container matColumnDef="{{column.name}}"
-                    *ngFor="let column of columnsDefinition">
+      @for (column of columnsDefinition; track column) {
+  <ng-container matColumnDef="{{column.name}}"
+                   >
 
-        <ng-container *ngIf="column.name !== '_expand'">
+        @if (column.name !== '_expand') {
+
           <th mat-header-cell
               *matHeaderCellDef
               mat-sort-header
@@ -209,23 +244,31 @@
                           [ngTemplateOutletContext]="{row: row, column: column.name, rowIndex: rowIndex}">
             </ng-container>
           </td>
-        </ng-container>
+        
+}
 
-        <ng-container *ngIf="column.name === '_expand'">
+        @if (column.name === '_expand') {
+
           <th mat-header-cell
               *matHeaderCellDef
               class="expand-column"></th>
           <td mat-cell
               *matCellDef="let row; let rowIndex = dataIndex;"
               (click)="onRowExpandClick(row)">
-            <span *ngIf="expandedRow !== row"
+            @if (expandedRow !== row) {
+<span
                   [ngClass]="shouldExpandBeDisabled(row) ? 'expand-column-disabled' : 'expand-column'">keyboard_arrow_right</span>
-            <span *ngIf="expandedRow === row"
+}
+            @if (expandedRow === row) {
+<span
                   class="expand-column">keyboard_arrow_down</span>
+}
           </td>
-        </ng-container>
+        
+}
 
       </ng-container>
+}
 
       <ng-container matColumnDef="expandedDetail">
         <td mat-cell
@@ -234,10 +277,12 @@
           <div [class.active-row-detail]="activeRow === expandedRow"
                [class.expand-row-detail]="activeRow !== expandedRow"
                [@detailExpand]="row === expandedRow ? 'expanded' : 'collapsed'">
-            <ng-container *ngIf="expandedRowTemplate && row === expandedRow"
+            @if (expandedRowTemplate && row === expandedRow) {
+<ng-container
                           [ngTemplateOutlet]="expandedRowTemplate"
                           [ngTemplateOutletContext]="{row: row}">
             </ng-container>
+}
           </div>
         </td>
       </ng-container>
@@ -259,7 +304,10 @@
           class="expanded-row">
       </tr>
     </table>
+}
   </div>
-  <mat-paginator *ngIf="pageable"
+  @if (pageable) {
+<mat-paginator
                  [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+}
 </div>

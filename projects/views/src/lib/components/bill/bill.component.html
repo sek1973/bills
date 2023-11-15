@@ -25,7 +25,8 @@
                  (editModeChange)="onEditModeChange($event)">
   </app-bill-edit>
 
-  <mat-tab-group *ngIf="!newBill">
+  @if (!newBill) {
+<mat-tab-group>
     <mat-tab label="Historia płatności">
       <app-payments class="bill-payments">
       </app-payments>
@@ -35,5 +36,6 @@
       </app-schedules>
     </mat-tab>
   </mat-tab-group>
+}
 
 </div>
