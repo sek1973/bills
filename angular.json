@@ -79,18 +79,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "bills-java-app:build"
+            "buildTarget": "bills-java-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "bills-java-app:build:production"
+              "buildTarget": "bills-java-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bills-java-app:build"
+            "buildTarget": "bills-java-app:build"
           }
         },
         "test": {
@@ -304,18 +304,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "bills-memory-app:build"
+            "buildTarget": "bills-memory-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "bills-memory-app:build:production"
+              "buildTarget": "bills-memory-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "bills-memory-app:build"
+            "buildTarget": "bills-memory-app:build"
           }
         },
         "test": {
