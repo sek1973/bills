@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, WritableSignal, signal } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { getSafe } from 'projects/model/src/public-api';
@@ -22,8 +22,10 @@ export class InputBaseComponent implements OnChanges {
   @Input() editMode: boolean = true;
   @Input() path!: string[];
 
-  get labelText(): string {
-    return getSafe(() => this.descriptionProvider.getDescriptionObj(...this.path).labelText) || '';
+  protected labelText: WritableSignal<string> = signal<string>('');
+
+  setLabelText(): void {
+    this.labelText.set(this.descriptionProvider.getDescriptionObj(...this.path)?.labelText || '');
   }
 
   get tooltipText(): string {
@@ -64,6 +66,7 @@ export class InputBaseComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.path) {
       this.setFieldName();
+      this.setLabelText();
     }
     if (changes.path || changes.formGroup) {
       this.setFieldFormGroup();
