@@ -2,15 +2,15 @@
 <div class="form-item"
      [formGroup]="fieldFormGroup">
   <mat-form-field class="form-field">
-    <mat-label>{{labelText()}}</mat-label>
+    <mat-label>{{_labelText()}}</mat-label>
     <input matInput
            type="{{type}}"
-           [matTooltip]="tooltipText"
+           [matTooltip]="_tooltipText()"
            [matTooltipShowDelay]="tooltipShowDelayValue"
            [matTooltipHideDelay]="tooltipHideDelayValue"
            [id]="fieldName"
            [formControlName]="fieldName"
-           [placeholder]="placeholderText">
+           [placeholder]="_placeholderText()">
     <mat-error>
       {{getErrorMessage(path)}}
     </mat-error>

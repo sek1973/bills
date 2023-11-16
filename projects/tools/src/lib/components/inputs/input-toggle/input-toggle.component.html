@@ -2,12 +2,12 @@
 <div class="form-item"
      [formGroup]="fieldFormGroup">
   <mat-slide-toggle class="form-item-input"
-                    [matTooltip]="tooltipText"
+                    [matTooltip]="_tooltipText()"
                     [matTooltipShowDelay]="tooltipShowDelayValue"
                     [matTooltipHideDelay]="tooltipHideDelayValue"
                     [id]="fieldName"
                     [formControlName]="fieldName">
-    <mat-label>{{placeholderText}}</mat-label>
+    <mat-label>{{_placeholderText()}}</mat-label>
   </mat-slide-toggle>
 </div>
 }

@@ -2,9 +2,9 @@
 <div class="form-item"
      [formGroup]="fieldFormGroup">
   <mat-form-field class="form-field">
-    <mat-label>{{labelText()}}</mat-label>
+    <mat-label>{{_labelText()}}</mat-label>
     <textarea matInput
-              [matTooltip]="tooltipText"
+              [matTooltip]="_tooltipText()"
               [matTooltipShowDelay]="tooltipShowDelayValue"
               [matTooltipHideDelay]="tooltipHideDelayValue"
               cdkTextareaAutosize
@@ -13,7 +13,7 @@
               [cdkAutosizeMaxRows]="inputMaxRows"
               [id]="fieldName"
               [formControlName]="fieldName"
-              [placeholder]="placeholderText">
+              [placeholder]="_placeholderText()">
            </textarea>
     <mat-error>
       {{getErrorMessage(path)}}

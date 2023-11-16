@@ -22,18 +22,20 @@ export class InputBaseComponent implements OnChanges {
   @Input() editMode: boolean = true;
   @Input() path!: string[];
 
-  protected labelText: WritableSignal<string> = signal<string>('');
+  protected _labelText: WritableSignal<string> = signal<string>('');
+  protected _tooltipText: WritableSignal<string> = signal<string>('');
+  protected _placeholderText: WritableSignal<string> = signal<string>('');
 
-  setLabelText(): void {
-    this.labelText.set(this.descriptionProvider.getDescriptionObj(...this.path)?.labelText || '');
+  private _setLabelText(): void {
+    this._labelText.set(this.descriptionProvider.getDescriptionObj(...this.path)?.labelText || '');
   }
 
-  get tooltipText(): string {
-    return getSafe(() => this.descriptionProvider.getDescriptionObj(...this.path).tooltipText) || '';
+  private _setTooltipText(): void {
+    this._tooltipText.set(this.descriptionProvider.getDescriptionObj(...this.path)?.tooltipText || '');
   }
 
-  get placeholderText(): string {
-    return getSafe(() => this.descriptionProvider.getDescriptionObj(...this.path).placeholderText) || '';
+  private _setPlaceholderText(): void {
+    this._placeholderText.set(this.descriptionProvider.getDescriptionObj(...this.path)?.placeholderText || '');
   }
 
   get visible(): boolean {
@@ -66,7 +68,9 @@ export class InputBaseComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.path) {
       this.setFieldName();
-      this.setLabelText();
+      this._setLabelText();
+      this._setTooltipText();
+      this._setPlaceholderText();
     }
     if (changes.path || changes.formGroup) {
       this.setFieldFormGroup();
