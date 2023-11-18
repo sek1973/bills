@@ -1,7 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges, WritableSignal, signal } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FieldDescription } from 'projects/model/src/lib/model';
-import { getSafe } from 'projects/model/src/public-api';
 import { getErrorMessage } from './validators/validators';
 
 export interface DescriptionProvider {
@@ -40,7 +39,7 @@ export class InputBaseComponent implements OnChanges {
 
   get visible(): boolean {
     if (this.autoHide && !this.editMode) {
-      const controlValue = getSafe(() => this.fieldFormGroup.get(this.fieldName)?.value);
+      const controlValue = this.fieldFormGroup?.get(this.fieldName)?.value;
       return !this.formControl || controlValue === undefined || controlValue === null || controlValue === '' ? false : true;
     }
     return this.formControl ? true : false;
