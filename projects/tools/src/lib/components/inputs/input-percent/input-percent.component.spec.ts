@@ -8,8 +8,8 @@ describe('InputPercentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InputPercentComponent ]
-    })
+    imports: [InputPercentComponent]
+})
     .compileComponents();
   }));
 

@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
 
 @Directive({
-  selector: '[appAddHiddenAttribute]'
+    selector: '[appAddHiddenAttribute]',
+    standalone: true
 })
 export class AddHiddenAttributeDirective {
 

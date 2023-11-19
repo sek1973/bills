@@ -1,15 +1,17 @@
 import { OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { Component, DoCheck, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
-import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
+import { ProgressSpinnerMode, MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OverlayService } from './overlay-service';
 
 
 @Component({
-  selector: 'app-spinner',
-  templateUrl: './app-spinner.component.html',
-  styleUrls: ['./app-spinner.component.scss'],
-  providers: [OverlayService]
+    selector: 'app-spinner',
+    templateUrl: './app-spinner.component.html',
+    styleUrls: ['./app-spinner.component.scss'],
+    providers: [OverlayService],
+    standalone: true,
+    imports: [MatProgressSpinnerModule]
 })
 export class AppSpinnerComponent implements OnInit, DoCheck {
 

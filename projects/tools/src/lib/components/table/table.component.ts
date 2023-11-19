@@ -11,15 +11,21 @@ import {
   TemplateRef,
   ViewChild
 } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort, SortDirection } from '@angular/material/sort';
-import { MatTable } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, SortDirection, MatSortModule } from '@angular/material/sort';
+import { MatTable, MatTableModule } from '@angular/material/table';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
 import { TableColumn } from './table-column.model';
 import { TableDataSource } from './table-data-source';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgTemplateOutlet, NgClass } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 export interface TablePanelComponent<T extends { [key: string]: any; }> extends Component {
   dataSource: TableDataSource<T> | undefined;
@@ -31,16 +37,18 @@ export interface ExpandedRowComponent extends Component {
 }
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed, void', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-    ])
-  ]
+    selector: 'app-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.scss'],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed, void', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+        ])
+    ],
+    standalone: true,
+    imports: [MatMenuModule, MatTooltipModule, NgTemplateOutlet, MatFormFieldModule, MatInputModule, MatButtonModule, MatTableModule, MatSortModule, NgClass, MatPaginatorModule]
 })
 export class TableComponent<T extends { [key: string]: any }> implements AfterViewInit, OnDestroy {
   dataReady: boolean;

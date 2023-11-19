@@ -8,8 +8,8 @@ describe('ViewFieldTextComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewFieldTextComponent ]
-    })
+    imports: [ViewFieldTextComponent]
+})
     .compileComponents();
   }));
 

@@ -8,8 +8,8 @@ describe('ViewFieldToggleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ViewFieldToggleComponent ]
-    })
+    imports: [ViewFieldToggleComponent]
+})
     .compileComponents();
   }));
 

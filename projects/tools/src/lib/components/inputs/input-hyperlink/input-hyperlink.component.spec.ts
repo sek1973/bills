@@ -8,8 +8,8 @@ describe('InputHyperlinkComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InputHyperlinkComponent ]
-    })
+    imports: [InputHyperlinkComponent]
+})
     .compileComponents();
   }));
 

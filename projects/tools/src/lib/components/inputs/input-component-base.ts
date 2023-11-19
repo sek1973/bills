@@ -7,8 +7,9 @@ export interface DescriptionProvider {
   getDescriptionObj: (...path: string[]) => FieldDescription;
 }
 @Component({
-  selector: 'app-input-base',
-  template: ''
+    selector: 'app-input-base',
+    template: '',
+    standalone: true
 })
 export class InputBaseComponent implements OnChanges {
   tooltipShowDelayValue = 1000;

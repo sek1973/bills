@@ -8,8 +8,8 @@ describe('AppSpinnerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AppSpinnerComponent ]
-    })
+    imports: [AppSpinnerComponent]
+})
     .compileComponents();
   }));
 

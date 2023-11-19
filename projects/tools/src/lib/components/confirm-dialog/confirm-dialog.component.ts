@@ -1,8 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DescriptionProvider } from '../inputs/input-component-base';
 import { ConfirmDialogInputType, ConfirmDialogModel } from './confirm-dialog.model';
+import { MatButtonModule } from '@angular/material/button';
+import { InputTextareaComponent } from '../inputs/input-textarea/input-textarea.component';
+import { InputCurrencyComponent } from '../inputs/input-currency/input-currency.component';
+import { InputTextComponent } from '../inputs/input-text/input-text.component';
 
 export interface ConfirmDialogResponse {
   response: boolean;
@@ -10,9 +14,11 @@ export interface ConfirmDialogResponse {
 }
 
 @Component({
-  selector: 'app-confirm-dialog',
-  templateUrl: './confirm-dialog.component.html',
-  styleUrls: ['./confirm-dialog.component.scss']
+    selector: 'app-confirm-dialog',
+    templateUrl: './confirm-dialog.component.html',
+    styleUrls: ['./confirm-dialog.component.scss'],
+    standalone: true,
+    imports: [InputTextComponent, FormsModule, ReactiveFormsModule, InputCurrencyComponent, InputTextareaComponent, MatButtonModule]
 })
 export class ConfirmDialogComponent {
   dialogTitle: string;
