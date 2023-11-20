@@ -20,7 +20,7 @@ import { StoreComponent } from './store.component';
       name: 'Bills',
       maxAge: 25,
       logOnly: environment.production
-    }),
+    , connectInZone: true}),
     EffectsModule.forRoot([
       AuthEffects,
       BillEffects,
