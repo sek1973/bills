@@ -8,7 +8,8 @@ import {
   DestroyRef,
   ElementRef,
   EventEmitter,
-  Input, OnDestroy, Output,
+  Input,
+  Output,
   QueryList,
   TemplateRef,
   ViewChild,
@@ -51,7 +52,17 @@ export interface ExpandedRowComponent extends Component {
     ])
   ],
   standalone: true,
-  imports: [MatMenuModule, MatTooltipModule, NgTemplateOutlet, MatFormFieldModule, MatInputModule, MatButtonModule, MatTableModule, MatSortModule, NgClass, MatPaginatorModule]
+  imports: [
+    MatMenuModule,
+    MatTooltipModule,
+    NgTemplateOutlet,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatTableModule,
+    MatSortModule,
+    NgClass,
+    MatPaginatorModule]
 })
 export class TableComponent<T extends { [key: string]: any }> implements AfterViewInit, OnDestroy {
   dataReady: boolean;
@@ -258,11 +269,6 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
           next: () => this.applyFilter(this.filterInput.value)
         });
     }
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   getCellTemplate(column: string, defaultTemplate: TemplateRef<any>): TemplateRef<any> {
