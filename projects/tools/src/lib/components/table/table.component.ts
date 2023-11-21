@@ -5,6 +5,7 @@ import {
   Component,
   ContentChild,
   ContentChildren,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   Input, OnDestroy, Output,
@@ -62,7 +63,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
   private paginator?: MatPaginator;
   private _columnsDefinition: TableColumn[] = [];
   private _expandable: boolean = false;
-  #destroyRef = inject(this.#destroyRef);
+  #destroyRef = inject(DestroyRef);
 
   @Output() rowDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output() rowActivated: EventEmitter<any> = new EventEmitter<any>();
