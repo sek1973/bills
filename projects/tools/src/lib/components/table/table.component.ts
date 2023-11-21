@@ -1,4 +1,5 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
   AfterViewInit,
   Component,
@@ -9,23 +10,24 @@ import {
   Input, OnDestroy, Output,
   QueryList,
   TemplateRef,
-  ViewChild
+  ViewChild,
+  inject
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, SortDirection, MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortModule, SortDirection } from '@angular/material/sort';
 import { MatTable, MatTableModule } from '@angular/material/table';
-import { Subject, fromEvent } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { fromEvent } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
 import { TableColumn } from './table-column.model';
 import { TableDataSource } from './table-data-source';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgTemplateOutlet, NgClass } from '@angular/common';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
 
 export interface TablePanelComponent<T extends { [key: string]: any; }> extends Component {
   dataSource: TableDataSource<T> | undefined;
@@ -37,18 +39,18 @@ export interface ExpandedRowComponent extends Component {
 }
 
 @Component({
-    selector: 'app-table',
-    templateUrl: './table.component.html',
-    styleUrls: ['./table.component.scss'],
-    animations: [
-        trigger('detailExpand', [
-            state('collapsed, void', style({ height: '0px', minHeight: '0' })),
-            state('expanded', style({ height: '*' })),
-            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-        ])
-    ],
-    standalone: true,
-    imports: [MatMenuModule, MatTooltipModule, NgTemplateOutlet, MatFormFieldModule, MatInputModule, MatButtonModule, MatTableModule, MatSortModule, NgClass, MatPaginatorModule]
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed, void', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ],
+  standalone: true,
+  imports: [MatMenuModule, MatTooltipModule, NgTemplateOutlet, MatFormFieldModule, MatInputModule, MatButtonModule, MatTableModule, MatSortModule, NgClass, MatPaginatorModule]
 })
 export class TableComponent<T extends { [key: string]: any }> implements AfterViewInit, OnDestroy {
   dataReady: boolean;
@@ -60,7 +62,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
   private paginator?: MatPaginator;
   private _columnsDefinition: TableColumn[] = [];
   private _expandable: boolean = false;
-  private destroyed$: Subject<void> = new Subject<void>();
+  #destroyRef = inject(this.#destroyRef);
 
   @Output() rowDblClick: EventEmitter<any> = new EventEmitter<any>();
   @Output() rowActivated: EventEmitter<any> = new EventEmitter<any>();
@@ -247,7 +249,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
     if (this.filterInput) {
       fromEvent(this.filterInput, 'keyup')
         .pipe(
-          takeUntil(this.destroyed$),
+          takeUntilDestroyed(this.#destroyRef),
           debounceTime(this.filterKeyDelayMs), // before emitting last event
           distinctUntilChanged()
         )

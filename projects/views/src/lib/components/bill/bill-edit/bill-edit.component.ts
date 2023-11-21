@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -7,14 +8,14 @@ import { addDays } from 'projects/model/src/public-api';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 import { SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-bill-edit',
   templateUrl: './bill-edit.component.html',
   styleUrls: ['./bill-edit.component.scss']
 })
-export class BillEditComponent implements OnDestroy, OnChanges {
+export class BillEditComponent implements OnChanges {
   @Input() bill?: Bill;
   @Input() bills?: Bill[];
   @Input() newBill: boolean = false;
@@ -25,7 +26,7 @@ export class BillEditComponent implements OnDestroy, OnChanges {
 
   unitEnumItems: SelectItem<Unit>[] = [];
 
-  private destroyed$: Subject<void> = new Subject<void>();
+  #destroyRef = inject(DestroyRef);
   private loadingFormValue: boolean = true;
 
   form: FormGroup = new FormGroup({
@@ -54,7 +55,7 @@ export class BillEditComponent implements OnDestroy, OnChanges {
 
   private subscribeToStatusChanges(): void {
     this.form.statusChanges
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({ next: status => this.setEditStatus(status) });
     this.setUnitEnumItems();
   }
@@ -63,23 +64,18 @@ export class BillEditComponent implements OnDestroy, OnChanges {
     const deadlineCtl = this.form.get('deadline') as FormControl<Date | undefined>;
     const reminderCtl = this.form.get('reminder') as FormControl<Date | undefined>;
     deadlineCtl.valueChanges
-      .pipe(takeUntil(this.destroyed$),
+      .pipe(takeUntilDestroyed(this.#destroyRef),
         filter(() => !this.loadingFormValue))
       .subscribe((val: Date | undefined) => {
         reminderCtl.setValue(addDays(-7, val));
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.loadBill();
   }
 
-  private createFormValueFromBill(bill: Bill): any {
+  private createFormValueFromBill(bill: Bill): Partial<Bill> {
     return {
       id: bill.id,
       name: bill.name,

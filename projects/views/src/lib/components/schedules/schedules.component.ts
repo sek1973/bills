@@ -1,11 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, Inject, OnInit, ViewChild, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Schedule } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, SchedulesActions, SchedulesSelectors } from 'projects/store/src/lib/state';
 import { TableComponent } from 'projects/tools/src/public-api';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.compo
   templateUrl: './schedules.component.html',
   styleUrls: ['./schedules.component.scss']
 })
-export class SchedulesComponent implements OnInit, OnDestroy {
+export class SchedulesComponent implements OnInit {
 
   @ViewChild('table', { read: TableComponent }) table!: TableComponent<Schedule>;
 
@@ -26,7 +26,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   ];
   bill?: Bill;
 
-  private destroyed$: Subject<void> = new Subject<void>();
+  #destroyRef = inject(DestroyRef);
 
   constructor(
     @Inject(MatDialog) public dialog: MatDialog,
@@ -37,15 +37,10 @@ export class SchedulesComponent implements OnInit, OnDestroy {
     this.subscribeToBillId();
   }
 
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
-
   private subscribeToData(): void {
     this.store
       .select(SchedulesSelectors.selectAll)
-      .pipe(takeUntil(this.destroyed$),
+      .pipe(takeUntilDestroyed(this.#destroyRef),
         filter(() => (this.bill?.id || -1) > -1))
       .subscribe({
         next: schedules => this.data = schedules || []
@@ -55,7 +50,7 @@ export class SchedulesComponent implements OnInit, OnDestroy {
   private subscribeToBillId(): void {
     this.store
       .select(BillsSelectors.selectBill)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: bill => {
           this.bill = bill;

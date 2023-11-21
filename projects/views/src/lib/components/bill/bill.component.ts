@@ -1,19 +1,18 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
-import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.scss']
 })
-export class BillComponent implements OnInit, OnDestroy {
+export class BillComponent implements OnInit {
+  #destroyRef = inject(DestroyRef);
 
-  private destroyed$: Subject<void> = new Subject<void>();
-  
   editMode = false;
   newBill = false;
   bill?: Bill;
@@ -24,13 +23,13 @@ export class BillComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private store: Store<AppState>) {
     this.store.select(BillsSelectors.selectBill)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(bill => {
         this.bill = bill;
         this.handleData();
       });
     this.store.select(BillsSelectors.selectAll)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((bills) => {
         this.bills = bills;
         const val = this.route.snapshot.params['id' as keyof Params];
@@ -40,7 +39,7 @@ export class BillComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.paramMap
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(param => {
         const val = param.get('id');
         this.dispatchSelectedBill(val as string);
@@ -66,11 +65,6 @@ export class BillComponent implements OnInit, OnDestroy {
 
   private createBill(): void {
     this.bill = new Bill();
-  }
-
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
   }
 
   getTitle(): string {

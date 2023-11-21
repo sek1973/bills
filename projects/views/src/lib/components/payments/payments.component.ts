@@ -1,11 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, DestroyRef, Inject, OnInit, ViewChild, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Payment } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
 import { TableComponent } from 'projects/tools/src/public-api';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
   templateUrl: './payments.component.html',
   styleUrls: ['./payments.component.scss'],
 })
-export class PaymentsComponent implements OnInit, OnDestroy {
+export class PaymentsComponent implements OnInit {
 
   @ViewChild('table', { read: TableComponent }) table!: TableComponent<Payment>;
 
@@ -28,7 +28,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   ];
   bill?: Bill;
 
-  private destroyed$: Subject<void> = new Subject<void>();
+  #destroyRef = inject(DestroyRef);
 
   constructor(
     @Inject(MatDialog) public dialog: MatDialog,
@@ -42,7 +42,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   private subscribeToData(): void {
     this.store
       .select(PaymentsSelectors.selectAll)
-      .pipe(takeUntil(this.destroyed$),
+      .pipe(takeUntilDestroyed(this.#destroyRef),
         filter(() => !!this.bill))
       .subscribe({
         next: payments => this.data = payments || []
@@ -52,7 +52,7 @@ export class PaymentsComponent implements OnInit, OnDestroy {
   private subscribeToBill(): void {
     this.store
       .select(BillsSelectors.selectBill)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: bill => {
           this.bill = bill;
@@ -61,10 +61,6 @@ export class PaymentsComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.destroyed$.next();
-    this.destroyed$.complete();
-  }
 
   onRowClicked(row: any): void {
     if (this.activeRow !== row) {
