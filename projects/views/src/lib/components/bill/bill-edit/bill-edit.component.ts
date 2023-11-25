@@ -93,7 +93,7 @@ export class BillEditComponent implements OnChanges {
     };
   }
 
-  private createBillFromFormValue(value: any): Bill {
+  private createBillFromFormValue(value: Partial<Bill>): Bill {
     return new Bill(
       value.lp,
       value.name,
@@ -148,7 +148,7 @@ export class BillEditComponent implements OnChanges {
   }
 
   saveBill(): void {
-    const bill = this.createBillFromFormValue(this.form.value);
+    const bill = this.createBillFromFormValue(this.form.value as Partial<Bill>);
     if (this.newBill) {
       this.store.dispatch(BillsActions.createBill({ bill, redirect: false }));
     } else {
@@ -157,7 +157,7 @@ export class BillEditComponent implements OnChanges {
   }
 
   saveBillAndClose(): void {
-    const bill = this.createBillFromFormValue(this.form.value);
+    const bill = this.createBillFromFormValue(this.form.value as Partial<Bill>);
     if (this.newBill) {
       this.store.dispatch(BillsActions.createBill({ bill, redirect: false }));
     } else {

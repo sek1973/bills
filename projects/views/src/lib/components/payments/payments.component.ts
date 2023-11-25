@@ -62,7 +62,7 @@ export class PaymentsComponent implements OnInit {
   }
 
 
-  onRowClicked(row: any): void {
+  onRowClicked(row: Payment): void {
     if (this.activeRow !== row) {
       this.activeRow = row;
     }

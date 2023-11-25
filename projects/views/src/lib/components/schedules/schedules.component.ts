@@ -59,7 +59,7 @@ export class SchedulesComponent implements OnInit {
       });
   }
 
-  onRowClicked(row: any): void {
+  onRowClicked(row: Schedule): void {
     if (this.activeRow !== row) {
       this.activeRow = row;
     }

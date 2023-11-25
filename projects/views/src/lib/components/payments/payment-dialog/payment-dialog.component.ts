@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Payment, PaymentDescription } from 'projects/model/src/lib/model';
 import { AppState, PaymentsActions } from 'projects/store/src/lib/state';
@@ -55,12 +55,12 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   }
 
   private setFormValue(): void {
-    let value: any;
+    let value: Partial<Payment>;
     if (this.payment) {
       value = {
         id: this.payment.id,
         deadline: this.payment.deadline,
-        paiddate: this.payment.paidDate,
+        paidDate: this.payment.paidDate,
         sum: this.payment.sum,
         share: this.payment.share,
         remarks: this.payment.remarks
@@ -68,8 +68,8 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     } else {
       value = {
         deadline: this.bill?.deadline ? new Date(this.bill?.deadline) : new Date(),
-        paiddate: new Date(),
-        sum: this.bill?.sum,
+        paidDate: new Date(),
+        sum: this.bill?.sum ?? 0,
         share: (this.bill?.sum || 0) * (this.bill?.share || 1)
       };
     }

@@ -31,13 +31,13 @@ import { TableCellDirective } from './directives';
 import { TableColumn } from './table-column.model';
 import { TableDataSource } from './table-data-source';
 
-export interface TablePanelComponent<T extends { [key: string]: any; }> extends Component {
+export interface TablePanelComponent<T> extends Component {
   dataSource: TableDataSource<T> | undefined;
-  activeRow?: any;
+  activeRow?: T;
 }
 
-export interface ExpandedRowComponent extends Component {
-  row?: any;
+export interface ExpandedRowComponent<T> extends Component {
+  row?: T;
 }
 
 @Component({
@@ -64,10 +64,10 @@ export interface ExpandedRowComponent extends Component {
     NgClass,
     MatPaginatorModule]
 })
-export class TableComponent<T extends { [key: string]: any }> implements AfterViewInit, OnDestroy {
+export class TableComponent<T> implements AfterViewInit {
   dataReady: boolean;
-  expandedRow: any;
-  activeRow: any;
+  expandedRow?: T;
+  activeRow?: T;
 
   index = 0;
   private sort?: MatSort;
@@ -76,21 +76,21 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
   private _expandable: boolean = false;
   #destroyRef = inject(DestroyRef);
 
-  @Output() rowDblClick: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rowActivated: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rowExpanded: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rowCollapsed: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rowSelect: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rowUnselect: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rowSelectAll: EventEmitter<any> = new EventEmitter<any>();
-  @Output() rowUnselectAll: EventEmitter<any> = new EventEmitter<any>();
-  @Output() addButtonClicked: EventEmitter<any> = new EventEmitter<any>();
-  @Output() editButtonClicked: EventEmitter<any> = new EventEmitter<any>();
-  @Output() deleteButtonClicked: EventEmitter<any> = new EventEmitter<any>();
-  @Output() refreshButtonClicked: EventEmitter<null> = new EventEmitter<null>();
-  @Output() pasteButtonClicked: EventEmitter<null> = new EventEmitter<null>();
+  @Output() rowDblClick: EventEmitter<T> = new EventEmitter<T>();
+  @Output() rowActivated: EventEmitter<T> = new EventEmitter<T>();
+  @Output() rowExpanded: EventEmitter<T> = new EventEmitter<T>();
+  @Output() rowCollapsed: EventEmitter<T> = new EventEmitter<T>();
+  @Output() rowSelect: EventEmitter<T> = new EventEmitter<T>();
+  @Output() rowUnselect: EventEmitter<T> = new EventEmitter<T>();
+  @Output() rowSelectAll: EventEmitter<T> = new EventEmitter<T>();
+  @Output() rowUnselectAll: EventEmitter<T> = new EventEmitter<T>();
+  @Output() addButtonClicked: EventEmitter<T> = new EventEmitter<T>();
+  @Output() editButtonClicked: EventEmitter<T> = new EventEmitter<T>();
+  @Output() deleteButtonClicked: EventEmitter<T> = new EventEmitter<T>();
+  @Output() refreshButtonClicked: EventEmitter<void> = new EventEmitter<void>();
+  @Output() pasteButtonClicked: EventEmitter<void> = new EventEmitter<void>();
 
-  @ViewChild(MatTable) table?: MatTable<any>;
+  @ViewChild(MatTable) table?: MatTable<T>;
   @ViewChild('table', { read: ElementRef }) tableElementRef?: ElementRef;
 
   @ViewChild(MatSort)
@@ -107,18 +107,18 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
   }
 
   @ViewChild('filterInput', { read: HTMLInputElement }) filterInput!: HTMLInputElement;
-  cellTemplates: Map<string, TemplateRef<any>> = new Map<string, TemplateRef<any>>();
+  cellTemplates: Map<string, TemplateRef<Component>> = new Map<string, TemplateRef<Component>>();
   @ContentChildren(TableCellDirective) set dataTableCellDirectives(val: QueryList<TableCellDirective>) {
-    this.cellTemplates = new Map<string, TemplateRef<any>>();
+    this.cellTemplates = new Map<string, TemplateRef<Component>>();
     for (const element of val.toArray()) {
       this.cellTemplates.set(element.cellTemplateForColumn, element.templateRef);
     }
   }
 
   @ContentChild('tableTitleTemplate') tableTitleTemplate?: TemplateRef<Component>;
-  @ContentChild('expandedRowTemplate') expandedRowTemplate?: TemplateRef<ExpandedRowComponent>;
-  @ContentChild('middleToolbarPanelTemplate') middleToolbarPanelTemplate?: TemplateRef<TablePanelComponent<any>>;
-  @ContentChild('rightToolbarPanelTemplate') rightToolbarPanelTemplate?: TemplateRef<TablePanelComponent<any>>;
+  @ContentChild('expandedRowTemplate') expandedRowTemplate?: TemplateRef<ExpandedRowComponent<T>>;
+  @ContentChild('middleToolbarPanelTemplate') middleToolbarPanelTemplate?: TemplateRef<TablePanelComponent<T>>;
+  @ContentChild('rightToolbarPanelTemplate') rightToolbarPanelTemplate?: TemplateRef<TablePanelComponent<T>>;
 
   @Input() sortActive: string = '';
   @Input() sortDirection: SortDirection = '';
@@ -167,7 +167,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
   @Input() csvSeparator = ',';
   @Input() exportFileName = 'data';
 
-  @Input() disableExpand: (dataRow: any) => boolean = () => false;
+  @Input() disableExpand: (dataRow: T) => boolean = () => false;
 
   @Input() set expandable(val: boolean) {
     this._expandable = val;
@@ -248,7 +248,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
       this._dataSource.paginator = this.paginator;
     }
     // workaround for mixed context (numbers & strings) sorting - see: https://github.com/angular/material2/issues/9966:
-    this._dataSource.sortingDataAccessor = (data, header) => data[header as keyof T];
+    this._dataSource.sortingDataAccessor = (data, header) => data[header as keyof T] as string | number;
 
     this.activeRow = undefined;
     this.rowActivated.emit(undefined);
@@ -271,7 +271,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
     }
   }
 
-  getCellTemplate(column: string, defaultTemplate: TemplateRef<any>): TemplateRef<any> {
+  getCellTemplate(column: string, defaultTemplate: TemplateRef<Component>): TemplateRef<Component> {
     const template = this.cellTemplates.get(column);
     if (template) {
       return template;
@@ -280,7 +280,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
     }
   }
 
-  getTableTitleTemplate(defaultTemplate: TemplateRef<any>): TemplateRef<any> {
+  getTableTitleTemplate(defaultTemplate: TemplateRef<Component>): TemplateRef<Component> {
     const template = this.tableTitleTemplate;
     if (template) {
       return template;
@@ -302,7 +302,7 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
     }
   }
 
-  shouldExpandBeDisabled(row: any): boolean {
+  shouldExpandBeDisabled(row: T): boolean {
     return this.disableExpand(row);
   }
 
@@ -326,32 +326,32 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
     this.rowDblClick.emit(row);
   }
 
-  onAddClicked(event: Event): void {
+  onAddClicked(): void {
     this.addButtonClicked.emit();
   }
 
-  onEditClicked(event: Event): void {
+  onEditClicked(): void {
     this.editButtonClicked.emit(this.activeRow);
   }
 
-  onRefreshClicked(event: Event): void {
-    this.refreshButtonClicked.emit(null);
+  onRefreshClicked(): void {
+    this.refreshButtonClicked.emit();
   }
 
-  onDeleteClicked(event: Event): void {
+  onDeleteClicked(): void {
     this.deleteButtonClicked.emit(this.activeRow);
   }
 
-  onExportClicked(event: Event): void {
+  onExportClicked(): void {
     this.exportToCsv();
   }
 
-  onPrintClicked(event: Event): void {
+  onPrintClicked(): void {
     const tableElement = this.tableElementRef?.nativeElement as HTMLElement;
     this.printService.printPreviewElement(tableElement);
   }
 
-  onPasteClicked(event: Event): void {
+  onPasteClicked(): void {
     this.pasteButtonClicked.emit();
   }
 
@@ -382,11 +382,11 @@ export class TableComponent<T extends { [key: string]: any }> implements AfterVi
         }
       }
       if (data) {
-        data.forEach((row, i) => {
+        data.forEach((row) => {
           result += '\n';
           for (let rowIndex = 0; rowIndex < columns.length; rowIndex++) {
             const column = columns[rowIndex];
-            let value: string = row[column.name as keyof T];
+            let value: string | null | undefined = row[column.name as keyof T]?.toString();
             if (value !== null && value !== undefined) {
               value = String(value).replace(/"/g, '""');
             } else { value = ''; }
