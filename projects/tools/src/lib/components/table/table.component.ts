@@ -40,6 +40,12 @@ export interface ExpandedRowComponent<T> extends Component {
   row?: T;
 }
 
+export interface CellComponent<T> extends Component {
+  row?: T;
+  column?: string;
+  rowIndex?: number;
+}
+
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -271,7 +277,7 @@ export class TableComponent<T> implements AfterViewInit {
     }
   }
 
-  getCellTemplate(column: string, defaultTemplate: TemplateRef<Component>): TemplateRef<Component> {
+  getCellTemplate(column: string, defaultTemplate: TemplateRef<CellComponent<T>>): TemplateRef<CellComponent<T>> {
     const template = this.cellTemplates.get(column);
     if (template) {
       return template;
