@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -49,13 +49,36 @@ import { NumberToPercentPipe } from './pipes/number-to-percent.pipe';
 import { DateToStringPipe } from './pipes/timespan-to-string.pipe';
 import { ToolsComponent } from './tools.component';
 
-@NgModule({
-    imports: [
-        BrowserModule,
+@NgModule({ exports: [
+        InputBaseComponent,
+        ToolsComponent,
+        InputSelectComponent,
+        InputCurrencyComponent,
+        InputCurrencyDirective,
+        InputPercentComponent,
+        InputPercentDirective,
+        InputHyperlinkComponent,
+        AddHiddenAttributeDirective,
+        AddHrefAttributeDirective,
+        InputTextareaComponent,
+        InputTextComponent,
+        InputToggleComponent,
+        InputPasswordComponent,
+        AppSpinnerComponent,
+        TableComponent,
+        TableCellDirective,
+        InputDateComponent,
+        DateToStringPipe,
+        CurrencyToStringPipe,
+        NumberToPercentPipe,
+        ConfirmDialogComponent,
+        ViewFieldTextComponent,
+        ViewFieldToggleComponent,
+        DynamicPipe,
+    ], imports: [BrowserModule,
         MatDialogModule,
         MatSnackBarModule,
         BrowserAnimationsModule,
-        HttpClientModule,
         MatInputModule,
         MatTableModule,
         MatSlideToggleModule,
@@ -97,40 +120,11 @@ import { ToolsComponent } from './tools.component';
         ViewFieldTextComponent,
         ViewFieldToggleComponent,
         DynamicPipe,
-        NumberToPercentPipe
-    ],
-    exports: [
-        InputBaseComponent,
-        ToolsComponent,
-        InputSelectComponent,
-        InputCurrencyComponent,
-        InputCurrencyDirective,
-        InputPercentComponent,
-        InputPercentDirective,
-        InputHyperlinkComponent,
-        AddHiddenAttributeDirective,
-        AddHrefAttributeDirective,
-        InputTextareaComponent,
-        InputTextComponent,
-        InputToggleComponent,
-        InputPasswordComponent,
-        AppSpinnerComponent,
-        TableComponent,
-        TableCellDirective,
-        InputDateComponent,
-        DateToStringPipe,
-        CurrencyToStringPipe,
-        NumberToPercentPipe,
-        ConfirmDialogComponent,
-        ViewFieldTextComponent,
-        ViewFieldToggleComponent,
-        DynamicPipe,
-    ],
-    providers: [
+        NumberToPercentPipe], providers: [
         { provide: MAT_DATE_FORMATS, useValue: BILLS_DATE_FORMATS },
         { provide: DateAdapter, useClass: BillsDateAdapter },
-    ]
-})
+        provideHttpClient(withInterceptorsFromDi()),
+    ] })
 export class ToolsModule { }
 
 export * from './components';

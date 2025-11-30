@@ -23,12 +23,15 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/bills-java-app",
+            "outputPath": {
+              "base": "dist/bills-java-app"
+            },
             "index": "projects/bills-java-app/src/index.html",
-            "main": "projects/bills-java-app/src/main.ts",
-            "polyfills": "projects/bills-java-app/src/polyfills.ts",
+            "polyfills": [
+              "projects/bills-java-app/src/polyfills.ts"
+            ],
             "tsConfig": "projects/bills-java-app/tsconfig.app.json",
             "assets": [
               "projects/bills-java-app/src/favicon.ico",
@@ -38,12 +41,11 @@
               "projects/bills-java-app/src/styles.scss"
             ],
             "scripts": [],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "browser": "projects/bills-java-app/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -58,8 +60,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -248,12 +248,15 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/bills-memory-app",
+            "outputPath": {
+              "base": "dist/bills-memory-app"
+            },
             "index": "projects/bills-memory-app/src/index.html",
-            "main": "projects/bills-memory-app/src/main.ts",
-            "polyfills": "projects/bills-memory-app/src/polyfills.ts",
+            "polyfills": [
+              "projects/bills-memory-app/src/polyfills.ts"
+            ],
             "tsConfig": "projects/bills-memory-app/tsconfig.app.json",
             "assets": [
               "projects/bills-memory-app/src/favicon.ico",
@@ -263,12 +266,11 @@
               "projects/bills-memory-app/src/styles.scss"
             ],
             "scripts": [],
-            "vendorChunk": true,
             "extractLicenses": false,
-            "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "browser": "projects/bills-memory-app/src/main.ts"
           },
           "configurations": {
             "production": {
@@ -283,8 +285,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
