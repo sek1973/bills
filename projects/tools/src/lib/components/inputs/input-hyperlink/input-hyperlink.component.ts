@@ -12,7 +12,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     selector: 'app-input-hyperlink',
     templateUrl: './input-hyperlink.component.html',
     styleUrls: ['./input-hyperlink.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, AddHrefAttributeDirective, MatInputModule, AddHiddenAttributeDirective, MatTooltipModule]
 })
 export class InputHyperlinkComponent extends InputBaseComponent {

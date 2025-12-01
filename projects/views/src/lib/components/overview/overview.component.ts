@@ -9,9 +9,10 @@ import { TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-overview',
-  templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.scss'],
+    selector: 'app-overview',
+    templateUrl: './overview.component.html',
+    styleUrls: ['./overview.component.scss'],
+    standalone: false
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   editMode: boolean = false;

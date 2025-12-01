@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'lib-store',
-  template: `
+    selector: 'lib-store',
+    template: `
     <p>
       store works!
     </p>
   `,
-  styles: [
-  ]
+    styles: [],
+    standalone: false
 })
 export class StoreComponent implements OnInit {
 

@@ -4,9 +4,10 @@ import { AppSelectors, AppState } from 'projects/store/src/lib/state';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './root.component.html',
-  styleUrls: ['./root.component.css']
+    selector: 'app-root',
+    templateUrl: './root.component.html',
+    styleUrls: ['./root.component.css'],
+    standalone: false
 })
 export class RootComponent implements OnInit {
   public loading$ = this.store.select(AppSelectors.selectLoading).pipe(debounceTime(250));

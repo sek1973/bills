@@ -23,7 +23,6 @@ export function unitsToSelectItems(): SelectItem<Unit>[] {
     selector: 'app-input-select',
     templateUrl: './input-select.component.html',
     styleUrls: ['./input-select.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatTooltipModule, MatOptionModule]
 })
 export class InputSelectComponent extends InputBaseComponent implements OnInit {

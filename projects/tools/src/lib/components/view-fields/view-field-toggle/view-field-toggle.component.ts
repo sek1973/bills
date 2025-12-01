@@ -7,7 +7,6 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     selector: 'app-view-field-toggle',
     templateUrl: './view-field-toggle.component.html',
     styleUrls: ['./view-field-toggle.component.scss'],
-    standalone: true,
     imports: [MatSlideToggleModule]
 })
 export class ViewFieldToggleComponent extends ViewFieldComponentBase implements OnInit {

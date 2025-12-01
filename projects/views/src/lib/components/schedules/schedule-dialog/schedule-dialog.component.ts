@@ -15,9 +15,10 @@ export interface ScheduleDialogData {
   schedules: Schedule[];
 }
 @Component({
-  selector: 'app-schedule-dialog',
-  templateUrl: './schedule-dialog.component.html',
-  styleUrls: ['./schedule-dialog.component.scss']
+    selector: 'app-schedule-dialog',
+    templateUrl: './schedule-dialog.component.html',
+    styleUrls: ['./schedule-dialog.component.scss'],
+    standalone: false
 })
 export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 

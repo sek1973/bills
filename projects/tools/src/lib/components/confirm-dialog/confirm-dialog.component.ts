@@ -17,7 +17,6 @@ export interface ConfirmDialogResponse {
     selector: 'app-confirm-dialog',
     templateUrl: './confirm-dialog.component.html',
     styleUrls: ['./confirm-dialog.component.scss'],
-    standalone: true,
     imports: [InputTextComponent, FormsModule, ReactiveFormsModule, InputCurrencyComponent, InputTextareaComponent, MatButtonModule]
 })
 export class ConfirmDialogComponent {

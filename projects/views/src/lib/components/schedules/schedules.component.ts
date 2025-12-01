@@ -9,9 +9,10 @@ import { filter } from 'rxjs/operators';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
 
 @Component({
-  selector: 'app-schedules',
-  templateUrl: './schedules.component.html',
-  styleUrls: ['./schedules.component.scss']
+    selector: 'app-schedules',
+    templateUrl: './schedules.component.html',
+    styleUrls: ['./schedules.component.scss'],
+    standalone: false
 })
 export class SchedulesComponent implements OnInit {
 

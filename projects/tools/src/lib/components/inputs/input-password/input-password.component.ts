@@ -11,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     selector: 'app-input-password',
     templateUrl: './input-password.component.html',
     styleUrls: ['./input-password.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatTooltipModule, MatButtonModule, MatIconModule]
 })
 export class InputPasswordComponent extends InputBaseComponent {

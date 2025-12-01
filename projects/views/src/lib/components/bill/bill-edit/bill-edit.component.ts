@@ -11,9 +11,10 @@ import { SelectItem, unitsToSelectItems, validateDistinctBillName, validatePayme
 import { filter } from 'rxjs';
 
 @Component({
-  selector: 'app-bill-edit',
-  templateUrl: './bill-edit.component.html',
-  styleUrls: ['./bill-edit.component.scss']
+    selector: 'app-bill-edit',
+    templateUrl: './bill-edit.component.html',
+    styleUrls: ['./bill-edit.component.scss'],
+    standalone: false
 })
 export class BillEditComponent implements OnChanges {
   @Input() bill?: Bill;

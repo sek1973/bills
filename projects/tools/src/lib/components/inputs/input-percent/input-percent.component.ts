@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     selector: 'app-input-percent',
     templateUrl: './input-percent.component.html',
     styleUrls: ['./input-percent.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, InputPercentDirective, MatTooltipModule]
 })
 export class InputPercentComponent extends InputBaseComponent {

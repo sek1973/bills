@@ -11,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     selector: 'app-input-date',
     templateUrl: './input-date.component.html',
     styleUrls: ['./input-date.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatTooltipModule]
 })
 export class InputDateComponent extends InputBaseComponent implements OnInit {

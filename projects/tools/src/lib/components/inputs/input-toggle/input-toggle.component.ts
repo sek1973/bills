@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     selector: 'app-input-toggle',
     templateUrl: './input-toggle.component.html',
     styleUrls: ['./input-toggle.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatSlideToggleModule, MatTooltipModule, MatFormFieldModule]
 })
 export class InputToggleComponent extends InputBaseComponent implements OnInit {

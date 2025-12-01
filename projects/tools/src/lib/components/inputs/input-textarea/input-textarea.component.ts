@@ -11,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     selector: 'app-input-textarea',
     templateUrl: './input-textarea.component.html',
     styleUrls: ['./input-textarea.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, TextFieldModule, MatTooltipModule]
 })
 export class InputTextareaComponent extends InputBaseComponent implements OnInit {

@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'lib-model',
-  template: `
+    selector: 'lib-model',
+    template: `
     <p>
       model works!
     </p>
   `,
-  styles: [
-  ]
+    styles: [],
+    standalone: false
 })
 export class ModelComponent implements OnInit {
 

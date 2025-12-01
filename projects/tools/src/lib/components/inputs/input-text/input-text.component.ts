@@ -9,7 +9,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     selector: 'app-input-text',
     templateUrl: './input-text.component.html',
     styleUrls: ['./input-text.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatTooltipModule]
 })
 export class InputTextComponent extends InputBaseComponent implements OnInit {

@@ -11,9 +11,10 @@ export interface PaymentDialogData {
   payment?: Payment;
 }
 @Component({
-  selector: 'app-payment-dialog',
-  templateUrl: './payment-dialog.component.html',
-  styleUrls: ['./payment-dialog.component.scss']
+    selector: 'app-payment-dialog',
+    templateUrl: './payment-dialog.component.html',
+    styleUrls: ['./payment-dialog.component.scss'],
+    standalone: false
 })
 export class PaymentDialogComponent implements OnInit, AfterViewInit {
 

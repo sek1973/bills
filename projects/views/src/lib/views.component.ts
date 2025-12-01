@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'lib-views',
-  template: `
+    selector: 'lib-views',
+    template: `
     <p>
       views works!
     </p>
   `,
-  styles: [
-  ]
+    styles: [],
+    standalone: false
 })
 export class ViewsComponent implements OnInit {
 

@@ -6,9 +6,10 @@ import { Bill } from 'projects/model/src/lib/model';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 
 @Component({
-  selector: 'app-bill',
-  templateUrl: './bill.component.html',
-  styleUrls: ['./bill.component.scss']
+    selector: 'app-bill',
+    templateUrl: './bill.component.html',
+    styleUrls: ['./bill.component.scss'],
+    standalone: false
 })
 export class BillComponent implements OnInit {
   #destroyRef = inject(DestroyRef);

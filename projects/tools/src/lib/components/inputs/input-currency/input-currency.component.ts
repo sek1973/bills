@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     selector: 'app-input-currency',
     templateUrl: './input-currency.component.html',
     styleUrls: ['./input-currency.component.scss'],
-    standalone: true,
     imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, InputCurrencyDirective, MatTooltipModule]
 })
 export class InputCurrencyComponent extends InputBaseComponent implements OnInit {

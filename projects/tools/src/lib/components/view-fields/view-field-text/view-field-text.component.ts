@@ -7,7 +7,6 @@ import { DynamicPipe } from '../../../pipes/dynamic.pipe';
     selector: 'app-view-field-text',
     templateUrl: './view-field-text.component.html',
     styleUrls: ['./view-field-text.component.scss'],
-    standalone: true,
     imports: [DynamicPipe]
 })
 export class ViewFieldTextComponent extends ViewFieldComponentBase implements OnInit {
