@@ -17,7 +17,7 @@ After building your library with `ng build store`, go to the dist folder `cd dis
 
 ## Running unit tests
 
-Run `ng test store` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `npm run test` to execute the unit tests via Vitest.
 
 ## Further help
 

@@ -17,7 +17,7 @@ After building your library with `ng build my-schematics`, go to the dist folder
 
 ## Running unit tests
 
-Run `ng test my-schematics` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Run `npm run test` to execute the unit tests via Vitest.
 
 ## Further help
 
