@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthService, BillsService, PaymentsService, SchedulesService } from 'projects/model/src/public-api';
 import { BillsStoreModule } from 'projects/store/src/public-api';
 import { ToolsModule } from 'projects/tools/src/public-api';
@@ -16,7 +15,6 @@ import { AuthServiceImpl } from './services/auth.service';
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
     ToolsModule,
     ViewsModule,
