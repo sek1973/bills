@@ -11,9 +11,8 @@ import { SchedulesService } from './schedules.service';
 })
 export abstract class BillsService {
 
-  constructor(
-    private paymentsService: PaymentsService,
-    private schedulesService: SchedulesService) { }
+  protected abstract paymentsService: PaymentsService;
+  protected abstract schedulesService: SchedulesService;
 
   abstract load(): Observable<Bill[]>;
 

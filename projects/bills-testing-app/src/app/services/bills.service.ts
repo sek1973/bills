@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Bill, BillsService, Unit } from 'projects/model/src/public-api';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
@@ -47,11 +47,8 @@ export class BillsServiceImpl extends BillsService {
     createBill(3, 3, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 'woda_haslo', 25, 0.66),
   ];
 
-  constructor(
-    paymentsService: PaymentsServiceImpl,
-    schedulesService: SchedulesServiceImpl) {
-    super(paymentsService, schedulesService);
-  }
+  protected paymentsService: PaymentsServiceImpl = inject(PaymentsServiceImpl);
+  protected schedulesService: SchedulesServiceImpl = inject(SchedulesServiceImpl);
 
   load(): Observable<Bill[]> {
     return of(this.bills).pipe(delay(1000));

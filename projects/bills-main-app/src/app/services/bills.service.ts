@@ -1,22 +1,31 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Bill, BillsService } from 'projects/model/src/public-api';
 import { Observable, of } from 'rxjs';
 import { PaymentsServiceImpl } from './payments.service';
 import { SchedulesServiceImpl } from './schedules.service';
+import { SupabaseService } from './supabase.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BillsServiceImpl extends BillsService {
 
-  constructor(
-    paymentsService: PaymentsServiceImpl,
-    schedulesService: SchedulesServiceImpl) {
-    super(paymentsService, schedulesService);
-  }
+  protected paymentsService: PaymentsServiceImpl = inject(PaymentsServiceImpl);
+  protected schedulesService: SchedulesServiceImpl = inject(SchedulesServiceImpl);
+  protected serverService: SupabaseService = inject(SupabaseService);
 
   load(): Observable<Bill[]> {
-    return of([]);
+    return new Observable<Bill[]>(observer => {
+      this.serverService.client
+        .from('bills')
+        .select('*')
+        .then(response => {
+          observer.next(response.data as Bill[]);
+          observer.complete();
+        }, error => {
+          observer.error(error);
+        });
+    });
   }
 
   fetchItem(id: number): Observable<Bill | null> {
