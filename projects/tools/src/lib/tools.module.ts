@@ -2,7 +2,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { DateAdapter, MatNativeDateModule, MAT_DATE_FORMATS } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -42,7 +42,7 @@ import {
 } from './components';
 import { InputBaseComponent } from './components/inputs/input-component-base';
 import { TableCellDirective } from './components/table/directives';
-import { BillsDateAdapter, BILLS_DATE_FORMATS } from './helpers/date.adapter';
+import { BILLS_DATE_FORMATS, BillsDateAdapter } from './helpers/date.adapter';
 import { CurrencyToStringPipe } from './pipes/currency-to-string.pipe';
 import { DynamicPipe } from './pipes/dynamic.pipe';
 import { NumberToPercentPipe } from './pipes/number-to-percent.pipe';

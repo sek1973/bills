@@ -11,48 +11,48 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "bills-java-app": {
+    "bills-main-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/bills-java-app",
-      "sourceRoot": "projects/bills-java-app/src",
+      "root": "projects/bills-main-app",
+      "sourceRoot": "projects/bills-main-app/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": {
-              "base": "dist/bills-java-app"
+              "base": "dist/bills-main-app"
             },
-            "index": "projects/bills-java-app/src/index.html",
+            "index": "projects/bills-main-app/src/index.html",
             "polyfills": [
-              "projects/bills-java-app/src/polyfills.ts"
+              "projects/bills-main-app/src/polyfills.ts"
             ],
-            "tsConfig": "projects/bills-java-app/tsconfig.app.json",
+            "tsConfig": "projects/bills-main-app/tsconfig.app.json",
             "assets": [
-              "projects/bills-java-app/src/favicon.ico",
-              "projects/bills-java-app/src/assets"
+              "projects/bills-main-app/src/favicon.ico",
+              "projects/bills-main-app/src/assets"
             ],
             "styles": [
-              "projects/bills-java-app/src/styles.scss"
+              "projects/bills-main-app/src/styles.scss"
             ],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
             "namedChunks": true,
-            "browser": "projects/bills-java-app/src/main.ts"
+            "browser": "projects/bills-main-app/src/main.ts"
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/bills-java-app/src/environments/environment.ts",
-                  "with": "projects/bills-java-app/src/environments/environment.prod.ts"
+                  "replace": "projects/bills-main-app/src/environments/environment.ts",
+                  "with": "projects/bills-main-app/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -79,20 +79,20 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "bills-java-app:build"
+            "buildTarget": "bills-main-app:build"
           },
           "configurations": {
             "production": {
-              "buildTarget": "bills-java-app:build:production"
+              "buildTarget": "bills-main-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "bills-java-app:build"
+            "buildTarget": "bills-main-app:build"
           }
-        },
+        }
       }
     },
     "views": {
@@ -112,7 +112,7 @@
               "tsConfig": "projects/views/tsconfig.lib.prod.json"
             }
           }
-        },
+        }
       }
     },
     "tools": {
@@ -132,7 +132,7 @@
               "tsConfig": "projects/tools/tsconfig.lib.prod.json"
             }
           }
-        },
+        }
       }
     },
     "model": {
@@ -152,7 +152,7 @@
               "tsConfig": "projects/model/tsconfig.lib.prod.json"
             }
           }
-        },
+        }
       }
     },
     "store": {
@@ -172,51 +172,51 @@
               "tsConfig": "projects/store/tsconfig.lib.prod.json"
             }
           }
-        },
+        }
       }
     },
-    "bills-memory-app": {
+    "bills-testing-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/bills-memory-app",
-      "sourceRoot": "projects/bills-memory-app/src",
+      "root": "projects/bills-testing-app",
+      "sourceRoot": "projects/bills-testing-app/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": {
-              "base": "dist/bills-memory-app"
+              "base": "dist/bills-testing-app"
             },
-            "index": "projects/bills-memory-app/src/index.html",
+            "index": "projects/bills-testing-app/src/index.html",
             "polyfills": [
-              "projects/bills-memory-app/src/polyfills.ts"
+              "projects/bills-testing-app/src/polyfills.ts"
             ],
-            "tsConfig": "projects/bills-memory-app/tsconfig.app.json",
+            "tsConfig": "projects/bills-testing-app/tsconfig.app.json",
             "assets": [
-              "projects/bills-memory-app/src/favicon.ico",
-              "projects/bills-memory-app/src/assets"
+              "projects/bills-testing-app/src/favicon.ico",
+              "projects/bills-testing-app/src/assets"
             ],
             "styles": [
-              "projects/bills-memory-app/src/styles.scss"
+              "projects/bills-testing-app/src/styles.scss"
             ],
             "scripts": [],
             "extractLicenses": false,
             "sourceMap": true,
             "optimization": false,
             "namedChunks": true,
-            "browser": "projects/bills-memory-app/src/main.ts"
+            "browser": "projects/bills-testing-app/src/main.ts"
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/bills-memory-app/src/environments/environment.ts",
-                  "with": "projects/bills-memory-app/src/environments/environment.prod.ts"
+                  "replace": "projects/bills-testing-app/src/environments/environment.ts",
+                  "with": "projects/bills-testing-app/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -243,20 +243,20 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "bills-memory-app:build"
+            "buildTarget": "bills-testing-app:build"
           },
           "configurations": {
             "production": {
-              "buildTarget": "bills-memory-app:build:production"
+              "buildTarget": "bills-testing-app:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "bills-memory-app:build"
+            "buildTarget": "bills-testing-app:build"
           }
-        },
+        }
       }
     },
     "my-schematics": {
@@ -279,7 +279,7 @@
             }
           },
           "defaultConfiguration": "production"
-        },
+        }
       }
     }
   },

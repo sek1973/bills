@@ -8,8 +8,8 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
     },
     include: [
-      'projects/bills-java-app/src/**/*.spec.ts',
-      'projects/bills-memory-app/src/**/*.spec.ts',
+      'projects/bills-main-app/src/**/*.spec.ts',
+      'projects/bills-testing-app/src/**/*.spec.ts',
       'projects/model/src/**/*.spec.ts',
       'projects/my-schematics/src/**/*.spec.ts',
       'projects/store/src/**/*.spec.ts',
