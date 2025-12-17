@@ -3,7 +3,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from 'projects/bills-java-app/src/environments/environment';
+import { environment } from 'projects/bills-main-app/src/environments/environment';
 import { appReducer, BillEffects, PaymentEffects } from './state';
 import { AuthEffects } from './state/auth/auth.effects';
 import { ScheduleEffects } from './state/schedule';
