@@ -6,10 +6,10 @@ import { AppState, AuthActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss'],
-    standalone: false
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
+  standalone: false
 })
 export class LoginComponent {
   public error: string | undefined = undefined;
@@ -41,7 +41,7 @@ export class LoginComponent {
 
   onLogIn(): void {
     this.error = undefined;
-    const user = this.loginForm.value.email;
+    const user = this.loginForm.value.user;
     const password = this.loginForm.value.password;
     this.store.dispatch(AuthActions.login({ user, password }));
   }

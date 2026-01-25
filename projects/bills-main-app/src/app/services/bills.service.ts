@@ -16,9 +16,7 @@ export class BillsServiceImpl extends BillsService {
 
   load(): Observable<Bill[]> {
     return new Observable<Bill[]>(observer => {
-      this.serverService.client
-        .from('bills')
-        .select('*')
+      this.serverService.fetchUserData('bills')
         .then(response => {
           observer.next(response.data as Bill[]);
           observer.complete();
