@@ -28,7 +28,7 @@
     "@ngrx/operators": "^21.0.1",
     "@ngrx/store": "^21.0.1",
     "@ngrx/store-devtools": "^21.0.1",
-    "@supabase/supabase-js": "^2.88.0",
+    "@supabase/supabase-js": "^2.99.3",
     "angular-material-styles": "^1.1.21",
     "material-design-icons": "^3.0.1",
     "material-icons": "^1.13.14",
