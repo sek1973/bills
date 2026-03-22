@@ -9,35 +9,34 @@
     </div>
   </div>
 
-  
-@switch (inputType) {
-    @case (confirmDialogInputType.InputTypeText) {
+
+  @switch (inputType) {
+  @case (confirmDialogInputType.InputTypeText) {
   <div>
-      <app-input-text [path]="['input']"
-                      [descriptionProvider]="descriptionProvider"
-                      [formGroup]="form">
-      </app-input-text>
-    </div>
-}
-    @case (confirmDialogInputType.InputTypeCurrency) {
+    <app-input-text [path]="['input']"
+                    [descriptionProvider]="descriptionProvider"
+                    [formGroup]="form">
+    </app-input-text>
+  </div>
+  }
+  @case (confirmDialogInputType.InputTypeCurrency) {
   <div>
-      <app-input-currency [path]="['input']"
-                          [descriptionProvider]="descriptionProvider"
-                          [formGroup]="form">
-      </app-input-currency>
-    </div>
-}
-    @case (confirmDialogInputType.InputTypeTextArea) {
-  <div
-         class="input-container">
-      <app-input-textarea [path]="['input']"
-                          [descriptionProvider]="descriptionProvider"
-                          [inputMinRows]="10"
-                          [inputMaxRows]="10"
-                          [formGroup]="form">
-      </app-input-textarea>
-    </div>
-}
+    <app-input-currency [path]="['input']"
+                        [descriptionProvider]="descriptionProvider"
+                        [formGroup]="form">
+    </app-input-currency>
+  </div>
+  }
+  @case (confirmDialogInputType.InputTypeTextArea) {
+  <div class="input-container">
+    <app-input-textarea [path]="['input']"
+                        [descriptionProvider]="descriptionProvider"
+                        [inputMinRows]="10"
+                        [inputMaxRows]="10"
+                        [formGroup]="form">
+    </app-input-textarea>
+  </div>
+  }
   }
 
 

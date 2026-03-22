@@ -23,13 +23,12 @@
           class="toolbar-button"
           (click)="closeDialog()">Anuluj</button>
   @if (dialogMode==='edit') {
-<button
-          mat-raised-button
+  <button mat-raised-button
           color="primary"
           class="toolbar-button"
           [disabled]="!canClone"
           (click)="cloneData()">Klonuj</button>
-}
+  }
   <button mat-raised-button
           color="primary"
           class="toolbar-button"
