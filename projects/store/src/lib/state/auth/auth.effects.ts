@@ -55,7 +55,10 @@ export class AuthEffects {
         ofType(AuthActions.logout),
         concatMap(() => this.authService.logout()
           .pipe(
-            map(() => this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000 })),
+            map(() => {
+              this.navigationService.goToPage('/login');
+              this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000 });
+            }),
             map(() => AuthActions.logoutSuccess()),
             catchError(error => of(AuthActions.logoutFailure({ error })))
           )
