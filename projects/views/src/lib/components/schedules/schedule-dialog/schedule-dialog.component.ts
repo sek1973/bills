@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Schedule, ScheduleDescription } from 'projects/model/src/lib/model';
 import { calculateNextScheduleDate } from 'projects/model/src/public-api';
@@ -15,10 +15,10 @@ export interface ScheduleDialogData {
   schedules: Schedule[];
 }
 @Component({
-    selector: 'app-schedule-dialog',
-    templateUrl: './schedule-dialog.component.html',
-    styleUrls: ['./schedule-dialog.component.scss'],
-    standalone: false
+  selector: 'app-schedule-dialog',
+  templateUrl: './schedule-dialog.component.html',
+  styleUrls: ['./schedule-dialog.component.scss'],
+  standalone: false
 })
 export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 

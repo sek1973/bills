@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Bill, BillsService } from 'projects/model/src/public-api';
-import { from, map, Observable, of } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
+import { BillRow } from './db.types';
 import { PaymentsServiceImpl } from './payments.service';
 import { SchedulesServiceImpl } from './schedules.service';
 import { SupabaseService } from './supabase.service';
@@ -14,31 +15,73 @@ export class BillsServiceImpl extends BillsService {
   protected schedulesService: SchedulesServiceImpl = inject(SchedulesServiceImpl);
   protected serverService: SupabaseService = inject(SupabaseService);
 
+  private _bills: Bill[] = [];
+
+  getBills(): Bill[] { return this._bills; }
+
   load(): Observable<Bill[]> {
-    return from(this.serverService.client.from('bills').select('*')).pipe(
+    return from(this.serverService.client.from('bills').select<'*', BillRow>('*')).pipe(
       map(({ data, error }) => {
         if (error) throw error;
-        return data as Bill[];
+        this._bills = data.map(r => this.fromRow(r));
+        return this._bills;
       })
     );
   }
 
   fetchItem(id: number): Observable<Bill | null> {
-    return of(null);
+    return from(this.serverService.client.from('bills').select('*').eq('id', id).single<BillRow>()).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return this.fromRow(data);
+      })
+    );
   }
 
-  getBills(): Bill[] { return []; }
+  private fromRow(r: BillRow): Bill {
+    return new Bill(
+      r.lp ?? undefined,
+      r.name,
+      r.description ?? undefined,
+      r.active,
+      r.url ?? undefined,
+      r.login ?? undefined,
+      r.password ?? undefined,
+      r.sum,
+      r.share,
+      r.deadline ? new Date(r.deadline) : undefined,
+      r.repeat,
+      r.unit,
+      r.reminder ? new Date(r.reminder) : undefined,
+      r.id,
+    );
+  }
 
   add(bill: Bill): Observable<Bill> {
-    return of(new Bill());
+    return from(this.serverService.client.from('bills').insert(bill).select().single<Bill>()).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return data;
+      })
+    );
   }
 
   update(bill: Bill): Observable<boolean> {
-    return of(false);
+    return from(this.serverService.client.from('bills').update(bill).eq('id', bill.id)).pipe(
+      map(({ error }) => {
+        if (error) throw error;
+        return true;
+      })
+    );
   }
 
   delete(billId: number): Observable<boolean> {
-    return of(false);
+    return from(this.serverService.client.from('bills').delete().eq('id', billId)).pipe(
+      map(({ error }) => {
+        if (error) throw error;
+        return true;
+      })
+    );
   }
 
 }
