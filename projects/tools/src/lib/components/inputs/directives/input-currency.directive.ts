@@ -10,9 +10,9 @@ export const APP_CURRENCY_VALUE_ACCESSOR: any = {
 };
 
 @Directive({
-    selector: '[appInputCurrency]',
-    providers: [APP_CURRENCY_VALUE_ACCESSOR],
-    standalone: true
+  selector: '[appInputCurrency]',
+  providers: [APP_CURRENCY_VALUE_ACCESSOR],
+  standalone: true
 })
 export class InputCurrencyDirective implements ControlValueAccessor {
 
@@ -21,8 +21,9 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   onChange: any = () => { };
   onTouched: any = () => { };
 
-  @HostListener('input', ['$event.target.value'])
-  input(value: any): void {
+  @HostListener('input', ['$event'])
+  input(event: Event): void {
+    let value = (event.target as HTMLInputElement).value;
     if (value !== undefined && value !== null) {
       value = value.replace(/[^0-9,.]/g, '')
         .replace(',', '.');
@@ -30,17 +31,19 @@ export class InputCurrencyDirective implements ControlValueAccessor {
     this.onChange(value);
   }
 
-  @HostListener('blur', ['$event.target.value'])
-  blur(value: any): void {
+  @HostListener('blur', ['$event'])
+  blur(event: Event): void {
+    let value = (event.target as HTMLInputElement).value;
     if (value !== undefined && value !== null) {
       value = value.replace(/[^0-9,.]/g, '')
         .replace(',', '.');
     }
-    this.renderer.setProperty(this.element.nativeElement, 'value', currencyToString(value));
+    this.renderer.setProperty(this.element.nativeElement, 'value', currencyToString(currencyToNumber(value) ?? 0));
   }
 
-  @HostListener('focus', ['$event.target.value'])
-  focus(value: any): void {
+  @HostListener('focus', ['$event'])
+  focus(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
     this.renderer.setProperty(this.element.nativeElement, 'value', currencyToNumber(value));
   }
 
