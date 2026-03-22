@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from 'projects/model/src/public-api';
 import { NavigationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
-import { catchError, concatMap, switchMap } from 'rxjs/operators';
+import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
 import { AuthActions } from '../auth';
 import { BillsActions } from '../bill';
 

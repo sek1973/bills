@@ -1,7 +1,8 @@
 <div class="parent">
   <div class="container">
     <form [formGroup]="loginForm"
-          class="container-form">
+          class="container-form"
+          (ngSubmit)="onLogIn()">
       <h2 class="message">Witamy w aplikacji Rachunki!</h2>
 
       <app-input-text [formGroup]="loginForm"
@@ -18,9 +19,9 @@
       </app-input-password>
 
       <button mat-raised-button
+              type="submit"
               color="primary"
-              [disabled]="!loginForm.valid"
-              (click)="onLogIn()">Zaloguj</button>
+              [disabled]="!loginForm.valid">Zaloguj</button>
       @if (error) {
       <span class="error">{{error}}</span>
       }
