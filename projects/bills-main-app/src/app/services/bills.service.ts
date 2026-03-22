@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Bill, BillsService } from 'projects/model/src/public-api';
-import { Observable, of } from 'rxjs';
+import { from, map, Observable, of } from 'rxjs';
 import { PaymentsServiceImpl } from './payments.service';
 import { SchedulesServiceImpl } from './schedules.service';
 import { SupabaseService } from './supabase.service';
@@ -15,15 +15,12 @@ export class BillsServiceImpl extends BillsService {
   protected serverService: SupabaseService = inject(SupabaseService);
 
   load(): Observable<Bill[]> {
-    return new Observable<Bill[]>(observer => {
-      this.serverService.fetchUserData('bills')
-        .then(response => {
-          observer.next(response.data as Bill[]);
-          observer.complete();
-        }, error => {
-          observer.error(error);
-        });
-    });
+    return from(this.serverService.client.from('bills').select('*')).pipe(
+      map(({ data, error }) => {
+        if (error) throw error;
+        return data as Bill[];
+      })
+    );
   }
 
   fetchItem(id: number): Observable<Bill | null> {
