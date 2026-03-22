@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from 'projects/model/src/public-api';
 import { NavigationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
-import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
+import { catchError, concatMap, switchMap } from 'rxjs/operators';
 import { AuthActions } from '../auth';
 import { BillsActions } from '../bill';
 
@@ -23,10 +23,20 @@ export class AuthEffects {
         ofType(AuthActions.login),
         switchMap(userData => this.authService.login(userData.user, userData.password)
           .pipe(
-            map(() => this.snackBar.open('Zalogowano do aplikacji!', 'Ukryj', { duration: 3000 })),
-            map(() => this.navigationService.goToPreviousPage('/zestawienie')),
-            map(() => AuthActions.loginSuccess({ user: userData.user })),
-            catchError(error => of(AuthActions.loginFailure({ error })))
+            switchMap(success => {
+              if (success) {
+                this.snackBar.open('Zalogowano do aplikacji!', 'Ukryj', { duration: 3000 });
+                this.navigationService.goToPreviousPage('/zestawienie');
+                return of(AuthActions.loginSuccess({ user: userData.user }));
+              } else {
+                this.snackBar.open('Błąd logowania. Sprawdź dane i spróbuj ponownie.', 'Ukryj', { duration: 5000 });
+                return of(AuthActions.loginFailure({ error: 'Invalid credentials' }));
+              }
+            }),
+            catchError(error => {
+              this.snackBar.open('Błąd logowania. Sprawdź dane i spróbuj ponownie.', 'Ukryj', { duration: 5000 });
+              return of(AuthActions.loginFailure({ error }));
+            })
           )
         )
       );
@@ -35,7 +45,7 @@ export class AuthEffects {
   loginSuccess$ = createEffect(() => {
     return this.actions$
       .pipe(
-        ofType(AuthActions.login),
+        ofType(AuthActions.loginSuccess),
         switchMap(() => of(BillsActions.loadBills())));
   });
 
