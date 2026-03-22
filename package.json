@@ -51,13 +51,13 @@
     "@types/node": "^24.10.4",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
-    "@vitest/ui": "^3.2.4",
+    "@vitest/ui": "^4.1.0",
     "eslint": "^8.54.0",
     "eslint-config-google": "^0.14.0",
     "jsdom": "^27.2.0",
     "ng-packagr": "^21.2.1",
     "ts-node": "^10.9.2",
     "typescript": "~5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.0"
   }
 }
