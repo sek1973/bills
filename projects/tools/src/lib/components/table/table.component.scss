@@ -36,7 +36,7 @@ table.mat-table {
 
 button.mat-icon-button {
   width: 48px;
-  height: 18px;
+  height: 40px;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -220,11 +220,10 @@ tr.row-row {
   }
 }
 
-.table-header-row {
+.table-header {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  min-height: 50px;
   padding-top: 16px;
   padding-left: 16px;
   padding-right: 8px;

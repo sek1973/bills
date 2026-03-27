@@ -94,7 +94,7 @@
 
 <div class="component-container">
   @if (!hideHeader) {
-  <div class="table-header-row">
+  <div class="table-header">
     <ng-container [ngTemplateOutlet]="getTableTitleTemplate(defaultTitleTemplate)">
     </ng-container>
 
@@ -238,7 +238,8 @@
             *matCellDef="let row; let rowIndex = dataIndex;"
             (click)="onRowExpandClick(row)">
           @if (expandedRow !== row) {
-          <span [ngClass]="shouldExpandBeDisabled(row) ? 'expand-column-disabled' : 'expand-column'">keyboard_arrow_right</span>
+          <span
+                [ngClass]="shouldExpandBeDisabled(row) ? 'expand-column-disabled' : 'expand-column'">keyboard_arrow_right</span>
           }
           @if (expandedRow === row) {
           <span class="expand-column">keyboard_arrow_down</span>
