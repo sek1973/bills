@@ -18,12 +18,10 @@ body {
   -webkit-box-sizing: border-box;
 }
 
-.mat-input-element:disabled {
-  color: black;
-}
-
-.mat-select-disabled .mat-select-value {
-  color: black;
+.mat-mdc-input-element:disabled,
+.mat-mdc-select-disabled .mat-mdc-select-value {
+  color: rgba(0, 0, 0, 0.87);
+  -webkit-text-fill-color: rgba(0, 0, 0, 0.87);
 }
 
 .snackbar-style-error {
