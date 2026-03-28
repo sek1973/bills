@@ -21,24 +21,24 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
-  AddHiddenAttributeDirective,
-  AddHrefAttributeDirective,
-  AppSpinnerComponent,
-  ConfirmDialogComponent,
-  InputCurrencyComponent,
-  InputCurrencyDirective,
-  InputDateComponent,
-  InputHyperlinkComponent,
-  InputPasswordComponent,
-  InputPercentComponent,
-  InputPercentDirective,
-  InputSelectComponent,
-  InputTextareaComponent,
-  InputTextComponent,
-  InputToggleComponent,
-  TableComponent,
-  ViewFieldTextComponent,
-  ViewFieldToggleComponent
+    AddHiddenAttributeDirective,
+    AddHrefAttributeDirective,
+    AppSpinnerComponent,
+    ConfirmDialogComponent,
+    InputCurrencyComponent,
+    InputCurrencyDirective,
+    InputDateComponent,
+    InputHyperlinkComponent,
+    InputPasswordComponent,
+    InputPercentComponent,
+    InputPercentDirective,
+    InputSelectComponent,
+    InputTextareaComponent,
+    InputTextComponent,
+    InputToggleComponent,
+    TableComponent,
+    ViewFieldTextComponent,
+    ViewFieldToggleComponent
 } from './components';
 import { InputBaseComponent } from './components/inputs/input-component-base';
 import { TableCellDirective } from './components/table/directives';
@@ -47,11 +47,10 @@ import { CurrencyToStringPipe } from './pipes/currency-to-string.pipe';
 import { DynamicPipe } from './pipes/dynamic.pipe';
 import { NumberToPercentPipe } from './pipes/number-to-percent.pipe';
 import { DateToStringPipe } from './pipes/timespan-to-string.pipe';
-import { ToolsComponent } from './tools.component';
 
-@NgModule({ exports: [
+@NgModule({
+    exports: [
         InputBaseComponent,
-        ToolsComponent,
         InputSelectComponent,
         InputCurrencyComponent,
         InputCurrencyDirective,
@@ -97,7 +96,6 @@ import { ToolsComponent } from './tools.component';
         MatFormFieldModule,
         MatIconModule,
         InputBaseComponent,
-        ToolsComponent,
         InputSelectComponent,
         InputCurrencyComponent,
         InputCurrencyDirective,
@@ -121,10 +119,11 @@ import { ToolsComponent } from './tools.component';
         ViewFieldToggleComponent,
         DynamicPipe,
         NumberToPercentPipe], providers: [
-        { provide: MAT_DATE_FORMATS, useValue: BILLS_DATE_FORMATS },
-        { provide: DateAdapter, useClass: BillsDateAdapter },
-        provideHttpClient(withInterceptorsFromDi()),
-    ] })
+            { provide: MAT_DATE_FORMATS, useValue: BILLS_DATE_FORMATS },
+            { provide: DateAdapter, useClass: BillsDateAdapter },
+            provideHttpClient(withInterceptorsFromDi()),
+        ]
+})
 export class ToolsModule { }
 
 export * from './components';
