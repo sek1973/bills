@@ -1,5 +1,5 @@
 import { OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { Component, DoCheck, Input, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewContainerRef, effect, inject, input, viewChild } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
 import { MatProgressSpinnerModule, ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { OverlayService } from './overlay-service';
@@ -11,39 +11,44 @@ import { OverlayService } from './overlay-service';
   providers: [OverlayService],
   imports: [MatProgressSpinnerModule]
 })
-export class AppSpinnerComponent implements OnInit, DoCheck {
+export class AppSpinnerComponent implements OnInit {
 
-  @Input() color?: ThemePalette;
-  @Input() diameter?: number = 100;
-  @Input() mode: ProgressSpinnerMode = 'indeterminate';
-  @Input() strokeWidth?: number;
-  @Input() value?: number;
-  @Input() backdropEnabled = true;
-  @Input() positionGloballyCenter = true;
-  @Input() displayProgressSpinner: boolean | null = null;
+  color = input<ThemePalette>();
+  diameter = input<number>(100);
+  mode = input<ProgressSpinnerMode>('indeterminate');
+  strokeWidth = input<number>(10);
+  value = input<number>();
+  backdropEnabled = input(true);
+  positionGloballyCenter = input(true);
+  displayProgressSpinner = input<boolean | null>(null);
 
-  @ViewChild('progressSpinnerRef', { static: true })
-  private progressSpinnerRef!: TemplateRef<any>;
+  private progressSpinnerRef = viewChild.required<TemplateRef<any>>('progressSpinnerRef');
   private overlayConfig!: OverlayConfig;
   private overlayRef!: OverlayRef;
-  constructor(private vcRef: ViewContainerRef, private overlayService: OverlayService) { }
+
+  private vcRef = inject(ViewContainerRef);
+  private overlayService = inject(OverlayService);
+
+  constructor() {
+    effect(() => {
+      const show = this.displayProgressSpinner();
+      if (!this.overlayRef) return;
+      if (show && !this.overlayRef.hasAttached()) {
+        this.overlayService.attachTemplatePortal(this.overlayRef, this.progressSpinnerRef(), this.vcRef);
+      } else if (!show && this.overlayRef.hasAttached()) {
+        this.overlayRef.detach();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.overlayConfig = {
-      hasBackdrop: this.backdropEnabled
+      hasBackdrop: this.backdropEnabled()
     };
-    if (this.positionGloballyCenter) {
+    if (this.positionGloballyCenter()) {
       this.overlayConfig.positionStrategy = this.overlayService.positionGloballyCenter();
     }
     this.overlayRef = this.overlayService.createOverlay(this.overlayConfig);
-  }
-
-  ngDoCheck(): void {
-    if (this.displayProgressSpinner && !this.overlayRef.hasAttached()) {
-      this.overlayService.attachTemplatePortal(this.overlayRef, this.progressSpinnerRef, this.vcRef);
-    } else if (!this.displayProgressSpinner && this.overlayRef.hasAttached()) {
-      this.overlayRef.detach();
-    }
   }
 
 }
