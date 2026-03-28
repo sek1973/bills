@@ -1,5 +1,5 @@
-import { Component, DestroyRef, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, effect, inject, input, output } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { addDays } from 'projects/model/src/public-api';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 import { InputCurrencyComponent, InputDateComponent, InputHyperlinkComponent, InputPasswordComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, InputToggleComponent, SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
-import { filter } from 'rxjs';
+import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-bill-edit',
@@ -17,19 +17,21 @@ import { filter } from 'rxjs';
   styleUrls: ['./bill-edit.component.scss'],
   imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputPasswordComponent, InputDateComponent, InputToggleComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
 })
-export class BillEditComponent implements OnChanges {
-  @Input() bill?: Bill;
-  @Input() bills?: Bill[];
-  @Input() newBill: boolean = false;
-  @Input() editMode: boolean = false;
-  @Output() editModeChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input() showSaveAndClose: boolean = true;
-  canSave = false;
+export class BillEditComponent {
+  bill = input<Bill>();
+  bills = input<Bill[]>();
+  newBill = input<boolean>(false);
+  editMode = input<boolean>(false);
+  showSaveAndClose = input<boolean>(true);
 
-  unitEnumItems: SelectItem<Unit>[] = [];
+  editModeChange = output<boolean>();
+
+  unitEnumItems: SelectItem<Unit>[] = unitsToSelectItems();
 
   #destroyRef = inject(DestroyRef);
-  private loadingFormValue: boolean = true;
+  private store = inject(Store<AppState>);
+  private router = inject(Router);
+  private loadingFormValue = false;
 
   form: FormGroup = new FormGroup({
     lp: new FormControl<number | undefined>(-1),
@@ -48,33 +50,23 @@ export class BillEditComponent implements OnChanges {
     id: new FormControl<number>(-1),
   });
 
-  constructor(
-    private store: Store<AppState>,
-    private router: Router) {
-    this.subscribeToStatusChanges();
-    this.subscribeToDeadlineChange();
-  }
+  canSave = toSignal(
+    this.form.statusChanges.pipe(map(s => s === 'VALID')),
+    { initialValue: false }
+  );
 
-  private subscribeToStatusChanges(): void {
-    this.form.statusChanges
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe({ next: status => this.setEditStatus(status) });
-    this.setUnitEnumItems();
-  }
+  descriptionProvider: DescriptionProvider = {
+    getDescriptionObj: (...path: string[]) => BillDescription.get(path[0]) || { tooltipText: '', placeholderText: '', labelText: '' }
+  };
 
-  private subscribeToDeadlineChange(): void {
+  constructor() {
     const deadlineCtl = this.form.get('deadline') as FormControl<Date | undefined>;
     const reminderCtl = this.form.get('reminder') as FormControl<Date | undefined>;
     deadlineCtl.valueChanges
-      .pipe(takeUntilDestroyed(this.#destroyRef),
-        filter(() => !this.loadingFormValue))
-      .subscribe((val: Date | undefined) => {
-        reminderCtl.setValue(addDays(-7, val));
-      });
-  }
+      .pipe(takeUntilDestroyed(this.#destroyRef), filter(() => !this.loadingFormValue))
+      .subscribe(val => reminderCtl.setValue(addDays(-7, val)));
 
-  ngOnChanges(): void {
-    this.loadBill();
+    effect(() => this.loadBill());
   }
 
   private createFormValueFromBill(bill: Bill): Partial<Bill> {
@@ -116,7 +108,7 @@ export class BillEditComponent implements OnChanges {
 
   private loadBill(): void {
     this.loadingFormValue = true;
-    const bill = this.bill ? this.bill : new Bill();
+    const bill = this.bill() ?? new Bill();
     const value = this.createFormValueFromBill(bill);
     this.form.patchValue(value, { emitEvent: false, onlySelf: true });
     this.setNameValidators();
@@ -126,7 +118,7 @@ export class BillEditComponent implements OnChanges {
   }
 
   private setNameValidators(): void {
-    const billsNames = this.bills?.map(b => b.name).filter(n => this.newBill ? true : n !== this.bill?.name) || [];
+    const billsNames = this.bills()?.map(b => b.name).filter(n => this.newBill() ? true : n !== this.bill()?.name) || [];
     const name = this.form.get('name');
     name?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
     name?.updateValueAndValidity();
@@ -144,14 +136,15 @@ export class BillEditComponent implements OnChanges {
   }
 
   payBill(): void {
-    if (this.bill) {
-      this.store.dispatch(BillsActions.payBill({ bill: this.bill }));
+    const bill = this.bill();
+    if (bill) {
+      this.store.dispatch(BillsActions.payBill({ bill }));
     }
   }
 
   saveBill(): void {
     const bill = this.createBillFromFormValue(this.form.value as Partial<Bill>);
-    if (this.newBill) {
+    if (this.newBill()) {
       this.store.dispatch(BillsActions.createBill({ bill, redirect: false }));
     } else {
       this.store.dispatch(BillsActions.updateBill({ bill, redirect: false }));
@@ -160,7 +153,7 @@ export class BillEditComponent implements OnChanges {
 
   saveBillAndClose(): void {
     const bill = this.createBillFromFormValue(this.form.value as Partial<Bill>);
-    if (this.newBill) {
+    if (this.newBill()) {
       this.store.dispatch(BillsActions.createBill({ bill, redirect: false }));
     } else {
       this.store.dispatch(BillsActions.updateBill({ bill, redirect: true }));
@@ -168,13 +161,14 @@ export class BillEditComponent implements OnChanges {
   }
 
   deleteBill(): void {
-    if (this.bill) {
-      this.store.dispatch(BillsActions.deleteBill({ bill: this.bill }));
+    const bill = this.bill();
+    if (bill) {
+      this.store.dispatch(BillsActions.deleteBill({ bill }));
     }
   }
 
   cancel(): void {
-    if (this.newBill) {
+    if (this.newBill()) {
       this.router.navigate(['/zestawienie']);
     } else {
       this.editModeChange.emit(false);
@@ -191,20 +185,6 @@ export class BillEditComponent implements OnChanges {
       }
     }
     return 'Invalid value provided';
-  }
-
-  getDescriptionProvider(): DescriptionProvider {
-    return {
-      getDescriptionObj: (...path: string[]) => BillDescription.get(path[0]) || { tooltipText: '', placeholderText: '', labelText: '' }
-    };
-  }
-
-  private setUnitEnumItems(): void {
-    this.unitEnumItems = unitsToSelectItems();
-  }
-
-  private setEditStatus(status: string): void {
-    this.canSave = status === 'VALID' ? true : false;
   }
 
 }
