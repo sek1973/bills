@@ -257,12 +257,15 @@
             [attr.colspan]="columnsDefinition.length">
           <div [class.active-row-detail]="activeRow === expandedRow"
                [class.expand-row-detail]="activeRow !== expandedRow"
-               [@detailExpand]="row === expandedRow ? 'expanded' : 'collapsed'">
-            @if (expandedRowTemplate && row === expandedRow) {
-            <ng-container [ngTemplateOutlet]="expandedRowTemplate"
-                          [ngTemplateOutletContext]="{row: row}">
-            </ng-container>
-            }
+               [class.detail-expanded]="row === expandedRow"
+               (transitionend)="onCollapseTransitionEnd(row)">
+            <div class="detail-expand-content">
+              @if (expandedRowTemplate && isRowRendered(row)) {
+              <ng-container [ngTemplateOutlet]="expandedRowTemplate"
+                            [ngTemplateOutletContext]="{row: row}">
+              </ng-container>
+              }
+            </div>
           </div>
         </td>
       </ng-container>

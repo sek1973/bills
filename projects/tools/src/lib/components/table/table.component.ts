@@ -1,4 +1,3 @@
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
   AfterViewInit,
@@ -50,13 +49,6 @@ export interface CellComponent<T> extends Component {
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed, void', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-    ])
-  ],
   imports: [
     MatMenuModule,
     MatTooltipModule,
@@ -73,6 +65,7 @@ export interface CellComponent<T> extends Component {
 export class TableComponent<T> implements AfterViewInit {
   dataReady: boolean;
   expandedRow?: T;
+  collapsingRow?: T;
   activeRow?: T;
 
   index = 0;
@@ -312,18 +305,30 @@ export class TableComponent<T> implements AfterViewInit {
     return this.disableExpand(row);
   }
 
+  onCollapseTransitionEnd(row: T): void {
+    if (this.collapsingRow === row) {
+      this.collapsingRow = undefined;
+    }
+  }
+
+  isRowRendered(row: T): boolean {
+    return row === this.expandedRow || row === this.collapsingRow;
+  }
+
   onRowExpandClick(row: T): void {
     if (this.disableExpand(row)) {
       return;
     }
     if (this.expandedRow === row) {
-      const collapsedRow = this.expandedRow;
+      this.collapsingRow = this.expandedRow;
       this.expandedRow = undefined;
-      this.rowCollapsed.emit(collapsedRow);
+      this.rowCollapsed.emit(this.collapsingRow);
     } else {
-      const collapsedRow = this.expandedRow;
+      if (this.expandedRow) {
+        this.collapsingRow = this.expandedRow;
+        this.rowCollapsed.emit(this.collapsingRow);
+      }
       this.expandedRow = row;
-      if (collapsedRow) { this.rowCollapsed.emit(collapsedRow); }
       this.rowExpanded.emit(this.expandedRow);
     }
   }
