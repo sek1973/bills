@@ -1,4 +1,4 @@
-import { Directive, Input, OnInit } from '@angular/core';
+import { computed, Directive, input } from '@angular/core';
 import { getSafe } from 'projects/model/src/public-api';
 import { DescriptionProvider } from '../inputs/input-component-base';
 
@@ -11,41 +11,23 @@ export interface LabelProvider {
 }
 
 @Directive()
-export class ViewFieldComponentBase implements OnInit {
-  @Input() valueProvider!: ValueProvider;
-  @Input() descriptionProvider!: DescriptionProvider;
-  @Input() autoHide = true;
+export class ViewFieldComponentBase {
+  valueProvider = input.required<ValueProvider>();
+  descriptionProvider = input.required<DescriptionProvider>();
+  autoHide = input(true);
+  path = input.required<string[]>();
 
-  private _path!: string[];
-  @Input()
-  set path(path: string[]) {
-    this._path = path;
-    if (path && path.length) {
-      this._childPath = path[path.length - 1];
-      this.id = path.join(':');
-    } else {
-      this._childPath = undefined;
-    }
-  }
-  get path(): string[] {
-    return this._path;
-  }
-  private _childPath?: string;
-  get childAttr(): string | undefined {
-    return this._childPath;
-  }
-  get value(): any {
-    return this.valueProvider.getValue(...this.path);
-  }
-  get labelText(): any {
-    return getSafe(() => this.descriptionProvider.getDescriptionObj(...this.path).labelText) || '';
-  }
-  get hasValue(): boolean {
-    return (this.value === null || this.value === undefined || this.value === '') ? false : true;
-  }
-  id: string = '';
-
-  constructor() { }
-
-  ngOnInit(): void { }
+  childAttr = computed(() => {
+    const p = this.path();
+    return p?.length ? p[p.length - 1] : undefined;
+  });
+  id = computed(() => this.path()?.join(':') ?? '');
+  value = computed(() => this.valueProvider().getValue(...this.path()));
+  labelText = computed(() =>
+    getSafe(() => this.descriptionProvider().getDescriptionObj(...this.path()).labelText) || ''
+  );
+  hasValue = computed(() => {
+    const v = this.value();
+    return v !== null && v !== undefined && v !== '';
+  });
 }

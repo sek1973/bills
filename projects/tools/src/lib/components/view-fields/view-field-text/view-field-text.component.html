@@ -1,13 +1,13 @@
-@if (hasValue) {
+@if (hasValue()) {
 <div class="field-item">
-  <label [for]="id + ':value'"
+  <label [for]="id() + ':value'"
          class="field-label">
-    {{labelText}}
+    {{labelText()}}
   </label>
 
-  <span [id]="id + ':value'"
+  <span [id]="id() + ':value'"
         class="field-text">
-    {{value | dynamicPipe: customPipe:customPipeArgs }}
+    {{value() | dynamicPipe: customPipe():customPipeArgs() }}
   </span>
 </div>
 }

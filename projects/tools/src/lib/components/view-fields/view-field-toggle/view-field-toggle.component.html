@@ -1,15 +1,15 @@
-@if (hasValue) {
+@if (hasValue()) {
 <div class="field-item"
-     id="id">
-  <mat-slide-toggle [id]="id + ':value'"
+     [id]="id()">
+  <mat-slide-toggle [id]="id() + ':value'"
                     class="field-toggle"
                     disabled="true"
-                    [checked]="value">
+                    [checked]="value()">
   </mat-slide-toggle>
 
-  <label [for]="id + ':value'"
+  <label [for]="id() + ':value'"
          class="field-label">
-    {{labelText}}
+    {{labelText()}}
   </label>
 
 </div>
