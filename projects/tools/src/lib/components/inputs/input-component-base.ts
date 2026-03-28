@@ -14,7 +14,6 @@ export interface DescriptionProvider {
 export class InputBaseComponent {
   tooltipShowDelayValue = 1000;
   tooltipHideDelayValue = 2000;
-  fieldFormGroup!: UntypedFormGroup;
 
   autoHide = input<boolean>(true);
   formGroup = input.required<UntypedFormGroup>();
@@ -26,64 +25,45 @@ export class InputBaseComponent {
   protected _tooltipText = computed(() => this.descriptionProvider().getDescriptionObj(...this.path())?.tooltipText || '');
   protected _placeholderText = computed(() => this.descriptionProvider().getDescriptionObj(...this.path())?.placeholderText || '');
 
-  get visible(): boolean {
+  fieldName = computed(() => {
+    const path = this.path();
+    return path?.length ? path[path.length - 1] : '';
+  });
+
+  fieldFormGroup = computed(() => {
+    const formGroup = this.formGroup();
+    const path = this.path();
+    const fieldName = this.fieldName();
+    if (!formGroup || !fieldName) return formGroup;
+    if (path.length > 1) {
+      const parentFg = formGroup.get(path.slice(0, -1)) as UntypedFormGroup;
+      if (parentFg) return parentFg;
+    }
+    return formGroup;
+  });
+
+  formControl = computed(() => this.fieldFormGroup()?.get(this.fieldName()) as UntypedFormControl);
+
+  visible = computed(() => {
+    const fc = this.formControl();
     if (this.autoHide() && !this.editMode()) {
-      const controlValue = this.fieldFormGroup?.get(this.fieldName)?.value;
-      return !this.formControl || controlValue === undefined || controlValue === null || controlValue === '' ? false : true;
+      const controlValue = fc?.value;
+      return !fc || controlValue === undefined || controlValue === null || controlValue === '' ? false : true;
     }
-    return this.formControl ? true : false;
-  }
-
-  get formControl(): UntypedFormControl {
-    return this.fieldFormGroup.get(this.fieldName) as UntypedFormControl;
-  }
-
-  private _fieldName!: string;
-  get fieldName(): string {
-    return this._fieldName;
-  }
-
-  private setFormGroupState(): void {
-    if (this.fieldFormGroup) {
-      if (this.editMode()) {
-        this.fieldFormGroup.enable({ emitEvent: false, onlySelf: true });
-      } else {
-        this.fieldFormGroup.disable({ emitEvent: false, onlySelf: true });
-      }
-    }
-  }
+    return fc ? true : false;
+  });
 
   constructor() {
     effect(() => {
-      this.setFieldName();
-      this.setFieldFormGroup();
-      this.setFormGroupState();
-    });
-  }
-
-  private setFieldName(): void {
-    const path = this.path();
-    if (path && path.length) {
-      this._fieldName = path[path.length - 1];
-    } else { this._fieldName = ''; }
-  }
-
-  private setFieldFormGroup(): void {
-    const formGroup = this.formGroup();
-    const path = this.path();
-    if (formGroup && this.fieldName) {
-      if (formGroup.get(this.fieldName) !== null) {
-        this.fieldFormGroup = formGroup;
-      }
-      if (path.length > 1) {
-        const parentFgPath = path.slice(0, -1);
-        const parentFg = formGroup.get(parentFgPath) as UntypedFormGroup;
-        if (parentFg !== null) {
-          this.fieldFormGroup = parentFg;
+      const fg = this.fieldFormGroup();
+      if (fg) {
+        if (this.editMode()) {
+          fg.enable({ emitEvent: false, onlySelf: true });
+        } else {
+          fg.disable({ emitEvent: false, onlySelf: true });
         }
       }
-      this.fieldFormGroup = formGroup;
-    }
+    });
   }
 
   getErrorMessage(path: string[]): string {

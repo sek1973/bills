@@ -1,6 +1,6 @@
-@if (visible) {
+@if (visible()) {
 <div class="form-item"
-     [formGroup]="fieldFormGroup">
+     [formGroup]="fieldFormGroup()">
   <mat-form-field class="form-field">
     <mat-label>{{_labelText()}}</mat-label>
     <textarea matInput
@@ -11,8 +11,8 @@
               #autosize="cdkTextareaAutosize"
               [cdkAutosizeMinRows]="inputMinRows()"
               [cdkAutosizeMaxRows]="inputMaxRows()"
-              [id]="fieldName"
-              [formControlName]="fieldName"
+              [id]="fieldName()"
+              [formControlName]="fieldName()"
               [placeholder]="_placeholderText()">
            </textarea>
     <mat-error>

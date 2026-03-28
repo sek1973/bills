@@ -1,6 +1,6 @@
-@if (visible) {
+@if (visible()) {
 <div class="form-item"
-     [formGroup]="fieldFormGroup">
+     [formGroup]="fieldFormGroup()">
   <mat-form-field class="form-field">
     <mat-label>{{_labelText()}}</mat-label>
     <input matInput
@@ -8,8 +8,8 @@
            [matTooltip]="_tooltipText()"
            [matTooltipShowDelay]="tooltipShowDelayValue"
            [matTooltipHideDelay]="tooltipHideDelayValue"
-           [id]="fieldName"
-           [formControlName]="fieldName"
+           [id]="fieldName()"
+           [formControlName]="fieldName()"
            [placeholder]="_placeholderText()">
     <mat-error>
       {{getErrorMessage(path())}}

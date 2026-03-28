@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -16,16 +16,11 @@ import { InputBaseComponent } from './../input-component-base';
 })
 export class InputHyperlinkComponent extends InputBaseComponent {
 
-  get formControl(): UntypedFormControl {
-    return getSafe(() => this.fieldFormGroup.get(this.fieldName) as UntypedFormControl);
-  }
+  override formControl = computed(() => getSafe(() => this.fieldFormGroup()?.get(this.fieldName()) as UntypedFormControl));
 
-  get hyperlink(): void {
-    if (this.formControl && this.formControl.disabled) {
-      return this.formControl.value;
-    } else {
-      return undefined;
-    }
-  }
+  hyperlink = computed(() => {
+    const fc = this.formControl();
+    return fc?.disabled ? fc.value : undefined;
+  });
 
 }
