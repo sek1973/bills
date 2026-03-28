@@ -11,7 +11,6 @@ export default defineConfig({
       'projects/bills-main-app/src/**/*.spec.ts',
       'projects/bills-testing-app/src/**/*.spec.ts',
       'projects/model/src/**/*.spec.ts',
-      'projects/my-schematics/src/**/*.spec.ts',
       'projects/store/src/**/*.spec.ts',
       'projects/tools/src/**/*.spec.ts',
       'projects/views/src/**/*.spec.ts',

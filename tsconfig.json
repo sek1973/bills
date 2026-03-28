@@ -17,26 +17,10 @@
     "target": "ES2022",
     "module": "es2020",
     "paths": {
-      "model": [
-        "dist/model/model",
-        "dist/model"
-      ],
-      "my-schematics": [
-        "dist/my-schematics/my-schematics",
-        "dist/my-schematics"
-      ],
-      "store": [
-        "dist/store/store",
-        "dist/store"
-      ],
-      "tools": [
-        "dist/tools/tools",
-        "dist/tools"
-      ],
-      "views": [
-        "dist/views/views",
-        "dist/views"
-      ]
+      "model": ["projects/model/src/public-api.ts"],
+      "store": ["projects/store/src/public-api.ts"],
+      "tools": ["projects/tools/src/public-api.ts"],
+      "views": ["projects/views/src/public-api.ts"]
     },
     "useDefineForClassFields": false
   },
