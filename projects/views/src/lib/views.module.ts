@@ -19,12 +19,10 @@ import {
   SchedulesComponent
 } from './components';
 import { RootComponent } from './components/root/root.component';
-import { ViewsComponent } from './views.component';
 import { ViewsRoutingModule } from './views.routing';
 
 @NgModule({
   declarations: [
-    ViewsComponent,
     BillComponent,
     BillEditComponent,
     BillComponent,
@@ -50,7 +48,6 @@ import { ViewsRoutingModule } from './views.routing';
     ReactiveFormsModule,
   ],
   exports: [
-    ViewsComponent,
     BillComponent,
     BillEditComponent,
     BillComponent,
