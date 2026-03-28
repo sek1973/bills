@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    standalone: false
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [RouterOutlet]
 })
 export class AppComponent {
+  private titleService = inject(Title);
 
-  constructor(private titleService: Title) {
+  constructor() {
     this.titleService.setTitle('Rachunki: java backend');
   }
-
 }
