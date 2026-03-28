@@ -1,10 +1,12 @@
 import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Payment, PaymentDescription } from 'projects/model/src/lib/model';
 import { AppState, PaymentsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
+import { InputCurrencyComponent, InputDateComponent, InputTextComponent } from 'projects/tools/src/public-api';
 
 export interface PaymentDialogData {
   bill: Bill;
@@ -14,7 +16,7 @@ export interface PaymentDialogData {
   selector: 'app-payment-dialog',
   templateUrl: './payment-dialog.component.html',
   styleUrls: ['./payment-dialog.component.scss'],
-  standalone: false
+  imports: [MatButtonModule, InputDateComponent, InputCurrencyComponent, InputTextComponent]
 })
 export class PaymentDialogComponent implements OnInit, AfterViewInit {
 

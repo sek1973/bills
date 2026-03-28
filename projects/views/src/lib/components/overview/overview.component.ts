@@ -1,18 +1,25 @@
+import { NgStyle } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
 import { addDays, getSafe } from 'projects/model/src/public-api';
 import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
+import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
+import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
+import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
+import { BillEditComponent } from '../bill/bill-edit/bill-edit.component';
 
 @Component({
-    selector: 'app-overview',
-    templateUrl: './overview.component.html',
-    styleUrls: ['./overview.component.scss'],
-    standalone: false
+  selector: 'app-overview',
+  templateUrl: './overview.component.html',
+  styleUrls: ['./overview.component.scss'],
+  imports: [RouterLink, RouterLinkActive, NgStyle, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, DateToStringPipe, CurrencyToStringPipe, BillEditComponent]
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   editMode: boolean = false;

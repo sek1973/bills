@@ -4,15 +4,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Payment } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
+import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
+import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
+import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { TableComponent } from 'projects/tools/src/public-api';
 import { filter } from 'rxjs/operators';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 @Component({
-    selector: 'app-payments',
-    templateUrl: './payments.component.html',
-    styleUrls: ['./payments.component.scss'],
-    standalone: false
+  selector: 'app-payments',
+  templateUrl: './payments.component.html',
+  styleUrls: ['./payments.component.scss'],
+  imports: [TableComponent, TableCellDirective, DateToStringPipe, CurrencyToStringPipe]
 })
 export class PaymentsComponent implements OnInit {
 

@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { AppState, AuthActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
+import { InputPasswordComponent, InputTextComponent } from 'projects/tools/src/public-api';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  standalone: false
+  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputPasswordComponent]
 })
 export class LoginComponent {
   public error: string | undefined = undefined;

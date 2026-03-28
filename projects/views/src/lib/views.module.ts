@@ -1,12 +1,4 @@
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatTabsModule } from '@angular/material/tabs';
-import { BrowserModule } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
-import { ToolsModule } from 'projects/tools/src/public-api';
 import {
   BillComponent,
   BillEditComponent,
@@ -22,10 +14,10 @@ import { RootComponent } from './components/root/root.component';
 import { ViewsRoutingModule } from './views.routing';
 
 @NgModule({
-  declarations: [
+  imports: [
+    ViewsRoutingModule,
     BillComponent,
     BillEditComponent,
-    BillComponent,
     OverviewComponent,
     PaymentsComponent,
     SchedulesComponent,
@@ -33,24 +25,11 @@ import { ViewsRoutingModule } from './views.routing';
     PaymentDialogComponent,
     LoginComponent,
     PageNotFoundComponent,
-    RootComponent
-  ],
-  imports: [
-    ViewsRoutingModule,
-    BrowserModule,
-    ToolsModule,
-    MatDialogModule,
-    MatProgressBarModule,
-    MatTabsModule,
-    MatButtonModule,
-    RouterModule,
-    FormsModule,
-    ReactiveFormsModule,
+    RootComponent,
   ],
   exports: [
     BillComponent,
     BillEditComponent,
-    BillComponent,
     OverviewComponent,
     PaymentsComponent,
     SchedulesComponent,

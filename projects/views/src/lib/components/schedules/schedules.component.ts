@@ -4,15 +4,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Bill, Schedule } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, SchedulesActions, SchedulesSelectors } from 'projects/store/src/lib/state';
+import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
+import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
+import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { TableComponent } from 'projects/tools/src/public-api';
 import { filter } from 'rxjs/operators';
 import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.component';
 
 @Component({
-    selector: 'app-schedules',
-    templateUrl: './schedules.component.html',
-    styleUrls: ['./schedules.component.scss'],
-    standalone: false
+  selector: 'app-schedules',
+  templateUrl: './schedules.component.html',
+  styleUrls: ['./schedules.component.scss'],
+  imports: [TableComponent, TableCellDirective, DateToStringPipe, CurrencyToStringPipe]
 })
 export class SchedulesComponent implements OnInit {
 

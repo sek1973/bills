@@ -1,15 +1,21 @@
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Params } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
+import { PaymentsComponent } from '../payments/payments.component';
+import { SchedulesComponent } from '../schedules/schedules.component';
+import { BillEditComponent } from './bill-edit/bill-edit.component';
 
 @Component({
-    selector: 'app-bill',
-    templateUrl: './bill.component.html',
-    styleUrls: ['./bill.component.scss'],
-    standalone: false
+  selector: 'app-bill',
+  templateUrl: './bill.component.html',
+  styleUrls: ['./bill.component.scss'],
+  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, MatTabsModule, BillEditComponent, PaymentsComponent, SchedulesComponent]
 })
 export class BillComponent implements OnInit {
   #destroyRef = inject(DestroyRef);

@@ -1,20 +1,21 @@
 import { Component, DestroyRef, EventEmitter, Input, OnChanges, Output, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
 import { addDays } from 'projects/model/src/public-api';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
+import { InputCurrencyComponent, InputDateComponent, InputHyperlinkComponent, InputPasswordComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, InputToggleComponent, SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
 import { filter } from 'rxjs';
 
 @Component({
-    selector: 'app-bill-edit',
-    templateUrl: './bill-edit.component.html',
-    styleUrls: ['./bill-edit.component.scss'],
-    standalone: false
+  selector: 'app-bill-edit',
+  templateUrl: './bill-edit.component.html',
+  styleUrls: ['./bill-edit.component.scss'],
+  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputPasswordComponent, InputDateComponent, InputToggleComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
 })
 export class BillEditComponent implements OnChanges {
   @Input() bill?: Bill;
