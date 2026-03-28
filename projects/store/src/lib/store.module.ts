@@ -1,32 +1,20 @@
-import { NgModule } from '@angular/core';
+import { EnvironmentProviders, importProvidersFrom, makeEnvironmentProviders } from '@angular/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { environment } from 'projects/bills-main-app/src/environments/environment';
+import { provideEffects } from '@ngrx/effects';
+import { provideStore } from '@ngrx/store';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { appReducer, BillEffects, PaymentEffects } from './state';
 import { AuthEffects } from './state/auth/auth.effects';
 import { ScheduleEffects } from './state/schedule';
 
-@NgModule({
-  imports: [
-    MatSnackBarModule,
-    StoreModule.forRoot({ data: appReducer }),
-    StoreDevtoolsModule.instrument({
-      name: 'Bills',
-      maxAge: 25,
-      logOnly: environment.production
-      , connectInZone: true
-    }),
-    EffectsModule.forRoot([
-      AuthEffects,
-      BillEffects,
-      PaymentEffects,
-      ScheduleEffects
-    ])
-  ]
-})
-export class BillsStoreModule { }
+export function provideBillsStore(production: boolean): EnvironmentProviders {
+  return makeEnvironmentProviders([
+    provideStore({ data: appReducer }),
+    provideStoreDevtools({ name: 'Bills', maxAge: 25, logOnly: production }),
+    provideEffects([AuthEffects, BillEffects, PaymentEffects, ScheduleEffects]),
+    importProvidersFrom(MatSnackBarModule),
+  ]);
+}
 
 export * from './state';
 

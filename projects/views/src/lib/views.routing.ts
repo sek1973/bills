@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes, mapToCanActivate } from '@angular/router';
+import { Routes, mapToCanActivate } from '@angular/router';
 import { AuthGuard } from 'projects/tools/src/public-api';
 import { BillComponent, LoginComponent, OverviewComponent, PageNotFoundComponent } from './components';
 import { RootComponent } from './components/root/root.component';
 
-const routes: Routes = [
+export const appRoutes: Routes = [
   {
     path: '',
     component: RootComponent,
@@ -38,9 +37,3 @@ const routes: Routes = [
     ]
   }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class ViewsRoutingModule { }
