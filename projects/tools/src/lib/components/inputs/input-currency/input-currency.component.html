@@ -12,7 +12,7 @@
            [formControlName]="fieldName"
            [placeholder]="_placeholderText()">
     <mat-error>
-      {{getErrorMessage(path)}}
+      {{getErrorMessage(path())}}
     </mat-error>
   </mat-form-field>
 </div>

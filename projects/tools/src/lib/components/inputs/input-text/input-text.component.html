@@ -4,7 +4,7 @@
   <mat-form-field class="form-field">
     <mat-label>{{_labelText()}}</mat-label>
     <input matInput
-           type="{{type}}"
+           type="{{type()}}"
            [matTooltip]="_tooltipText()"
            [matTooltipShowDelay]="tooltipShowDelayValue"
            [matTooltipHideDelay]="tooltipHideDelayValue"
@@ -12,7 +12,7 @@
            [formControlName]="fieldName"
            [placeholder]="_placeholderText()">
     <mat-error>
-      {{getErrorMessage(path)}}
+      {{getErrorMessage(path())}}
     </mat-error>
   </mat-form-field>
 </div>

@@ -9,14 +9,14 @@
               [matTooltipHideDelay]="tooltipHideDelayValue"
               cdkTextareaAutosize
               #autosize="cdkTextareaAutosize"
-              [cdkAutosizeMinRows]="inputMinRows"
-              [cdkAutosizeMaxRows]="inputMaxRows"
+              [cdkAutosizeMinRows]="inputMinRows()"
+              [cdkAutosizeMaxRows]="inputMaxRows()"
               [id]="fieldName"
               [formControlName]="fieldName"
               [placeholder]="_placeholderText()">
            </textarea>
     <mat-error>
-      {{getErrorMessage(path)}}
+      {{getErrorMessage(path())}}
     </mat-error>
   </mat-form-field>
 </div>

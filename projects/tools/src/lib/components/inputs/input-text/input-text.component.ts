@@ -1,19 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { InputBaseComponent } from './../input-component-base';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { InputBaseComponent } from './../input-component-base';
 
 @Component({
-    selector: 'app-input-text',
-    templateUrl: './input-text.component.html',
-    styleUrls: ['./input-text.component.scss'],
-    imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatTooltipModule]
+  selector: 'app-input-text',
+  templateUrl: './input-text.component.html',
+  styleUrls: ['./input-text.component.scss'],
+  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatTooltipModule]
 })
-export class InputTextComponent extends InputBaseComponent implements OnInit {
-  @Input()
-  type:
+export class InputTextComponent extends InputBaseComponent {
+  type = input<
     | 'color'
     | 'date'
     | 'datetime-local'
@@ -26,11 +25,5 @@ export class InputTextComponent extends InputBaseComponent implements OnInit {
     | 'text'
     | 'time'
     | 'url'
-    | 'week' = 'text';
-
-  constructor() { super(); }
-
-  ngOnInit(): void {
-  }
-
+    | 'week'>('text');
 }

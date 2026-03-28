@@ -8,14 +8,14 @@
                 [matTooltipHideDelay]="tooltipHideDelayValue"
                 [id]="fieldName"
                 [formControlName]="fieldName">
-      @for (item of selectItems; track item) {
+      @for (item of selectItems(); track item) {
       <mat-option [value]="item.value">
         {{item.text}}
       </mat-option>
       }
     </mat-select>
     <mat-error>
-      {{getErrorMessage(path)}}
+      {{getErrorMessage(path())}}
     </mat-error>
   </mat-form-field>
 </div>
