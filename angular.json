@@ -29,9 +29,7 @@
               "base": "dist/bills-main-app"
             },
             "index": "projects/bills-main-app/src/index.html",
-            "polyfills": [
-              "projects/bills-main-app/src/polyfills.ts"
-            ],
+            "polyfills": [],
             "tsConfig": "projects/bills-main-app/tsconfig.app.json",
             "assets": [
               "projects/bills-main-app/src/favicon.ico",
@@ -113,9 +111,7 @@
               "base": "dist/bills-testing-app"
             },
             "index": "projects/bills-testing-app/src/index.html",
-            "polyfills": [
-              "projects/bills-testing-app/src/polyfills.ts"
-            ],
+            "polyfills": [],
             "tsConfig": "projects/bills-testing-app/tsconfig.app.json",
             "assets": [
               "projects/bills-testing-app/src/favicon.ico",
