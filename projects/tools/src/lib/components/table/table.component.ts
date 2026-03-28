@@ -47,28 +47,28 @@ export interface CellComponent<T> extends Component {
 }
 
 @Component({
-    selector: 'app-table',
-    templateUrl: './table.component.html',
-    styleUrls: ['./table.component.scss'],
-    animations: [
-        trigger('detailExpand', [
-            state('collapsed, void', style({ height: '0px', minHeight: '0' })),
-            state('expanded', style({ height: '*' })),
-            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
-        ])
-    ],
-    imports: [
-        MatMenuModule,
-        MatTooltipModule,
-        NgTemplateOutlet,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatTableModule,
-        MatSortModule,
-        NgClass,
-        MatPaginatorModule
-    ]
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed, void', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)'))
+    ])
+  ],
+  imports: [
+    MatMenuModule,
+    MatTooltipModule,
+    NgTemplateOutlet,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatTableModule,
+    MatSortModule,
+    NgClass,
+    MatPaginatorModule
+  ]
 })
 export class TableComponent<T> implements AfterViewInit {
   dataReady: boolean;
@@ -117,7 +117,7 @@ export class TableComponent<T> implements AfterViewInit {
   @ContentChildren(TableCellDirective) set dataTableCellDirectives(val: QueryList<TableCellDirective>) {
     this.cellTemplates = new Map<string, TemplateRef<Component>>();
     for (const element of val.toArray()) {
-      this.cellTemplates.set(element.cellTemplateForColumn, element.templateRef);
+      this.cellTemplates.set(element.cellTemplateForColumn(), element.templateRef);
     }
   }
 
