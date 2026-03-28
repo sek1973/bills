@@ -7,12 +7,8 @@ import { environment } from 'projects/bills-main-app/src/environments/environmen
 import { appReducer, BillEffects, PaymentEffects } from './state';
 import { AuthEffects } from './state/auth/auth.effects';
 import { ScheduleEffects } from './state/schedule';
-import { StoreComponent } from './store.component';
 
 @NgModule({
-  declarations: [
-    StoreComponent
-  ],
   imports: [
     MatSnackBarModule,
     StoreModule.forRoot({ data: appReducer }),
@@ -20,16 +16,14 @@ import { StoreComponent } from './store.component';
       name: 'Bills',
       maxAge: 25,
       logOnly: environment.production
-    , connectInZone: true}),
+      , connectInZone: true
+    }),
     EffectsModule.forRoot([
       AuthEffects,
       BillEffects,
       PaymentEffects,
       ScheduleEffects
     ])
-  ],
-  exports: [
-    StoreComponent
   ]
 })
 export class BillsStoreModule { }
