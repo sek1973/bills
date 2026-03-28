@@ -3,7 +3,7 @@
           yPosition="below"
           [overlapTrigger]="false">
 
-  @if (showRefreshButton) {
+  @if (showRefreshButton()) {
   <button mat-menu-item
           matTooltip="Odśwież"
           class="menu-button"
@@ -13,9 +13,9 @@
   </button>
   }
 
-  @if (editButtonVisible) {
+  @if (editButtonVisible()) {
   <button mat-menu-item
-          [disabled]="!canEdit"
+          [disabled]="!canEdit()"
           matTooltip="Edytuj"
           class="menu-button"
           (click)="onEditClicked()">
@@ -24,9 +24,9 @@
   </button>
   }
 
-  @if (addButtonVisible) {
+  @if (addButtonVisible()) {
   <button mat-menu-item
-          [disabled]="!canAdd"
+          [disabled]="!canAdd()"
           matTooltip="Dodaj"
           class="menu-button"
           (click)="onAddClicked()">
@@ -35,9 +35,9 @@
   </button>
   }
 
-  @if (removeButtonVisible) {
+  @if (removeButtonVisible()) {
   <button mat-menu-item
-          [disabled]="!canDelete"
+          [disabled]="!canDelete()"
           matTooltip="Usuń"
           class="menu-button"
           (click)="onDeleteClicked()">
@@ -46,7 +46,7 @@
   </button>
   }
 
-  @if (exportable) {
+  @if (exportable()) {
 
   <button mat-menu-item
           matTooltip="Drukuj"
@@ -67,9 +67,9 @@
     Eksportuj
   </button>
 
-  @if (pasteButtonVisible) {
+  @if (pasteButtonVisible()) {
   <button mat-menu-item
-          [disabled]="!canPaste"
+          [disabled]="!canPaste()"
           matTooltip="Wklej"
           class="menu-button"
           (click)="onPasteClicked()">
@@ -89,22 +89,22 @@
 </ng-template>
 
 <ng-template #defaultTitleTemplate>
-  <span class="table-title">{{tableTitle}}</span>
+  <span class="table-title">{{tableTitle()}}</span>
 </ng-template>
 
 <div class="component-container">
-  @if (!hideHeader) {
+  @if (!hideHeader()) {
   <div class="table-header">
     <ng-container [ngTemplateOutlet]="getTableTitleTemplate(defaultTitleTemplate)">
     </ng-container>
 
     <div>
-      <ng-container [ngTemplateOutlet]="middleToolbarPanelTemplate || null"
-                    [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow}">
+      <ng-container [ngTemplateOutlet]="middleToolbarPanelTemplate() || null"
+                    [ngTemplateOutletContext]="{dataSource: dataSource(), activeRow: activeRow()}">
       </ng-container>
     </div>
 
-    @if (showFilter) {
+    @if (showFilter()) {
     <mat-form-field class="filter-field">
       <input matInput
              #filterInput
@@ -115,7 +115,7 @@
 
     <div class="buttons-panel">
       <div class="table-buttons-visible">
-        @if (showRefreshButton) {
+        @if (showRefreshButton()) {
         <button mat-icon-button
                 matTooltip="Odśwież"
                 (click)="onRefreshClicked()">
@@ -123,34 +123,34 @@
         </button>
         }
 
-        @if (editButtonVisible) {
+        @if (editButtonVisible()) {
         <button mat-icon-button
-                [disabled]="!canEdit"
+                [disabled]="!canEdit()"
                 matTooltip="Edytuj"
                 (click)="onEditClicked()">
           <span class="material-icons">edit</span>
         </button>
         }
 
-        @if (addButtonVisible) {
+        @if (addButtonVisible()) {
         <button mat-icon-button
-                [disabled]="!canAdd"
+                [disabled]="!canAdd()"
                 matTooltip="Dodaj"
                 (click)="onAddClicked()">
           <span class="material-icons">add</span>
         </button>
         }
 
-        @if (removeButtonVisible) {
+        @if (removeButtonVisible()) {
         <button mat-icon-button
-                [disabled]="!canDelete"
+                [disabled]="!canDelete()"
                 matTooltip="Usuń"
                 (click)="onDeleteClicked()">
           <span class="material-icons">remove</span>
         </button>
         }
 
-        @if (exportable) {
+        @if (exportable()) {
 
         <button mat-icon-button
                 matTooltip="Drukuj"
@@ -166,10 +166,10 @@
                 inline=true>file_download</span>
         </button>
 
-        @if (pasteButtonVisible) {
+        @if (pasteButtonVisible()) {
         <button #pasteButton
                 mat-icon-button
-                [disabled]="!canPaste"
+                [disabled]="!canPaste()"
                 matTooltip="Wklej"
                 (click)="onPasteClicked()">
           <span class="material-icons">content_paste</span>
@@ -179,13 +179,13 @@
         }
       </div>
 
-      @if (rightToolbarPanelTemplate) {
-      <ng-container [ngTemplateOutlet]="rightToolbarPanelTemplate"
-                    [ngTemplateOutletContext]="{dataSource: dataSource, activeRow: activeRow}">
+      @if (rightToolbarPanelTemplate()) {
+      <ng-container [ngTemplateOutlet]="rightToolbarPanelTemplate()!"
+                    [ngTemplateOutletContext]="{dataSource: dataSource(), activeRow: activeRow()}">
       </ng-container>
       }
 
-      @if (menuVisible) {
+      @if (menuVisible()) {
       <div class="menu-button-visible">
         <button mat-icon-button
                 matTooltip="Menu"
@@ -201,24 +201,24 @@
   }
 
   <div class="table-container">
-    @if (dataSource) {
+    @if (dataSource()) {
     <table #table
            mat-table
-           [dataSource]="dataSource"
+           [dataSource]="dataSource()!"
            matSort
            multiTemplateDataRows
-           [matSortActive]="sortActive"
-           [matSortDirection]="sortDirection"
-           [attr.data-ready]="dataReady">
+           [matSortActive]="sortActive()"
+           [matSortDirection]="sortDirection()"
+           [attr.data-ready]="dataReady()">
 
-      @for (column of columnsDefinition; track column) {
+      @for (column of columnsDefinition(); track column) {
       <ng-container matColumnDef="{{column.name}}">
 
         @if (column.name !== '_expand') {
         <th mat-header-cell
             *matHeaderCellDef
             mat-sort-header
-            [disabled]="!sortable || !column.sort">
+            [disabled]="!sortable() || !column.sort">
           {{column.header}}
         </th>
         <td mat-cell
@@ -237,11 +237,11 @@
         <td mat-cell
             *matCellDef="let row; let rowIndex = dataIndex;"
             (click)="onRowExpandClick(row)">
-          @if (expandedRow !== row) {
+          @if (expandedRow() !== row) {
           <span
                 [ngClass]="shouldExpandBeDisabled(row) ? 'expand-column-disabled' : 'expand-column'">keyboard_arrow_right</span>
           }
-          @if (expandedRow === row) {
+          @if (expandedRow() === row) {
           <span class="expand-column">keyboard_arrow_down</span>
           }
         </td>
@@ -254,14 +254,14 @@
       <ng-container matColumnDef="expandedDetail">
         <td mat-cell
             *matCellDef="let row"
-            [attr.colspan]="columnsDefinition.length">
-          <div [class.active-row-detail]="activeRow === expandedRow"
-               [class.expand-row-detail]="activeRow !== expandedRow"
-               [class.detail-expanded]="row === expandedRow"
+            [attr.colspan]="columnsDefinition().length">
+          <div [class.active-row-detail]="activeRow() === expandedRow()"
+               [class.expand-row-detail]="activeRow() !== expandedRow()"
+               [class.detail-expanded]="row === expandedRow()"
                (transitionend)="onCollapseTransitionEnd(row)">
             <div class="detail-expand-content">
-              @if (expandedRowTemplate && isRowRendered(row)) {
-              <ng-container [ngTemplateOutlet]="expandedRowTemplate"
+              @if (expandedRowTemplate() && isRowRendered(row)) {
+              <ng-container [ngTemplateOutlet]="expandedRowTemplate()!"
                             [ngTemplateOutletContext]="{row: row}">
               </ng-container>
               }
@@ -271,12 +271,12 @@
       </ng-container>
 
       <tr mat-header-row
-          *matHeaderRowDef="columnsNames; sticky: true"></tr>
+          *matHeaderRowDef="columnsNames(); sticky: true"></tr>
       <tr mat-row
-          *matRowDef="let row; let rowIndex = dataIndex; columns: columnsNames;"
+          *matRowDef="let row; let rowIndex = dataIndex; columns: columnsNames();"
           class="row-row"
-          [class.active-row]="activeRow === row && activeRow !== expandedRow"
-          [class.active-row-expanded]="activeRow === row && activeRow === expandedRow"
+          [class.active-row]="activeRow() === row && activeRow() !== expandedRow()"
+          [class.active-row-expanded]="activeRow() === row && activeRow() === expandedRow()"
           [class.odd-row]="rowIndex % 2 === 1"
           [class.even-row]="rowIndex % 2 === 0"
           (click)="onRowClick(row)"
@@ -289,7 +289,7 @@
     </table>
     }
   </div>
-  @if (pageable) {
+  @if (pageable()) {
   <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
   }
 </div>

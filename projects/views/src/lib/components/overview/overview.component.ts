@@ -55,10 +55,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dataSubscription.unsubscribe();
   }
 
-  onRowClicked(row: Bill): void {
+  onRowClicked(row: Bill | undefined): void {
     if (this.table) {
-      this.table.canDelete = row ? true : false;
-      this.table.canEdit = row ? true : false;
+      this.table.canDelete.set(row ? true : false);
+      this.table.canEdit.set(row ? true : false);
     }
   }
 
@@ -71,14 +71,14 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   deleteBill(): void {
-    const row = this.table.activeRow as Bill;
+    const row = this.table.activeRow() as Bill;
     if (row) {
       this.store.dispatch(BillsActions.deleteBill({ bill: row }));
     }
   }
 
   editBill(): void {
-    const row = this.table.activeRow;
+    const row = this.table.activeRow();
     if (row) {
       this.router.navigate(['/rachunek', this.getId(row)]);
     }
@@ -117,8 +117,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   payBill(): void {
-    if (this.table.activeRow) {
-      const bill = this.table.activeRow;
+    const bill = this.table.activeRow();
+    if (bill) {
       this.store.dispatch(BillsActions.payBill({ bill }));
     }
   }

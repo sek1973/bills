@@ -82,7 +82,8 @@ export class SchedulesComponent implements OnInit {
   }
 
   editSchedule(): void {
-    if (this.table.activeRow) { this.openDialog(this.table.activeRow); }
+    const row = this.table.activeRow();
+    if (row) { this.openDialog(row); }
   }
 
   private openDialog(schedule?: Schedule): void {
@@ -94,15 +95,16 @@ export class SchedulesComponent implements OnInit {
   }
 
   deleteSchedule(): void {
-    if (this.table.activeRow) {
-      this.store.dispatch(SchedulesActions.deleteSchedule({ schedule: this.table.activeRow }));
+    const row = this.table.activeRow();
+    if (row) {
+      this.store.dispatch(SchedulesActions.deleteSchedule({ schedule: row }));
     }
   }
 
-  onRowActivated(row: Schedule): void {
+  onRowActivated(row: Schedule | undefined): void {
     if (this.table) {
-      this.table.canDelete = row ? true : false;
-      this.table.canEdit = row ? true : false;
+      this.table.canDelete.set(row ? true : false);
+      this.table.canEdit.set(row ? true : false);
     }
   }
 

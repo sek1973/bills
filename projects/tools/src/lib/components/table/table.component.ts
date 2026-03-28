@@ -1,20 +1,19 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
-  AfterViewInit,
   Component,
-  ContentChild,
-  ContentChildren,
-  DestroyRef,
+  computed,
+  contentChild,
+  contentChildren,
+  effect,
   ElementRef,
-  EventEmitter,
-  Input,
-  Output,
-  QueryList,
+  inject,
+  input,
+  model,
+  output,
+  signal,
   TemplateRef,
-  ViewChild,
-  inject
+  viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -23,7 +22,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule, SortDirection } from '@angular/material/sort';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
@@ -62,274 +61,194 @@ export interface CellComponent<T> extends Component {
     MatPaginatorModule
   ]
 })
-export class TableComponent<T> implements AfterViewInit {
-  dataReady: boolean;
-  expandedRow?: T;
-  collapsingRow?: T;
-  activeRow?: T;
+export class TableComponent<T> {
+  private printService = inject(PrintService);
 
-  index = 0;
-  private sort?: MatSort;
-  private paginator?: MatPaginator;
-  private _columnsDefinition: TableColumn[] = [];
-  private _expandable: boolean = false;
-  #destroyRef = inject(DestroyRef);
+  // --- State signals ---
+  readonly dataReady = signal(false);
+  readonly expandedRow = signal<T | undefined>(undefined);
+  readonly collapsingRow = signal<T | undefined>(undefined);
+  readonly activeRow = signal<T | undefined>(undefined);
+  readonly dataSource = signal<TableDataSource<T> | undefined>(undefined);
+  readonly index = signal(0);
 
-  @Output() rowDblClick: EventEmitter<T> = new EventEmitter<T>();
-  @Output() rowActivated: EventEmitter<T> = new EventEmitter<T>();
-  @Output() rowExpanded: EventEmitter<T> = new EventEmitter<T>();
-  @Output() rowCollapsed: EventEmitter<T> = new EventEmitter<T>();
-  @Output() rowSelect: EventEmitter<T> = new EventEmitter<T>();
-  @Output() rowUnselect: EventEmitter<T> = new EventEmitter<T>();
-  @Output() rowSelectAll: EventEmitter<T> = new EventEmitter<T>();
-  @Output() rowUnselectAll: EventEmitter<T> = new EventEmitter<T>();
-  @Output() addButtonClicked: EventEmitter<T> = new EventEmitter<T>();
-  @Output() editButtonClicked: EventEmitter<T> = new EventEmitter<T>();
-  @Output() deleteButtonClicked: EventEmitter<T> = new EventEmitter<T>();
-  @Output() refreshButtonClicked: EventEmitter<void> = new EventEmitter<void>();
-  @Output() pasteButtonClicked: EventEmitter<void> = new EventEmitter<void>();
+  // --- Outputs ---
+  readonly rowDblClick = output<T>();
+  readonly rowActivated = output<T | undefined>();
+  readonly rowExpanded = output<T>();
+  readonly rowCollapsed = output<T>();
+  readonly rowSelect = output<T>();
+  readonly rowUnselect = output<T>();
+  readonly rowSelectAll = output<T>();
+  readonly rowUnselectAll = output<T>();
+  readonly addButtonClicked = output<void>();
+  readonly editButtonClicked = output<T | undefined>();
+  readonly deleteButtonClicked = output<T | undefined>();
+  readonly refreshButtonClicked = output<void>();
+  readonly pasteButtonClicked = output<void>();
 
-  @ViewChild(MatTable) table?: MatTable<T>;
-  @ViewChild('table', { read: ElementRef }) tableElementRef?: ElementRef;
+  // --- View queries ---
+  readonly table = viewChild(MatTable);
+  readonly tableElementRef = viewChild<ElementRef>('table');
+  readonly matSort = viewChild(MatSort);
+  readonly matPaginator = viewChild(MatPaginator);
+  private readonly filterInputRef = viewChild<ElementRef<HTMLInputElement>>('filterInput');
 
-  @ViewChild(MatSort)
-  set matSort(ms: MatSort) {
-    if (this.sort !== ms) { this.sort = ms; }
-  }
+  // --- Content queries ---
+  private readonly tableCellDirectives = contentChildren(TableCellDirective);
+  readonly tableTitleTemplate = contentChild<TemplateRef<Component>>('tableTitleTemplate');
+  readonly expandedRowTemplate = contentChild<TemplateRef<ExpandedRowComponent<T>>>('expandedRowTemplate');
+  readonly middleToolbarPanelTemplate = contentChild<TemplateRef<TablePanelComponent<T>>>('middleToolbarPanelTemplate');
+  readonly rightToolbarPanelTemplate = contentChild<TemplateRef<TablePanelComponent<T>>>('rightToolbarPanelTemplate');
 
-  @ViewChild(MatPaginator)
-  set matPaginator(mp: MatPaginator) {
-    if (this.paginator !== mp) {
-      this.paginator = mp;
-      this.initDataSource();
+  readonly cellTemplates = computed(() => {
+    const map = new Map<string, TemplateRef<Component>>();
+    for (const d of this.tableCellDirectives()) {
+      map.set(d.cellTemplateForColumn(), d.templateRef);
     }
-  }
+    return map;
+  });
 
-  @ViewChild('filterInput', { read: HTMLInputElement }) filterInput!: HTMLInputElement;
-  cellTemplates: Map<string, TemplateRef<Component>> = new Map<string, TemplateRef<Component>>();
-  @ContentChildren(TableCellDirective) set dataTableCellDirectives(val: QueryList<TableCellDirective>) {
-    this.cellTemplates = new Map<string, TemplateRef<Component>>();
-    for (const element of val.toArray()) {
-      this.cellTemplates.set(element.cellTemplateForColumn(), element.templateRef);
-    }
-  }
+  // --- Inputs ---
+  readonly sortActive = input('');
+  readonly sortDirection = input<SortDirection>('');
+  readonly data = input<T[]>([]);
+  readonly showFilter = input(false);
+  readonly sortable = input(true);
+  readonly pageable = input(true);
+  readonly editable = input(false);
+  readonly showAddButton = input(true);
+  readonly showRemoveButton = input(true);
+  readonly showEditButton = input(true);
+  readonly showRefreshButton = input(true);
+  readonly showPasteButton = input(true);
+  readonly canAdd = input(false);
+  readonly canDelete = model(false);
+  readonly canEdit = model(false);
+  readonly canPaste = input(false);
+  readonly tableTitle = input('');
+  readonly filterKeyDelayMs = input(500);
+  readonly expansionPanel = input(false);
+  readonly hideHeader = input(false);
+  readonly exportable = input(true);
+  readonly csvSeparator = input(',');
+  readonly exportFileName = input('data');
+  readonly disableExpand = input<(dataRow: T) => boolean>(() => false);
+  readonly expandable = input(false);
 
-  @ContentChild('tableTitleTemplate') tableTitleTemplate?: TemplateRef<Component>;
-  @ContentChild('expandedRowTemplate') expandedRowTemplate?: TemplateRef<ExpandedRowComponent<T>>;
-  @ContentChild('middleToolbarPanelTemplate') middleToolbarPanelTemplate?: TemplateRef<TablePanelComponent<T>>;
-  @ContentChild('rightToolbarPanelTemplate') rightToolbarPanelTemplate?: TemplateRef<TablePanelComponent<T>>;
+  readonly rawColumnsDefinition = input<TableColumn[]>([], { alias: 'columnsDefinition' });
 
-  @Input() sortActive: string = '';
-  @Input() sortDirection: SortDirection = '';
+  // --- Computed ---
+  readonly columnsDefinition = computed(() => {
+    const cols = this.rawColumnsDefinition();
+    return this.expandable()
+      ? [{ name: '_expand', header: '' }, ...cols]
+      : cols;
+  });
 
-  private _dataSource?: TableDataSource<T>;
-  get dataSource(): TableDataSource<T> | undefined {
-    return this._dataSource;
-  }
+  readonly columnsNames = computed(() => {
+    return this.columnsDefinition()
+      .filter(e => !e.hidden)
+      .map(e => e.name);
+  });
 
-  private _data!: T[];
-  @Input() set data(value: T[]) {
-    if (!Array.isArray(value)) {
-      throw new Error('Value should be an array!');
-    }
-    if (value !== undefined && value !== null) {
-      this._data = value;
-      this.initDataSource();
-    }
-  }
-  get data(): T[] {
-    return this._data;
-  }
+  readonly dataColumns = computed(() => {
+    return this.columnsDefinition()
+      .filter(e => !e.hidden && e.name !== '_expand');
+  });
 
-  @Input() showFilter = false;
-  @Input() sortable = true;
-  @Input() pageable = true;
+  readonly addButtonVisible = computed(() => this.editable() && this.showAddButton());
+  readonly editButtonVisible = computed(() => this.editable() && this.showEditButton());
+  readonly removeButtonVisible = computed(() => this.editable() && this.showRemoveButton());
+  readonly pasteButtonVisible = computed(() => this.editable() && this.showPasteButton());
+  readonly menuVisible = computed(() =>
+    this.addButtonVisible() || this.editButtonVisible() || this.removeButtonVisible()
+    || this.pasteButtonVisible() || this.showRefreshButton() || this.exportable()
+  );
 
-  @Input() editable = false;
-  @Input() showAddButton = true;
-  @Input() showRemoveButton = true;
-  @Input() showEditButton = true;
-  @Input() showRefreshButton = true;
-  @Input() showPasteButton = true;
+  // --- Effects ---
+  private initEffect = effect(() => {
+    const data = this.data();
+    const sort = this.matSort();
+    const paginator = this.matPaginator();
+    const pageable = this.pageable();
 
-  @Input() canAdd = false;
-  @Input() canDelete = false;
-  @Input() canEdit = false;
-  @Input() canPaste = false;
+    if (!data) return;
 
-  @Input() tableTitle: string = '';
-  @Input() filterKeyDelayMs = 500;
-  @Input() expansionPanel = false;
-  @Input() hideHeader = false;
-
-  @Input() exportable = true;
-  @Input() csvSeparator = ',';
-  @Input() exportFileName = 'data';
-
-  @Input() disableExpand: (dataRow: T) => boolean = () => false;
-
-  @Input() set expandable(val: boolean) {
-    this._expandable = val;
-    if (this.expandable) {
-      this._columnsDefinition = [{ name: '_expand', header: '' }, ...this._columnsDefinition];
-    } else {
-      this._columnsDefinition.splice(this._columnsDefinition.findIndex(e => e.name === '_expand'), 1);
-    }
-  }
-  get expandable(): boolean {
-    return this._expandable;
-  }
-
-  @Input()
-  set columnsDefinition(value: TableColumn[]) {
-    this._columnsDefinition = value;
-    if (this.expandable) {
-      this._columnsDefinition = [{ name: '_expand', header: '' }, ...this._columnsDefinition];
-    }
-  }
-  get columnsDefinition(): TableColumn[] {
-    return this._columnsDefinition;
-  }
-
-  public get columnsNames(): string[] {
-    if (this._columnsDefinition) {
-      return this._columnsDefinition.filter((element) => !element.hidden).map((element) => element.name);
-    } else {
-      return [];
-    }
-  }
-
-  public get dataColumns(): TableColumn[] {
-    if (this._columnsDefinition) {
-      return this._columnsDefinition.filter(element => {
-        return (!element.hidden && element.name !== '_expand');
-      });
-    } else {
-      return [];
-    }
-  }
-
-  public get addButtonVisible(): boolean {
-    return this.editable && this.showAddButton;
-  }
-
-  public get editButtonVisible(): boolean {
-    return this.editable && this.showEditButton;
-  }
-
-  public get removeButtonVisible(): boolean {
-    return this.editable && this.showRemoveButton;
-  }
-
-  public get pasteButtonVisible(): boolean {
-    return this.editable && this.showPasteButton;
-  }
-
-  public get menuVisible(): boolean {
-    return this.addButtonVisible
-      || this.editButtonVisible
-      || this.removeButtonVisible
-      || this.pasteButtonVisible
-      || this.showRefreshButton
-      || this.exportable;
-  }
-
-  constructor(private printService: PrintService) {
-    this.dataReady = false;
-  }
-
-  private initDataSource(): void {
-    this._dataSource = new TableDataSource(this.data);
-    if (this.sort !== undefined) {
-      this._dataSource.sort = this.sort;
-    }
-    if (this.pageable && this.paginator !== undefined) {
-      this._dataSource.paginator = this.paginator;
-    }
+    const ds = new TableDataSource(data);
+    if (sort) { ds.sort = sort; }
+    if (pageable && paginator) { ds.paginator = paginator; }
     // workaround for mixed context (numbers & strings) sorting - see: https://github.com/angular/material2/issues/9966:
-    this._dataSource.sortingDataAccessor = (data, header) => data[header as keyof T] as string | number;
+    ds.sortingDataAccessor = (d, header) => d[header as keyof T] as string | number;
 
-    this.activeRow = undefined;
+    this.dataSource.set(ds);
+    this.activeRow.set(undefined);
     this.rowActivated.emit(undefined);
-  }
+  });
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.initDataSource();
-    });
-    if (this.filterInput) {
-      fromEvent(this.filterInput, 'keyup')
-        .pipe(
-          takeUntilDestroyed(this.#destroyRef),
-          debounceTime(this.filterKeyDelayMs), // before emitting last event
-          distinctUntilChanged()
-        )
-        .subscribe({
-          next: () => this.applyFilter(this.filterInput.value)
-        });
-    }
-  }
+  private filterSub?: Subscription;
+  private filterEffect = effect((onCleanup) => {
+    const el = this.filterInputRef()?.nativeElement;
+    if (!el) return;
+
+    this.filterSub = fromEvent(el, 'keyup').pipe(
+      debounceTime(this.filterKeyDelayMs()),
+      distinctUntilChanged()
+    ).subscribe(() => this.applyFilter(el.value));
+
+    onCleanup(() => this.filterSub?.unsubscribe());
+  });
 
   getCellTemplate(column: string, defaultTemplate: TemplateRef<CellComponent<T>>): TemplateRef<CellComponent<T>> {
-    const template = this.cellTemplates.get(column);
-    if (template) {
-      return template;
-    } else {
-      return defaultTemplate;
-    }
+    return this.cellTemplates().get(column) as TemplateRef<CellComponent<T>> ?? defaultTemplate;
   }
 
   getTableTitleTemplate(defaultTemplate: TemplateRef<Component>): TemplateRef<Component> {
-    const template = this.tableTitleTemplate;
-    if (template) {
-      return template;
-    } else {
-      return defaultTemplate;
-    }
+    return this.tableTitleTemplate() ?? defaultTemplate;
   }
 
   applyFilter(filterValue: string): void {
-    if (this.dataSource) {
-      this.dataSource.filter = filterValue.trim().toLowerCase();
+    const ds = this.dataSource();
+    if (ds) {
+      ds.filter = filterValue.trim().toLowerCase();
     }
   }
 
   onRowClick(row: T): void {
-    if (this.activeRow !== row) {
-      this.activeRow = row;
+    if (this.activeRow() !== row) {
+      this.activeRow.set(row);
       this.rowActivated.emit(row);
     }
   }
 
   shouldExpandBeDisabled(row: T): boolean {
-    return this.disableExpand(row);
+    return this.disableExpand()(row);
   }
 
   onCollapseTransitionEnd(row: T): void {
-    if (this.collapsingRow === row) {
-      this.collapsingRow = undefined;
+    if (this.collapsingRow() === row) {
+      this.collapsingRow.set(undefined);
     }
   }
 
   isRowRendered(row: T): boolean {
-    return row === this.expandedRow || row === this.collapsingRow;
+    return row === this.expandedRow() || row === this.collapsingRow();
   }
 
   onRowExpandClick(row: T): void {
-    if (this.disableExpand(row)) {
-      return;
-    }
-    if (this.expandedRow === row) {
-      this.collapsingRow = this.expandedRow;
-      this.expandedRow = undefined;
-      this.rowCollapsed.emit(this.collapsingRow);
+    if (this.disableExpand()(row)) { return; }
+    const expanded = this.expandedRow();
+    if (expanded === row) {
+      this.collapsingRow.set(row);
+      this.expandedRow.set(undefined);
+      this.rowCollapsed.emit(row);
     } else {
-      if (this.expandedRow) {
-        this.collapsingRow = this.expandedRow;
-        this.rowCollapsed.emit(this.collapsingRow);
+      if (expanded) {
+        this.collapsingRow.set(expanded);
+        this.rowCollapsed.emit(expanded);
       }
-      this.expandedRow = row;
-      this.rowExpanded.emit(this.expandedRow);
+      this.expandedRow.set(row);
+      this.rowExpanded.emit(row);
     }
   }
 
@@ -342,7 +261,7 @@ export class TableComponent<T> implements AfterViewInit {
   }
 
   onEditClicked(): void {
-    this.editButtonClicked.emit(this.activeRow);
+    this.editButtonClicked.emit(this.activeRow());
   }
 
   onRefreshClicked(): void {
@@ -350,7 +269,7 @@ export class TableComponent<T> implements AfterViewInit {
   }
 
   onDeleteClicked(): void {
-    this.deleteButtonClicked.emit(this.activeRow);
+    this.deleteButtonClicked.emit(this.activeRow());
   }
 
   onExportClicked(): void {
@@ -358,7 +277,7 @@ export class TableComponent<T> implements AfterViewInit {
   }
 
   onPrintClicked(): void {
-    const tableElement = this.tableElementRef?.nativeElement as HTMLElement;
+    const tableElement = this.tableElementRef()?.nativeElement as HTMLElement;
     this.printService.printPreviewElement(tableElement);
   }
 
@@ -367,29 +286,23 @@ export class TableComponent<T> implements AfterViewInit {
   }
 
   disableEditButtons(): void {
-    this.disableEditButton();
-    this.disableRemoveButton();
-  }
-
-  private disableEditButton(): void {
-    this.canEdit = false;
-  }
-
-  private disableRemoveButton(): void {
-    this.canDelete = false;
+    this.canEdit.set(false);
+    this.canDelete.set(false);
   }
 
   private getExportData(): string {
-    if (this.dataSource) {
-      const data = this.dataSource.filteredData || this.dataSource.data;
+    const ds = this.dataSource();
+    if (ds) {
+      const data = ds.filteredData || ds.data;
       let result = '\ufeff';
-      const columns = this.dataColumns;
+      const columns = this.dataColumns();
+      const separator = this.csvSeparator();
 
       for (let colIndex = 0; colIndex < columns.length; colIndex++) {
         const column = columns[colIndex];
         result += '"' + (column.header || column.name) + '"';
         if (colIndex < columns.length - 1) {
-          result += this.csvSeparator;
+          result += separator;
         }
       }
       if (data) {
@@ -403,7 +316,7 @@ export class TableComponent<T> implements AfterViewInit {
             } else { value = ''; }
             result += '"' + value + '"';
             if (rowIndex < columns.length - 1) {
-              result += this.csvSeparator;
+              result += separator;
             }
           }
         });
@@ -417,7 +330,7 @@ export class TableComponent<T> implements AfterViewInit {
     const blob = new Blob([csv], {
       type: 'text/csv;charset=utf-8;'
     });
-    const fileName = this.exportFileName + '.csv';
+    const fileName = this.exportFileName() + '.csv';
     const link = document.createElement('a');
     link.style.display = 'none';
     document.body.appendChild(link);
@@ -438,13 +351,9 @@ export class TableComponent<T> implements AfterViewInit {
   }
 
   isEmptyTable(): boolean {
-    if (!this.dataSource) {
-      return true;
-    }
-    const data = this.dataSource.filteredData || this.dataSource.data;
-    if (data) {
-      return ((data.length > 0) ? false : true);
-    }
-    return true;
+    const ds = this.dataSource();
+    if (!ds) { return true; }
+    const data = ds.filteredData || ds.data;
+    return !data || data.length === 0;
   }
 }

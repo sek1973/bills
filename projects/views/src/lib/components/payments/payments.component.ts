@@ -85,7 +85,8 @@ export class PaymentsComponent implements OnInit {
   }
 
   editPayment(): void {
-    if (this.table.activeRow) { this.openDialog(this.table.activeRow); }
+    const row = this.table.activeRow();
+    if (row) { this.openDialog(row); }
   }
 
   private openDialog(payment?: Payment): void {
@@ -98,15 +99,16 @@ export class PaymentsComponent implements OnInit {
   }
 
   deletePayment(): void {
-    if (this.table.activeRow) {
-      this.store.dispatch(PaymentsActions.deletePayment({ payment: this.table.activeRow }));
+    const row = this.table.activeRow();
+    if (row) {
+      this.store.dispatch(PaymentsActions.deletePayment({ payment: row }));
     }
   }
 
-  onRowActivated(row: Payment): void {
+  onRowActivated(row: Payment | undefined): void {
     if (this.table) {
-      this.table.canDelete = row ? true : false;
-      this.table.canEdit = row ? true : false;
+      this.table.canDelete.set(row ? true : false);
+      this.table.canEdit.set(row ? true : false);
     }
   }
 
