@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { BillsService } from 'projects/model/src/public-api';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, validateBillName } from 'projects/tools/src/public-api';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService, validateBillName } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { BillApiActions } from './bill-api.actions';
@@ -17,7 +16,7 @@ export class BillEffects {
     private actions$: Actions,
     private billsService: BillsService,
     private confirmationService: ConfirmationService,
-    private snackBar: MatSnackBar,
+    private notification: NotificationService,
     private router: Router) { }
 
   loadBills$ = createEffect(() => {
@@ -53,7 +52,7 @@ export class BillEffects {
       .pipe(
         ofType(BillApiActions.updateBillSuccess),
         map((action) => {
-          this.snackBar.open('Zapisano zmiany dla rachunku', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Zapisano zmiany dla rachunku');
           if (action.redirect) { this.router.navigate(['/zestawienie']); }
         }),
         switchMap(() => of(BillsActions.loadBills())));
@@ -78,7 +77,7 @@ export class BillEffects {
       .pipe(
         ofType(BillApiActions.createBillSuccess),
         map((action) => {
-          this.snackBar.open('Utworzono nowy rachunek', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Utworzono nowy rachunek');
           if (action.redirect) {
             this.router.navigate(['/zestawienie']);
           } else {
@@ -122,7 +121,7 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillApiActions.deleteBillSuccess),
-        map(() => this.snackBar.open('Usunięto rachunek', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' })),
+        map(() => this.notification.success('Usunięto rachunek')),
         map(() => this.router.navigate(['/zestawienie'])),
         switchMap(() => of(BillsActions.loadBills())));
   });
@@ -159,7 +158,7 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillApiActions.payBillSuccess),
-        map(() => this.snackBar.open('Opłacono rachunek', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' })),
+        map(() => this.notification.success('Opłacono rachunek')),
         switchMap(() => of(BillsActions.loadBills())));
   });
 
@@ -175,8 +174,7 @@ export class BillEffects {
         ),
         map(({ error }) => {
           const message = error?.message || error;
-          this.snackBar.open(`Wystąpił błąd podczas operacji na rachunku: ${message}`,
-            'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' });
+          this.notification.error(`Wystąpił błąd podczas operacji na rachunku: ${message}`);
         })
       );
   }, { dispatch: false });

@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { AuthService } from 'projects/model/src/public-api';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputPasswordComponent } from 'projects/tools/src/public-api';
+import { InputPasswordComponent, NotificationService } from 'projects/tools/src/public-api';
 
 @Component({
   selector: 'app-update-password',
@@ -17,7 +16,7 @@ import { InputPasswordComponent } from 'projects/tools/src/public-api';
 })
 export class UpdatePasswordComponent {
   private authService = inject(AuthService);
-  private snackBar = inject(MatSnackBar);
+  private notification = inject(NotificationService);
   private router = inject(Router);
 
   loading = signal(false);
@@ -53,7 +52,7 @@ export class UpdatePasswordComponent {
     const confirmPassword = this.form.value.confirmPassword;
 
     if (newPassword !== confirmPassword) {
-      this.snackBar.open('Hasła nie są identyczne.', 'Ukryj', { duration: 5000 });
+      this.notification.warning('Hasła nie są identyczne.');
       return;
     }
 
@@ -62,15 +61,15 @@ export class UpdatePasswordComponent {
       next: success => {
         this.loading.set(false);
         if (success) {
-          this.snackBar.open('Hasło zostało zmienione. Zaloguj się ponownie.', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Hasło zostało zmienione. Zaloguj się ponownie.');
           this.router.navigate(['/login']);
         } else {
-          this.snackBar.open('Błąd zmiany hasła. Spróbuj ponownie.', 'Ukryj', { duration: 5000 });
+          this.notification.warning('Błąd zmiany hasła. Spróbuj ponownie.');
         }
       },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open('Błąd zmiany hasła. Spróbuj ponownie.', 'Ukryj', { duration: 5000 });
+        this.notification.warning('Błąd zmiany hasła. Spróbuj ponownie.');
       }
     });
   }

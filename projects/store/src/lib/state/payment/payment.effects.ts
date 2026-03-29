@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PaymentsService } from 'projects/model/src/public-api';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse } from 'projects/tools/src/public-api';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { PaymentApiActions } from './payment-api.actions';
@@ -16,7 +15,7 @@ export class PaymentEffects {
     private actions$: Actions,
     private paymentsService: PaymentsService,
     private confirmationService: ConfirmationService,
-    private snackBar: MatSnackBar) { }
+    private notification: NotificationService) { }
 
   loadPayments$ = createEffect(() => {
     return this.actions$
@@ -50,7 +49,7 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.updatePaymentSuccess),
         map(action => {
-          this.snackBar.open('Zapisano zmiany dla płatności', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Zapisano zmiany dla płatności');
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.payment.billId || -1 }))));
@@ -75,7 +74,7 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.createPaymentSuccess),
         map(action => {
-          this.snackBar.open('Utworzono nową płatność', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Utworzono nową płatność');
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.payment.billId || -1 }))));
@@ -112,7 +111,7 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.deletePaymentSuccess),
         map(action => {
-          this.snackBar.open('Usunięto płatność', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Usunięto płatność');
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
@@ -131,7 +130,7 @@ export class PaymentEffects {
             map(response => {
               const data = (response as ConfirmDialogResponse).value as string;
               if (!data || data === null || data === undefined || data === '') {
-                this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { duration: 3000 });
+                this.notification.warning('Brak danych do zaimportowania');
                 return PaymentApiActions.importPaymentsFailure({ error: 'Brak danych do zaimportowania' });
               } else {
                 return PaymentsActions.importPaymentsConfirmed({ data, billId: action.billId });
@@ -157,7 +156,7 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.importPaymentsSuccess),
         map(action => {
-          this.snackBar.open('Zaimportowano płatności', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Zaimportowano płatności');
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
@@ -174,8 +173,7 @@ export class PaymentEffects {
         ),
         map(({ error }) => {
           const message = error?.message || error;
-          this.snackBar.open(`Wystąpił błąd podczas operacji na płatności: ${message}`,
-            'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' });
+          this.notification.error(`Wystąpił błąd podczas operacji na płatności: ${message}`);
         })
       );
   }, { dispatch: false });

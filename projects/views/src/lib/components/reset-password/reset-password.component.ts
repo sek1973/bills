@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { AuthService } from 'projects/model/src/public-api';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputTextComponent } from 'projects/tools/src/public-api';
+import { InputTextComponent, NotificationService } from 'projects/tools/src/public-api';
 
 @Component({
   selector: 'app-reset-password',
@@ -17,7 +16,7 @@ import { InputTextComponent } from 'projects/tools/src/public-api';
 })
 export class ResetPasswordComponent {
   private authService = inject(AuthService);
-  private snackBar = inject(MatSnackBar);
+  private notification = inject(NotificationService);
 
   loading = signal(false);
   emailSent = signal(false);
@@ -43,14 +42,14 @@ export class ResetPasswordComponent {
         this.loading.set(false);
         if (success) {
           this.emailSent.set(true);
-          this.snackBar.open('Link do resetowania hasła został wysłany na podany adres e-mail.', 'Ukryj', { duration: 5000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Link do resetowania hasła został wysłany na podany adres e-mail.');
         } else {
-          this.snackBar.open('Błąd wysyłania linku. Sprawdź adres e-mail i spróbuj ponownie.', 'Ukryj', { duration: 5000 });
+          this.notification.warning('Błąd wysyłania linku. Sprawdź adres e-mail i spróbuj ponownie.');
         }
       },
       error: () => {
         this.loading.set(false);
-        this.snackBar.open('Błąd wysyłania linku. Spróbuj ponownie.', 'Ukryj', { duration: 5000 });
+        this.notification.warning('Błąd wysyłania linku. Spróbuj ponownie.');
       }
     });
   }

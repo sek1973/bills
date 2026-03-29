@@ -1,7 +1,6 @@
 import { NgStyle } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -11,7 +10,7 @@ import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/st
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
-import { TableComponent } from 'projects/tools/src/public-api';
+import { NotificationService, TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
 import { BillEditComponent } from '../bill/bill-edit/bill-edit.component';
 
@@ -38,7 +37,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<AppState>,
     private router: Router,
-    private snackBar: MatSnackBar) { }
+    private notification: NotificationService) { }
 
   ngOnInit(): void {
     this.subscribeToData();
@@ -100,7 +99,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   onLogout(loggedIn: boolean): void {
     if (loggedIn === false) {
       this.router.navigate(['/login']);
-      this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+      this.notification.success('Wylogowano z aplikacji!');
     }
   }
 

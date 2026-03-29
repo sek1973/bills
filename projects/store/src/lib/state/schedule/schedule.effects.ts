@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SchedulesService } from 'projects/model/src/public-api';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse } from 'projects/tools/src/public-api';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { ScheduleApiActions } from './schedule-api.actions';
@@ -16,7 +15,7 @@ export class ScheduleEffects {
     private actions$: Actions,
     private schedulesService: SchedulesService,
     private confirmationService: ConfirmationService,
-    private snackBar: MatSnackBar) { }
+    private notification: NotificationService) { }
 
   loadSchedules$ = createEffect(() => {
     return this.actions$
@@ -50,7 +49,7 @@ export class ScheduleEffects {
       .pipe(
         ofType(ScheduleApiActions.updateScheduleSuccess),
         map(action => {
-          this.snackBar.open('Zapisano zmiany dla planowanej płatności', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Zapisano zmiany dla planowanej płatności');
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.schedule.billId || -1 }))));
@@ -75,7 +74,7 @@ export class ScheduleEffects {
       .pipe(
         ofType(ScheduleApiActions.createScheduleSuccess),
         map(action => {
-          this.snackBar.open('Utworzono nową planowaną płatność', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Utworzono nową planowaną płatność');
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.schedule.billId || -1 }))));
@@ -112,7 +111,7 @@ export class ScheduleEffects {
       .pipe(
         ofType(ScheduleApiActions.deleteScheduleSuccess),
         map(action => {
-          this.snackBar.open('Usunięto płatność', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Usunięto płatność');
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.billId }))));
@@ -131,7 +130,7 @@ export class ScheduleEffects {
             map(response => {
               const data = (response as ConfirmDialogResponse).value as string;
               if (!data || data === null || data === undefined || data === '') {
-                this.snackBar.open('Brak danych do zaimportowania', 'Ukryj', { duration: 3000 });
+                this.notification.warning('Brak danych do zaimportowania');
                 return ScheduleApiActions.importSchedulesFailure({ error: 'Brak danych do zaimportowania' });
               } else {
                 return SchedulesActions.importSchedulesConfirmed({ data, billId: action.billId });
@@ -157,7 +156,7 @@ export class ScheduleEffects {
       .pipe(
         ofType(ScheduleApiActions.importSchedulesSuccess),
         map(action => {
-          this.snackBar.open('Zaimportowano planowane płatności', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+          this.notification.success('Zaimportowano planowane płatności');
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.billId }))));
@@ -174,8 +173,7 @@ export class ScheduleEffects {
         ),
         map(({ error }) => {
           const message = error?.message || error;
-          this.snackBar.open(`Wystąpił błąd podczas operacji na planowanej płatności: ${message}`,
-            'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' });
+          this.notification.error(`Wystąpił błąd podczas operacji na planowanej płatności: ${message}`);
         })
       );
   }, { dispatch: false });

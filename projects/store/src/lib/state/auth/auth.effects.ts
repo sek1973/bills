@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from 'projects/model/src/public-api';
-import { NavigationService } from 'projects/tools/src/public-api';
+import { NavigationService, NotificationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
 import { AuthActions } from '../auth';
@@ -14,7 +13,7 @@ export class AuthEffects {
   constructor(
     private actions$: Actions,
     private authService: AuthService,
-    private snackBar: MatSnackBar,
+    private notification: NotificationService,
     private navigationService: NavigationService) { }
 
   login$ = createEffect(() => {
@@ -25,16 +24,16 @@ export class AuthEffects {
           .pipe(
             switchMap(success => {
               if (success) {
-                this.snackBar.open('Zalogowano do aplikacji!', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+                this.notification.success('Zalogowano do aplikacji!');
                 this.navigationService.goToPreviousPage('/zestawienie');
                 return of(AuthActions.loginSuccess({ user: userData.user }));
               } else {
-                this.snackBar.open('Błąd logowania. Sprawdź dane i spróbuj ponownie.', 'Ukryj', { duration: 5000, panelClass: 'snackbar-style-error' });
+                this.notification.error('Błąd logowania. Sprawdź dane i spróbuj ponownie.');
                 return of(AuthActions.loginFailure({ error: 'Invalid credentials' }));
               }
             }),
             catchError(error => {
-              this.snackBar.open('Błąd logowania. Sprawdź dane i spróbuj ponownie.', 'Ukryj', { duration: 5000, panelClass: 'snackbar-style-error' });
+              this.notification.error('Błąd logowania. Sprawdź dane i spróbuj ponownie.');
               return of(AuthActions.loginFailure({ error }));
             })
           )
@@ -57,7 +56,7 @@ export class AuthEffects {
           .pipe(
             map(() => {
               this.navigationService.goToPage('/login');
-              this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
+              this.notification.success('Wylogowano z aplikacji!');
             }),
             map(() => AuthActions.logoutSuccess()),
             catchError(error => of(AuthActions.logoutFailure({ error })))
