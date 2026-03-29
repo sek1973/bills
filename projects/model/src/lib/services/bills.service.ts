@@ -28,7 +28,7 @@ export abstract class BillsService {
       } else { bill.id = 0; }
     }
     const result: Bill = new Bill(
-      bill.lp || bill.id,
+      bill.lp ?? bill.id,
       bill.name || '',
       bill.description || '',
       bill.active || false,

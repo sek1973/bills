@@ -72,6 +72,7 @@ export class BillEditComponent {
   private createFormValueFromBill(bill: Bill): Partial<Bill> {
     return {
       id: bill.id,
+      lp: bill.lp,
       name: bill.name,
       description: bill.description,
       active: bill.active,
