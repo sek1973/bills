@@ -12,7 +12,6 @@ function createBill(
   description: string,
   url: string,
   login: string,
-  password: string,
   sum: number,
   share: number,
   deadline: Date = new Date(),
@@ -26,7 +25,6 @@ function createBill(
   result.description = description;
   result.url = url;
   result.login = login;
-  result.password = password;
   result.sum = sum;
   result.share = share;
   result.deadline = deadline;
@@ -42,9 +40,9 @@ function createBill(
 export class BillsServiceImpl extends BillsService {
 
   private bills: Bill[] = [
-    createBill(1, 1, 'Gaz', 'Opłaty za gaz', 'https://www.wp.pl/', 'gaz_login', 'gaz_haslo', 199.50, 0.5),
-    createBill(2, 2, 'Prąd', 'Opłaty za prąd', 'https://www.wp.pl/', 'prad_login', 'prad_haslo', 45.70, 0.5),
-    createBill(3, 3, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 'woda_haslo', 25, 0.66),
+    createBill(1, 1, 'Gaz', 'Opłaty za gaz', 'https://www.wp.pl/', 'gaz_login', 199.50, 0.5),
+    createBill(2, 2, 'Prąd', 'Opłaty za prąd', 'https://www.wp.pl/', 'prad_login', 45.70, 0.5),
+    createBill(3, 3, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 25, 0.66),
   ];
 
   protected paymentsService: PaymentsServiceImpl = inject(PaymentsServiceImpl);

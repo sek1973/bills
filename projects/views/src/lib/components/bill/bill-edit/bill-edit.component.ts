@@ -8,14 +8,14 @@ import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
 import { addDays } from 'projects/model/src/public-api';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputCurrencyComponent, InputDateComponent, InputHyperlinkComponent, InputPasswordComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, InputToggleComponent, SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
+import { InputCurrencyComponent, InputDateComponent, InputHyperlinkComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, InputToggleComponent, SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
 import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-bill-edit',
   templateUrl: './bill-edit.component.html',
   styleUrls: ['./bill-edit.component.scss'],
-  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputPasswordComponent, InputDateComponent, InputToggleComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
+  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputDateComponent, InputToggleComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
 })
 export class BillEditComponent {
   bill = input<Bill>();
@@ -40,7 +40,6 @@ export class BillEditComponent {
     active: new FormControl<boolean>(true, Validators.required),
     url: new FormControl<string | undefined>(undefined),
     login: new FormControl<string | undefined>(undefined),
-    password: new FormControl<string | undefined>(undefined),
     sum: new FormControl<number>(0),
     share: new FormControl<number>(1, Validators.required),
     deadline: new FormControl<Date | undefined>(undefined, Validators.required),
@@ -83,7 +82,6 @@ export class BillEditComponent {
       share: bill.share,
       url: bill.url,
       login: bill.login,
-      password: bill.password
     };
   }
 
@@ -95,7 +93,6 @@ export class BillEditComponent {
       value.active,
       value.url,
       value.login,
-      value.password,
       value.sum,
       value.share,
       value.deadline,

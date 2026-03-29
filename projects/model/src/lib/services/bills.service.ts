@@ -34,7 +34,6 @@ export abstract class BillsService {
       bill.active || false,
       bill.url || '',
       bill.login || '',
-      bill.password || '',
       bill.sum || 0,
       bill.share || 1,
       bill.deadline || new Date(),

@@ -46,7 +46,6 @@ export class BillsServiceImpl extends BillsService {
       r.active,
       r.url ?? undefined,
       r.login ?? undefined,
-      r.password ?? undefined,
       r.sum,
       r.share,
       r.deadline ? new Date(r.deadline) : undefined,

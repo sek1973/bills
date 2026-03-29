@@ -10,7 +10,6 @@ export class Bill {
     public active: boolean = true,
     public url?: string,
     public login?: string,
-    public password?: string,
     public sum: number = 0,
     public share: number = 1,
     public deadline?: Date,
@@ -27,7 +26,6 @@ export class Bill {
       this.active,
       this.url,
       this.login,
-      this.password,
       this.sum,
       this.share,
       this.deadline,
@@ -93,10 +91,5 @@ export const BillDescription = new Map<string, FieldDescription>([
     tooltipText: 'Podaj login, którego używasz na stronie logowania dystrybutora',
     placeholderText: 'Login do konta u dystrybutora',
     labelText: 'Login'
-  }],
-  ['password', {
-    tooltipText: 'Podaj hasło, którego używasz na stronie logowania dystrybutora',
-    placeholderText: 'Hasło do konta u dystrybutora',
-    labelText: 'Hasło'
   }]
 ]);
