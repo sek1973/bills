@@ -52,6 +52,14 @@ export class SupabaseService {
     return this.supabase.auth.signOut();
   }
 
+  async resetPasswordForEmail(email: string, redirectTo: string) {
+    return this.supabase.auth.resetPasswordForEmail(email, { redirectTo });
+  }
+
+  async updatePassword(password: string) {
+    return this.supabase.auth.updateUser({ password });
+  }
+
   // Expose the typed client for use in feature services
   get client(): SupabaseClient {
     return this.supabase;

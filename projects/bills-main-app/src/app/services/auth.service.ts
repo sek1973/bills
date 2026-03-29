@@ -46,4 +46,29 @@ export class AuthServiceImpl extends AuthService {
     return of('');
   }
 
+  resetPassword(email: string): Observable<boolean> {
+    const redirectTo = `${window.location.origin}/nowe-haslo`;
+    return from(this.service.resetPasswordForEmail(email, redirectTo)).pipe(
+      map(result => {
+        if (result.error) {
+          console.error('Reset password error:', result.error.message);
+          return false;
+        }
+        return true;
+      })
+    );
+  }
+
+  updatePassword(password: string): Observable<boolean> {
+    return from(this.service.updatePassword(password)).pipe(
+      map(result => {
+        if (result.error) {
+          console.error('Update password error:', result.error.message);
+          return false;
+        }
+        return true;
+      })
+    );
+  }
+
 }

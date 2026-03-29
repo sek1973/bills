@@ -36,6 +36,12 @@
 
   <ng-template #rightToolbarPanelTemplate>
     <button mat-icon-button
+            matTooltip="Zmień hasło"
+            (click)="changePassword()">
+      <span class="material-icons"
+            inline=true>lock</span>
+    </button>
+    <button mat-icon-button
             matTooltip="Wyloguj"
             (click)="logout()">
       <span class="material-icons"

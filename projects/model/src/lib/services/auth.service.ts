@@ -13,4 +13,8 @@ export abstract class AuthService {
 
   abstract getUserName(): Observable<string>;
 
+  abstract resetPassword(email: string): Observable<boolean>;
+
+  abstract updatePassword(password: string): Observable<boolean>;
+
 }

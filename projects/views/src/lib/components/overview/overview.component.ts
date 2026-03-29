@@ -93,6 +93,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.store.dispatch(AuthActions.logout());
   }
 
+  changePassword(): void {
+    this.router.navigate(['/zmien-haslo']);
+  }
+
   onLogout(loggedIn: boolean): void {
     if (loggedIn === false) {
       this.router.navigate(['/login']);

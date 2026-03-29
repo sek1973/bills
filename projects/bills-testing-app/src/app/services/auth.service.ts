@@ -29,4 +29,12 @@ export class AuthServiceImpl extends AuthService {
     return of('');
   }
 
+  resetPassword(email: string): Observable<boolean> {
+    return of(true).pipe(delay(1000));
+  }
+
+  updatePassword(password: string): Observable<boolean> {
+    return of(true).pipe(delay(1000));
+  }
+
 }

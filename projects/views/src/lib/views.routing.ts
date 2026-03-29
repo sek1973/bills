@@ -1,6 +1,6 @@
 import { Routes, mapToCanActivate } from '@angular/router';
 import { AuthGuard } from 'projects/tools/src/public-api';
-import { BillComponent, LoginComponent, OverviewComponent, PageNotFoundComponent } from './components';
+import { BillComponent, ChangePasswordComponent, LoginComponent, OverviewComponent, PageNotFoundComponent, ResetPasswordComponent, UpdatePasswordComponent } from './components';
 import { RootComponent } from './components/root/root.component';
 
 export const appRoutes: Routes = [
@@ -28,11 +28,18 @@ export const appRoutes: Routes = [
         canActivate: mapToCanActivate([AuthGuard])
       },
       {
+        path: 'zmien-haslo',
+        component: ChangePasswordComponent,
+        canActivate: mapToCanActivate([AuthGuard])
+      },
+      {
         path: '',
         redirectTo: '/zestawienie',
         pathMatch: 'full',
       },
       { path: 'login', component: LoginComponent },
+      { path: 'resetuj-haslo', component: ResetPasswordComponent },
+      { path: 'nowe-haslo', component: UpdatePasswordComponent },
       { path: '**', component: PageNotFoundComponent }
     ]
   }

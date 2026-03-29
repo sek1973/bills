@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { AppState, AuthActions } from 'projects/store/src/lib/state';
@@ -12,7 +13,7 @@ import { InputPasswordComponent, InputTextComponent } from 'projects/tools/src/p
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputPasswordComponent]
+  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputPasswordComponent, RouterLink]
 })
 export class LoginComponent {
   public error: string | undefined = undefined;
