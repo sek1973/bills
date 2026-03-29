@@ -29,12 +29,12 @@ export class AuthEffects {
                 this.navigationService.goToPreviousPage('/zestawienie');
                 return of(AuthActions.loginSuccess({ user: userData.user }));
               } else {
-                this.snackBar.open('Błąd logowania. Sprawdź dane i spróbuj ponownie.', 'Ukryj', { duration: 5000 });
+                this.snackBar.open('Błąd logowania. Sprawdź dane i spróbuj ponownie.', 'Ukryj', { duration: 5000, panelClass: 'snackbar-style-error' });
                 return of(AuthActions.loginFailure({ error: 'Invalid credentials' }));
               }
             }),
             catchError(error => {
-              this.snackBar.open('Błąd logowania. Sprawdź dane i spróbuj ponownie.', 'Ukryj', { duration: 5000 });
+              this.snackBar.open('Błąd logowania. Sprawdź dane i spróbuj ponownie.', 'Ukryj', { duration: 5000, panelClass: 'snackbar-style-error' });
               return of(AuthActions.loginFailure({ error }));
             })
           )

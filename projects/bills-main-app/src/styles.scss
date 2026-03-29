@@ -26,6 +26,6 @@ body {
 }
 
 .snackbar-style-error {
-  color: red;
-  font-weight: bold;
+  --mat-snack-bar-supporting-text-color: #d39f2f;
+  --mat-snack-bar-button-color: #d32f2f;
 }

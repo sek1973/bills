@@ -163,4 +163,19 @@ export class BillEffects {
         switchMap(() => of(BillsActions.loadBills())));
   });
 
+  showBillError$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(
+          BillApiActions.loadBillsFailure,
+          BillApiActions.updateBillFailure,
+          BillApiActions.createBillFailure,
+          BillApiActions.deleteBillFailure,
+          BillApiActions.payBillFailure
+        ),
+        map(() => this.snackBar.open('Wystąpił błąd podczas operacji na rachunku',
+          'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' }))
+      );
+  }, { dispatch: false });
+
 }

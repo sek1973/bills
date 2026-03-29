@@ -163,4 +163,19 @@ export class ScheduleEffects {
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.billId }))));
   });
 
+  showScheduleError$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(
+          ScheduleApiActions.loadSchedulesFailure,
+          ScheduleApiActions.updateScheduleFailure,
+          ScheduleApiActions.createScheduleFailure,
+          ScheduleApiActions.deleteScheduleFailure,
+          ScheduleApiActions.importSchedulesFailure
+        ),
+        map(() => this.snackBar.open('Wystąpił błąd podczas operacji na planowanej płatności', 'Ukryj',
+          { duration: 60000, panelClass: 'snackbar-style-error' }))
+      );
+  }, { dispatch: false });
+
 }

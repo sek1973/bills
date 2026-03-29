@@ -163,4 +163,19 @@ export class PaymentEffects {
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
   });
 
+  showPaymentError$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(
+          PaymentApiActions.loadPaymentsFailure,
+          PaymentApiActions.updatePaymentFailure,
+          PaymentApiActions.createPaymentFailure,
+          PaymentApiActions.deletePaymentFailure,
+          PaymentApiActions.importPaymentsFailure
+        ),
+        map(() => this.snackBar.open('Wystąpił błąd podczas operacji na płatności',
+          'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' }))
+      );
+  }, { dispatch: false });
+
 }

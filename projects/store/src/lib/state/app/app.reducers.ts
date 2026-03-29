@@ -129,4 +129,24 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: true };
   }),
 
+  on(
+    BillApiActions.updateBillFailure,
+    BillApiActions.createBillFailure,
+    BillApiActions.deleteBillFailure,
+    BillApiActions.payBillFailure,
+    PaymentApiActions.loadPaymentsFailure,
+    PaymentApiActions.updatePaymentFailure,
+    PaymentApiActions.createPaymentFailure,
+    PaymentApiActions.deletePaymentFailure,
+    PaymentApiActions.importPaymentsFailure,
+    ScheduleApiActions.loadSchedulesFailure,
+    ScheduleApiActions.updateScheduleFailure,
+    ScheduleApiActions.createScheduleFailure,
+    ScheduleApiActions.deleteScheduleFailure,
+    ScheduleApiActions.importSchedulesFailure,
+    (data: AppData) => {
+      return { ...data, loading: false };
+    }
+  ),
+
 );
