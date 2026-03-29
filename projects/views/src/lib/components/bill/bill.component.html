@@ -20,12 +20,12 @@
   <app-bill-edit class="bill-details"
                  [bill]="bill"
                  [bills]="bills"
-                 [editMode]="editMode"
-                 [newBill]="newBill"
+                 [editMode]="editMode()"
+                 [newBill]="newBill()"
                  (editModeChange)="onEditModeChange($event)">
   </app-bill-edit>
 
-  @if (!newBill) {
+  @if (!newBill()) {
   <mat-tab-group>
     <mat-tab label="Historia płatności">
       <app-payments class="bill-payments">

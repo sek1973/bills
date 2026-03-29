@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -20,8 +20,8 @@ import { BillEditComponent } from './bill-edit/bill-edit.component';
 export class BillComponent implements OnInit {
   #destroyRef = inject(DestroyRef);
 
-  editMode = false;
-  newBill = false;
+  editMode = signal(false);
+  newBill = signal(false);
   bill?: Bill;
   bills?: Bill[];
   routeParamId: number = -1;
@@ -62,11 +62,11 @@ export class BillComponent implements OnInit {
   private handleData(): void {
     if (!this.bill) {
       this.createBill();
-      this.editMode = true;
-      this.newBill = true;
+      this.editMode.set(true);
+      this.newBill.set(true);
     } else {
-      this.editMode = false;
-      this.newBill = false;
+      this.editMode.set(false);
+      this.newBill.set(false);
     }
   }
 
@@ -80,7 +80,7 @@ export class BillComponent implements OnInit {
   }
 
   onEditModeChange(event: boolean): void {
-    this.editMode = event;
+    this.editMode.set(event);
   }
 
 }

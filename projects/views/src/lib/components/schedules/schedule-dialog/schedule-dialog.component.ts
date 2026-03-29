@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit, signal } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -25,10 +25,10 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
 
   schedule?: Schedule;
   bill?: Bill;
-  dialogTitle: string = '';
-  dialogMode: 'add' | 'edit' = 'add';
-  canSave = false;
-  canClone = false;
+  dialogTitle = signal('');
+  dialogMode = signal<'add' | 'edit'>('add');
+  canSave = signal(false);
+  canClone = signal(false);
 
   form: UntypedFormGroup = new UntypedFormGroup({
     id: new UntypedFormControl(),
@@ -86,10 +86,10 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   }
 
   private setEditStatus(status: string): void {
-    this.canSave = status === 'VALID' ? true : false;
-    this.canClone = status === 'VALID' && this.schedule ? true : false;
-    this.dialogTitle = (this.schedule ? 'Edytuj' : 'Dodaj') + ' planowaną płatność';
-    this.dialogMode = this.schedule ? 'edit' : 'add';
+    this.canSave.set(status === 'VALID');
+    this.canClone.set(status === 'VALID' && !!this.schedule);
+    this.dialogTitle.set((this.schedule ? 'Edytuj' : 'Dodaj') + ' planowaną płatność');
+    this.dialogMode.set(this.schedule ? 'edit' : 'add');
   }
 
   closeDialog(): void {

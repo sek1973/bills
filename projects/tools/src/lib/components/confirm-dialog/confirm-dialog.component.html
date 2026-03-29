@@ -49,7 +49,7 @@
     <button mat-raised-button
             color="primary"
             class="toolbar-button"
-            [disabled]="!canApply"
+            [disabled]="!canApply()"
             cdkFocusInitial
             (click)="onApply()">{{applyButtonLabel}}</button>
   </div>

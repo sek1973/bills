@@ -1,5 +1,5 @@
 <div class="dialog-title">
-  {{dialogTitle}}
+  {{dialogTitle()}}
 </div>
 
 <ng-container>
@@ -33,6 +33,6 @@
   <button mat-raised-button
           color="primary"
           class="toolbar-button"
-          [disabled]="!canSave"
+          [disabled]="!canSave()"
           (click)="saveData()">Zapisz</button>
 </div>

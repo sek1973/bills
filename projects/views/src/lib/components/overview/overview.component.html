@@ -1,6 +1,6 @@
 <app-table #table
            [tableTitle]="'Rachunki'"
-           [data]="data"
+           [data]="data()"
            [columnsDefinition]="columns"
            [editable]="true"
            [canAdd]="true"
@@ -52,9 +52,9 @@
   <ng-template #expandedRowTemplate
                let-row="row">
     <app-bill-edit [bill]="row"
-                   [bills]="data"
+                   [bills]="data()"
                    [newBill]="false"
-                   [editMode]="editMode"
+                   [editMode]="editMode()"
                    [showSaveAndClose]="false"
                    class="bill-details"
                    (editModeChange)="onEditModeChange($event)">

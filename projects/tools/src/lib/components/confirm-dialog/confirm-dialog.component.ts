@@ -1,12 +1,12 @@
-import { Component, Inject } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DescriptionProvider } from '../inputs/input-component-base';
-import { ConfirmDialogInputType, ConfirmDialogModel } from './confirm-dialog.model';
+import { Component, Inject, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { InputTextareaComponent } from '../inputs/input-textarea/input-textarea.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DescriptionProvider } from '../inputs/input-component-base';
 import { InputCurrencyComponent } from '../inputs/input-currency/input-currency.component';
 import { InputTextComponent } from '../inputs/input-text/input-text.component';
+import { InputTextareaComponent } from '../inputs/input-textarea/input-textarea.component';
+import { ConfirmDialogInputType, ConfirmDialogModel } from './confirm-dialog.model';
 
 export interface ConfirmDialogResponse {
   response: boolean;
@@ -14,17 +14,17 @@ export interface ConfirmDialogResponse {
 }
 
 @Component({
-    selector: 'app-confirm-dialog',
-    templateUrl: './confirm-dialog.component.html',
-    styleUrls: ['./confirm-dialog.component.scss'],
-    imports: [InputTextComponent, FormsModule, ReactiveFormsModule, InputCurrencyComponent, InputTextareaComponent, MatButtonModule]
+  selector: 'app-confirm-dialog',
+  templateUrl: './confirm-dialog.component.html',
+  styleUrls: ['./confirm-dialog.component.scss'],
+  imports: [InputTextComponent, FormsModule, ReactiveFormsModule, InputCurrencyComponent, InputTextareaComponent, MatButtonModule]
 })
 export class ConfirmDialogComponent {
   dialogTitle: string;
   message: string;
   cancelButtonLabel: string;
   applyButtonLabel: string;
-  canApply: boolean = true;
+  canApply = signal(true);
 
   form: UntypedFormGroup = new UntypedFormGroup({});
   inputType?: ConfirmDialogInputType;
@@ -55,8 +55,8 @@ export class ConfirmDialogComponent {
         }
       };
       this.form = new UntypedFormGroup({ input: new UntypedFormControl(data.inputValue, data.inputValidators) });
-      this.form.statusChanges.subscribe(status => this.canApply = (status === 'VALID') ? true : false);
-      this.canApply = (this.form.status === 'VALID') ? true : false;
+      this.form.statusChanges.subscribe(status => this.canApply.set(status === 'VALID'));
+      this.canApply.set(this.form.status === 'VALID');
     }
   }
 

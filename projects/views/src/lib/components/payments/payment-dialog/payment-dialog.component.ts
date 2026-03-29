@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, computed, Inject, OnInit, signal } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -20,11 +20,11 @@ export interface PaymentDialogData {
 })
 export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
-  payment?: Payment;
-  bill?: Bill;
-  dialogTitle: string;
-  dialogMode: 'add' | 'edit' = 'add';
-  canSave = false;
+  protected readonly dialogTitle = computed(() => (this.payment ? 'Edytuj' : 'Dodaj') + ' zrealizowaną płatność');
+  protected payment?: Payment;
+  protected bill?: Bill;
+  protected dialogMode: 'add' | 'edit' = 'add';
+  protected canSave = signal(false);
 
   form: UntypedFormGroup = new UntypedFormGroup({
     id: new UntypedFormControl(),
@@ -42,7 +42,6 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     private store: Store<AppState>) {
     this.bill = data?.bill;
     this.payment = data?.payment;
-    this.dialogTitle = (this.payment ? 'Edytuj' : 'Dodaj') + ' zrealizowaną płatność';
     this.dialogMode = this.payment ? 'edit' : 'add';
     this.form.statusChanges.subscribe(status => this.setEditStatus(status));
   }
@@ -54,7 +53,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   }
 
   private setEditStatus(status: string): void {
-    this.canSave = status === 'VALID' ? true : false;
+    this.canSave.set(status === 'VALID');
   }
 
   private setFormValue(): void {

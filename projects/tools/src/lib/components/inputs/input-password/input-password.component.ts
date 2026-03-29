@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,9 +14,9 @@ import { InputBaseComponent } from './../input-component-base';
   imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatTooltipModule, MatButtonModule, MatIconModule]
 })
 export class InputPasswordComponent extends InputBaseComponent {
-  hide: boolean = true;
+  hide = signal(true);
 
   onClick(event: Event): void {
-    this.hide = !this.hide;
+    this.hide.set(!this.hide());
   }
 }

@@ -1,5 +1,5 @@
 import { NgStyle } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -22,8 +22,8 @@ import { BillEditComponent } from '../bill/bill-edit/bill-edit.component';
   imports: [RouterLink, RouterLinkActive, NgStyle, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, DateToStringPipe, CurrencyToStringPipe, BillEditComponent]
 })
 export class OverviewComponent implements OnInit, OnDestroy {
-  editMode: boolean = false;
-  data: Bill[] = [];
+  editMode = signal(false);
+  data = signal<Bill[]>([]);
   columns = [
     { name: 'name', header: 'Nazwa' },
     { name: 'deadline', header: 'Termin' },
@@ -47,7 +47,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dataSubscription = this.store
       .select(BillsSelectors.selectAll)
       .subscribe({
-        next: bills => this.data = bills || []
+        next: bills => this.data.set(bills || [])
       });
   }
 
@@ -124,7 +124,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   onEditModeChange(event: boolean): void {
-    this.editMode = event;
+    this.editMode.set(event);
   }
 
 }
