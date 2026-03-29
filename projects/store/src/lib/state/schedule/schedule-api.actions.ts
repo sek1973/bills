@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { PostgrestError } from '@supabase/supabase-js';
 import { Schedule } from 'projects/model/src/lib/model';
 import { ImportReport } from 'projects/model/src/public-api';
 
@@ -11,7 +12,7 @@ export const ScheduleApiActions = {
 
   loadSchedulesFailure: createAction(
     '[Schedule API] Load Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   updateScheduleSuccess: createAction(
@@ -21,7 +22,7 @@ export const ScheduleApiActions = {
 
   updateScheduleFailure: createAction(
     '[Schedule API] Update Schedule Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   createScheduleSuccess: createAction(
@@ -31,7 +32,7 @@ export const ScheduleApiActions = {
 
   createScheduleFailure: createAction(
     '[Schedule API] Create Schedule Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   deleteScheduleSuccess: createAction(
@@ -41,7 +42,7 @@ export const ScheduleApiActions = {
 
   deleteScheduleFailure: createAction(
     '[Schedule API] Delete Schedule Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   importSchedulesSuccess: createAction(

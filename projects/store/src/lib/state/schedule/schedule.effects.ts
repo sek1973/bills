@@ -170,11 +170,13 @@ export class ScheduleEffects {
           ScheduleApiActions.loadSchedulesFailure,
           ScheduleApiActions.updateScheduleFailure,
           ScheduleApiActions.createScheduleFailure,
-          ScheduleApiActions.deleteScheduleFailure,
-          ScheduleApiActions.importSchedulesFailure
+          ScheduleApiActions.deleteScheduleFailure
         ),
-        map(() => this.snackBar.open('Wystąpił błąd podczas operacji na planowanej płatności', 'Ukryj',
-          { duration: 60000, panelClass: 'snackbar-style-error' }))
+        map(({ error }) => {
+          const message = error?.message || error;
+          this.snackBar.open(`Wystąpił błąd podczas operacji na planowanej płatności: ${message}`,
+            'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' });
+        })
       );
   }, { dispatch: false });
 

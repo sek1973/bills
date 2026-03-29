@@ -171,10 +171,12 @@ export class PaymentEffects {
           PaymentApiActions.updatePaymentFailure,
           PaymentApiActions.createPaymentFailure,
           PaymentApiActions.deletePaymentFailure,
-          PaymentApiActions.importPaymentsFailure
         ),
-        map(() => this.snackBar.open('Wystąpił błąd podczas operacji na płatności',
-          'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' }))
+        map(({ error }) => {
+          const message = error?.message || error;
+          this.snackBar.open(`Wystąpił błąd podczas operacji na płatności: ${message}`,
+            'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' });
+        })
       );
   }, { dispatch: false });
 

@@ -173,8 +173,11 @@ export class BillEffects {
           BillApiActions.deleteBillFailure,
           BillApiActions.payBillFailure
         ),
-        map(() => this.snackBar.open('Wystąpił błąd podczas operacji na rachunku',
-          'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' }))
+        map(({ error }) => {
+          const message = error?.message || error;
+          this.snackBar.open(`Wystąpił błąd podczas operacji na rachunku: ${message}`,
+            'Ukryj', { duration: 60000, panelClass: 'snackbar-style-error' });
+        })
       );
   }, { dispatch: false });
 

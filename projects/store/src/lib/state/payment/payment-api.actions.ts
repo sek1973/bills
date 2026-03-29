@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { PostgrestError } from '@supabase/supabase-js';
 import { Payment } from 'projects/model/src/lib/model';
 import { ImportReport } from 'projects/model/src/public-api';
 
@@ -11,7 +12,7 @@ export const PaymentApiActions = {
 
   loadPaymentsFailure: createAction(
     '[Payment API] Load Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   updatePaymentSuccess: createAction(
@@ -21,7 +22,7 @@ export const PaymentApiActions = {
 
   updatePaymentFailure: createAction(
     '[Payment API] Update Payment Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   createPaymentSuccess: createAction(
@@ -31,7 +32,7 @@ export const PaymentApiActions = {
 
   createPaymentFailure: createAction(
     '[Payment API] Create Payment Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   deletePaymentSuccess: createAction(
@@ -41,7 +42,7 @@ export const PaymentApiActions = {
 
   deletePaymentFailure: createAction(
     '[Payment API] Delete Payment Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   importPaymentsSuccess: createAction(

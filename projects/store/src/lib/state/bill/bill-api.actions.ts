@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { PostgrestError } from '@supabase/supabase-js';
 import { Bill } from 'projects/model/src/lib/model';
 
 export const BillApiActions = {
@@ -9,7 +10,7 @@ export const BillApiActions = {
 
   loadBillsFailure: createAction(
     '[Bill API] Load Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   updateBillSuccess: createAction(
@@ -19,7 +20,7 @@ export const BillApiActions = {
 
   updateBillFailure: createAction(
     '[Bill API] Update Bill Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   createBillSuccess: createAction(
@@ -29,7 +30,7 @@ export const BillApiActions = {
 
   createBillFailure: createAction(
     '[Bill API] Create Bill Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   deleteBillSuccess: createAction(
@@ -39,7 +40,7 @@ export const BillApiActions = {
 
   deleteBillFailure: createAction(
     '[Bill API] Delete Bill Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
   payBillSuccess: createAction(
@@ -49,7 +50,7 @@ export const BillApiActions = {
 
   payBillFailure: createAction(
     '[Bill API] Pay Bill Failure',
-    props<{ error: string }>()
+    props<{ error: PostgrestError }>()
   ),
 
 };
