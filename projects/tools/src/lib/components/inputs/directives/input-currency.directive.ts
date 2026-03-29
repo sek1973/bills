@@ -12,7 +12,6 @@ export const APP_CURRENCY_VALUE_ACCESSOR: any = {
 @Directive({
   selector: '[appInputCurrency]',
   providers: [APP_CURRENCY_VALUE_ACCESSOR],
-  standalone: true
 })
 export class InputCurrencyDirective implements ControlValueAccessor {
 

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, Inject, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, Inject, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
@@ -15,13 +15,14 @@ import { ScheduleDialogComponent } from './schedule-dialog/schedule-dialog.compo
   selector: 'app-schedules',
   templateUrl: './schedules.component.html',
   styleUrls: ['./schedules.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TableComponent, TableCellDirective, DateToStringPipe, CurrencyToStringPipe]
 })
 export class SchedulesComponent implements OnInit {
 
   @ViewChild('table', { read: TableComponent }) table!: TableComponent<Schedule>;
 
-  data: Schedule[] = [];
+  data = signal<Schedule[]>([]);
   activeRow?: Schedule;
   columns = [
     { name: 'date', header: 'Termin' },
@@ -47,7 +48,7 @@ export class SchedulesComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.#destroyRef),
         filter(() => (this.bill?.id || -1) > -1))
       .subscribe({
-        next: schedules => this.data = schedules || []
+        next: schedules => this.data.set(schedules || [])
       });
   }
 
@@ -89,7 +90,7 @@ export class SchedulesComponent implements OnInit {
   private openDialog(schedule?: Schedule): void {
     const dialogRef = this.dialog.open(ScheduleDialogComponent, {
       width: '500px',
-      data: { schedule, bill: this.bill, schedules: this.data }
+      data: { schedule, bill: this.bill, schedules: this.data() }
     });
     dialogRef.afterClosed().subscribe();
   }

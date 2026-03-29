@@ -2,8 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { currencyToString } from 'projects/model/src/public-api';
 
 @Pipe({
-    name: 'currencyToString',
-    standalone: true
+  name: 'currencyToString'
 })
 export class CurrencyToStringPipe implements PipeTransform {
 

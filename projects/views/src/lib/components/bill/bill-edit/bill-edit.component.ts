@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,7 @@ import { filter, map } from 'rxjs';
   selector: 'app-bill-edit',
   templateUrl: './bill-edit.component.html',
   styleUrls: ['./bill-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputDateComponent, InputToggleComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
 })
 export class BillEditComponent {

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -15,6 +15,7 @@ import { BillEditComponent } from './bill-edit/bill-edit.component';
   selector: 'app-bill',
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, MatTabsModule, BillEditComponent, PaymentsComponent, SchedulesComponent]
 })
 export class BillComponent implements OnInit {
@@ -22,8 +23,8 @@ export class BillComponent implements OnInit {
 
   editMode = signal(false);
   newBill = signal(false);
-  bill?: Bill;
-  bills?: Bill[];
+  bill = signal<Bill | undefined>(undefined);
+  bills = signal<Bill[] | undefined>(undefined);
   routeParamId: number = -1;
 
   constructor(
@@ -32,13 +33,13 @@ export class BillComponent implements OnInit {
     this.store.select(BillsSelectors.selectBill)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(bill => {
-        this.bill = bill;
+        this.bill.set(bill);
         this.handleData();
       });
     this.store.select(BillsSelectors.selectAll)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((bills) => {
-        this.bills = bills;
+        this.bills.set(bills);
         const val = this.route.snapshot.params['id' as keyof Params];
         this.dispatchSelectedBill(val);
       });
@@ -55,12 +56,12 @@ export class BillComponent implements OnInit {
 
   private dispatchSelectedBill(val: string): void {
     this.routeParamId = val?.length ? Number.parseInt(val, undefined) : -1;
-    const bill = this.bills?.find(b => b.id === this.routeParamId);
+    const bill = this.bills()?.find(b => b.id === this.routeParamId);
     this.store.dispatch(BillsActions.setCurrentBill({ bill }));
   }
 
   private handleData(): void {
-    if (!this.bill) {
+    if (!this.bill()) {
       this.createBill();
       this.editMode.set(true);
       this.newBill.set(true);
@@ -71,11 +72,11 @@ export class BillComponent implements OnInit {
   }
 
   private createBill(): void {
-    this.bill = new Bill();
+    this.bill.set(new Bill());
   }
 
   getTitle(): string {
-    const title = this.bill?.name;
+    const title = this.bill()?.name;
     return title || 'Rachunek bez nazwy';
   }
 

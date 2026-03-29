@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +12,7 @@ import { InputBaseComponent } from './../input-component-base';
   selector: 'app-input-hyperlink',
   templateUrl: './input-hyperlink.component.html',
   styleUrls: ['./input-hyperlink.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, AddHrefAttributeDirective, MatInputModule, AddHiddenAttributeDirective, MatTooltipModule]
 })
 export class InputHyperlinkComponent extends InputBaseComponent {

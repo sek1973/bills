@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppSelectors, AppState } from 'projects/store/src/lib/state';
@@ -10,6 +10,7 @@ import { debounceTime } from 'rxjs/operators';
   selector: 'app-root',
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterOutlet, AppSpinnerComponent, AsyncPipe]
 })
 export class RootComponent {

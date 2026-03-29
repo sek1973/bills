@@ -1,5 +1,6 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   contentChild,
@@ -48,6 +49,7 @@ export interface CellComponent<T> extends Component {
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatMenuModule,
     MatTooltipModule,

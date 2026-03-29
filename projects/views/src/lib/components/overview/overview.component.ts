@@ -1,5 +1,5 @@
 import { NgStyle } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -19,6 +19,7 @@ import { BillEditComponent } from '../bill/bill-edit/bill-edit.component';
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, NgStyle, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, DateToStringPipe, CurrencyToStringPipe, BillEditComponent]
 })
 export class OverviewComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +10,7 @@ import { InputBaseComponent } from './../input-component-base';
   selector: 'app-input-percent',
   templateUrl: './input-percent.component.html',
   styleUrls: ['./input-percent.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, InputPercentDirective, MatTooltipModule]
 })
 export class InputPercentComponent extends InputBaseComponent {

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, Inject, OnInit, ViewChild, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, Inject, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
@@ -15,6 +15,7 @@ import { PaymentDialogComponent } from './payment-dialog/payment-dialog.componen
   selector: 'app-payments',
   templateUrl: './payments.component.html',
   styleUrls: ['./payments.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TableComponent, TableCellDirective, DateToStringPipe, CurrencyToStringPipe]
 })
 export class PaymentsComponent implements OnInit {
@@ -22,7 +23,7 @@ export class PaymentsComponent implements OnInit {
   @ViewChild('table', { read: TableComponent }) table!: TableComponent<Payment>;
 
   activeRow?: Payment;
-  data: Payment[] = [];
+  data = signal<Payment[]>([]);
   columns = [
     { name: 'deadline', header: 'Termin' },
     { name: 'paiddate', header: 'Zapłacono' },
@@ -49,7 +50,7 @@ export class PaymentsComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.#destroyRef),
         filter(() => !!this.bill))
       .subscribe({
-        next: payments => this.data = payments || []
+        next: payments => this.data.set(payments || [])
       });
   }
 

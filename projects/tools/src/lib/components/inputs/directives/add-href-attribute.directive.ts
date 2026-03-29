@@ -1,8 +1,7 @@
 import { Directive, ElementRef, Renderer2, effect, inject, input } from '@angular/core';
 
 @Directive({
-  selector: '[appAddHrefAttribute]',
-  standalone: true
+  selector: '[appAddHrefAttribute]'
 })
 export class AddHrefAttributeDirective {
 

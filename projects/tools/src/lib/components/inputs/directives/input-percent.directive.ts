@@ -12,8 +12,7 @@ export const APP_PERCENT_VALUE_ACCESSOR: any = {
 
 @Directive({
   selector: '[appInputPercent]',
-  providers: [APP_PERCENT_VALUE_ACCESSOR],
-  standalone: true
+  providers: [APP_PERCENT_VALUE_ACCESSOR]
 })
 export class InputPercentDirective implements ControlValueAccessor {
 

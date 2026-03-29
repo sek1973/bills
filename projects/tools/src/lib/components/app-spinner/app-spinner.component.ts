@@ -1,5 +1,5 @@
 import { OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { Component, OnInit, TemplateRef, ViewContainerRef, effect, inject, input, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewContainerRef, effect, inject, input, viewChild } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
 import { MatProgressSpinnerModule, ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { OverlayService } from './overlay-service';
@@ -8,6 +8,7 @@ import { OverlayService } from './overlay-service';
 @Component({
   selector: 'app-spinner',
   templateUrl: './app-spinner.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [OverlayService],
   imports: [MatProgressSpinnerModule]
 })

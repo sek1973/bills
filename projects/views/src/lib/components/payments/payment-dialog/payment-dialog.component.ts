@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, computed, Inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, Inject, OnInit, signal } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -16,6 +16,7 @@ export interface PaymentDialogData {
   selector: 'app-payment-dialog',
   templateUrl: './payment-dialog.component.html',
   styleUrls: ['./payment-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, InputDateComponent, InputCurrencyComponent, InputTextComponent]
 })
 export class PaymentDialogComponent implements OnInit, AfterViewInit {

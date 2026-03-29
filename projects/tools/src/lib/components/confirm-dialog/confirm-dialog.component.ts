@@ -1,4 +1,4 @@
-import { Component, Inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -17,6 +17,7 @@ export interface ConfirmDialogResponse {
   selector: 'app-confirm-dialog',
   templateUrl: './confirm-dialog.component.html',
   styleUrls: ['./confirm-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [InputTextComponent, FormsModule, ReactiveFormsModule, InputCurrencyComponent, InputTextareaComponent, MatButtonModule]
 })
 export class ConfirmDialogComponent {

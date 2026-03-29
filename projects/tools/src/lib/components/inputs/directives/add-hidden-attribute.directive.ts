@@ -2,7 +2,6 @@ import { Directive, ElementRef, Renderer2, effect, inject, input } from '@angula
 
 @Directive({
   selector: '[appAddHiddenAttribute]',
-  standalone: true
 })
 export class AddHiddenAttributeDirective {
 

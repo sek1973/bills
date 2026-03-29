@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Inject, OnInit, signal } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -19,6 +19,7 @@ export interface ScheduleDialogData {
   selector: 'app-schedule-dialog',
   templateUrl: './schedule-dialog.component.html',
   styleUrls: ['./schedule-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, InputDateComponent, InputCurrencyComponent, InputTextComponent]
 })
 export class ScheduleDialogComponent implements OnInit, AfterViewInit {

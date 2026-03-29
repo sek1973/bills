@@ -18,8 +18,8 @@
   </div>
 
   <app-bill-edit class="bill-details"
-                 [bill]="bill"
-                 [bills]="bills"
+                 [bill]="bill()"
+                 [bills]="bills()"
                  [editMode]="editMode()"
                  [newBill]="newBill()"
                  (editModeChange)="onEditModeChange($event)">

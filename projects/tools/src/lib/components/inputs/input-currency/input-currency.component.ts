@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +10,7 @@ import { InputBaseComponent } from './../input-component-base';
   selector: 'app-input-currency',
   templateUrl: './input-currency.component.html',
   styleUrls: ['./input-currency.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, InputCurrencyDirective, MatTooltipModule]
 })
 export class InputCurrencyComponent extends InputBaseComponent {

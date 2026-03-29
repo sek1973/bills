@@ -1,4 +1,4 @@
-import { Component, computed, effect, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { FieldDescription } from 'projects/model/src/lib/model';
 import { getErrorMessage } from './validators/validators';
@@ -9,7 +9,7 @@ export interface DescriptionProvider {
 @Component({
   selector: 'app-input-base',
   template: '',
-  standalone: true
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InputBaseComponent {
   tooltipShowDelayValue = 1000;
