@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, computed, Inject, OnInit, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -37,12 +37,13 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     billId: new UntypedFormControl() // not visible
   });
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: PaymentDialogData,
-    public dialogRef: MatDialogRef<PaymentDialogComponent>,
-    private store: Store<AppState>) {
-    this.bill = data?.bill;
-    this.payment = data?.payment;
+  data = inject<PaymentDialogData>(MAT_DIALOG_DATA);
+  dialogRef = inject(MatDialogRef<PaymentDialogComponent>);
+  private store = inject(Store<AppState>);
+
+  constructor() {
+    this.bill = this.data?.bill;
+    this.payment = this.data?.payment;
     this.dialogMode = this.payment ? 'edit' : 'add';
     this.form.statusChanges.subscribe(status => this.setEditStatus(status));
   }

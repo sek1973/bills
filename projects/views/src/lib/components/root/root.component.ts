@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppSelectors, AppState } from 'projects/store/src/lib/state';
@@ -14,8 +14,6 @@ import { debounceTime } from 'rxjs/operators';
   imports: [RouterOutlet, AppSpinnerComponent, AsyncPipe]
 })
 export class RootComponent {
+  private store = inject(Store<AppState>);
   public loading$ = this.store.select(AppSelectors.selectLoading).pipe(debounceTime(250));
-
-  constructor(private store: Store<AppState>) { }
-
 }

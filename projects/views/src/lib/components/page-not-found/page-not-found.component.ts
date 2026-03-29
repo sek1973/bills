@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -11,8 +11,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   imports: [RouterLink, RouterLinkActive, MatButtonModule]
 })
 export class PageNotFoundComponent implements OnInit {
-
-  constructor(private location: Location) { }
+  private location = inject(Location);
 
   ngOnInit(): void {
   }

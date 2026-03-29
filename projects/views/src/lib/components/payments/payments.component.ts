@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, Inject, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
@@ -34,10 +34,8 @@ export class PaymentsComponent implements OnInit {
   bill?: Bill;
 
   #destroyRef = inject(DestroyRef);
-
-  constructor(
-    @Inject(MatDialog) public dialog: MatDialog,
-    private store: Store<AppState>) { }
+  dialog = inject(MatDialog);
+  private store = inject(Store<AppState>);
 
   ngOnInit(): void {
     this.subscribeToBill();

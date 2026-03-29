@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from 'projects/model/src/public-api';
 import { NavigationService, NotificationService } from 'projects/tools/src/public-api';
@@ -10,11 +10,10 @@ import { BillsActions } from '../bill';
 @Injectable()
 export class AuthEffects {
 
-  constructor(
-    private actions$: Actions,
-    private authService: AuthService,
-    private notification: NotificationService,
-    private navigationService: NavigationService) { }
+  private actions$ = inject(Actions);
+  private authService = inject(AuthService);
+  private notification = inject(NotificationService);
+  private navigationService = inject(NavigationService);
 
   login$ = createEffect(() => {
     return this.actions$

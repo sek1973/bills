@@ -1,5 +1,5 @@
 import { NgStyle } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -34,10 +34,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   @ViewChild('table')
   table!: TableComponent<Bill>;
 
-  constructor(
-    private store: Store<AppState>,
-    private router: Router,
-    private notification: NotificationService) { }
+  private store = inject(Store<AppState>);
+  private router = inject(Router);
+  private notification = inject(NotificationService);
 
   ngOnInit(): void {
     this.subscribeToData();

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { SchedulesService } from 'projects/model/src/public-api';
@@ -11,11 +11,10 @@ import { SchedulesActions } from './schedule.actions';
 @Injectable()
 export class ScheduleEffects {
 
-  constructor(
-    private actions$: Actions,
-    private schedulesService: SchedulesService,
-    private confirmationService: ConfirmationService,
-    private notification: NotificationService) { }
+  private actions$ = inject(Actions);
+  private schedulesService = inject(SchedulesService);
+  private confirmationService = inject(ConfirmationService);
+  private notification = inject(NotificationService);
 
   loadSchedules$ = createEffect(() => {
     return this.actions$

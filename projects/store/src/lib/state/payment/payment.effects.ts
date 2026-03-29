@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PaymentsService } from 'projects/model/src/public-api';
@@ -11,11 +11,10 @@ import { PaymentsActions } from './payment.actions';
 @Injectable()
 export class PaymentEffects {
 
-  constructor(
-    private actions$: Actions,
-    private paymentsService: PaymentsService,
-    private confirmationService: ConfirmationService,
-    private notification: NotificationService) { }
+  private actions$ = inject(Actions);
+  private paymentsService = inject(PaymentsService);
+  private confirmationService = inject(ConfirmationService);
+  private notification = inject(NotificationService);
 
   loadPayments$ = createEffect(() => {
     return this.actions$

@@ -5,6 +5,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
+
 import { Bill } from 'projects/model/src/lib/model';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { PaymentsComponent } from '../payments/payments.component';
@@ -20,6 +21,8 @@ import { BillEditComponent } from './bill-edit/bill-edit.component';
 })
 export class BillComponent implements OnInit {
   #destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
+  private store = inject(Store<AppState>);
 
   editMode = signal(false);
   newBill = signal(false);
@@ -27,9 +30,7 @@ export class BillComponent implements OnInit {
   bills = signal<Bill[] | undefined>(undefined);
   routeParamId: number = -1;
 
-  constructor(
-    private route: ActivatedRoute,
-    private store: Store<AppState>) {
+  constructor() {
     this.store.select(BillsSelectors.selectBill)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(bill => {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
@@ -16,6 +16,8 @@ import { InputPasswordComponent, InputTextComponent } from 'projects/tools/src/p
   imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputPasswordComponent, RouterLink]
 })
 export class LoginComponent {
+  private store = inject(Store<AppState>);
+
   public error: string | undefined = undefined;
 
   userFormControl = new UntypedFormControl('', [
@@ -40,8 +42,6 @@ export class LoginComponent {
       labelText: 'Hasło'
     }]
   ]);
-
-  constructor(private store: Store<AppState>) { }
 
   onLogIn(): void {
     this.error = undefined;

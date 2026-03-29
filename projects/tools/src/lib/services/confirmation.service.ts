@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
@@ -8,7 +8,7 @@ import { ConfirmDialogComponent, ConfirmDialogInputType, ConfirmDialogModel, Con
   providedIn: 'root'
 })
 export class ConfirmationService {
-  constructor(@Inject(MatDialog) private dialog: MatDialog) { }
+  private dialog = inject(MatDialog);
 
   confirm(
     dialogTitle: string,

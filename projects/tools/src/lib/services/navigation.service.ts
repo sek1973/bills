@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { PreviousUrlService } from './previous-url.service';
 
@@ -6,8 +6,8 @@ import { PreviousUrlService } from './previous-url.service';
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
 
-  constructor(private router: Router, private previousUrlService: PreviousUrlService) {
-  }
+  private router = inject(Router);
+  private previousUrlService = inject(PreviousUrlService);
 
   goToPreviousPage(whenNoneUrl: string): void {
     if (this.previousUrlService.previousUrl) {

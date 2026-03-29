@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -12,12 +12,11 @@ import { BillsActions } from './bill.actions';
 @Injectable()
 export class BillEffects {
 
-  constructor(
-    private actions$: Actions,
-    private billsService: BillsService,
-    private confirmationService: ConfirmationService,
-    private notification: NotificationService,
-    private router: Router) { }
+  private actions$ = inject(Actions);
+  private billsService = inject(BillsService);
+  private confirmationService = inject(ConfirmationService);
+  private notification = inject(NotificationService);
+  private router = inject(Router);
 
   loadBills$ = createEffect(() => {
     return this.actions$
