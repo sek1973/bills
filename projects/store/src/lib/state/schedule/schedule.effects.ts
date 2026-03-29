@@ -50,7 +50,7 @@ export class ScheduleEffects {
       .pipe(
         ofType(ScheduleApiActions.updateScheduleSuccess),
         map(action => {
-          this.snackBar.open('Zapisano zmiany dla planowanej płatności', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Zapisano zmiany dla planowanej płatności', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.schedule.billId || -1 }))));
@@ -75,7 +75,7 @@ export class ScheduleEffects {
       .pipe(
         ofType(ScheduleApiActions.createScheduleSuccess),
         map(action => {
-          this.snackBar.open('Utworzono nową planowaną płatność', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Utworzono nową planowaną płatność', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.schedule.billId || -1 }))));
@@ -112,7 +112,7 @@ export class ScheduleEffects {
       .pipe(
         ofType(ScheduleApiActions.deleteScheduleSuccess),
         map(action => {
-          this.snackBar.open('Usunięto płatność', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Usunięto płatność', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.billId }))));
@@ -157,7 +157,7 @@ export class ScheduleEffects {
       .pipe(
         ofType(ScheduleApiActions.importSchedulesSuccess),
         map(action => {
-          this.snackBar.open('Zaimportowano planowane płatności', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Zaimportowano planowane płatności', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           return action;
         }),
         switchMap(action => of(SchedulesActions.loadSchedules({ billId: action.billId }))));

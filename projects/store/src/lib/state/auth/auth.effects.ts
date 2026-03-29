@@ -25,7 +25,7 @@ export class AuthEffects {
           .pipe(
             switchMap(success => {
               if (success) {
-                this.snackBar.open('Zalogowano do aplikacji!', 'Ukryj', { duration: 3000 });
+                this.snackBar.open('Zalogowano do aplikacji!', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
                 this.navigationService.goToPreviousPage('/zestawienie');
                 return of(AuthActions.loginSuccess({ user: userData.user }));
               } else {
@@ -57,7 +57,7 @@ export class AuthEffects {
           .pipe(
             map(() => {
               this.navigationService.goToPage('/login');
-              this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000 });
+              this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
             }),
             map(() => AuthActions.logoutSuccess()),
             catchError(error => of(AuthActions.logoutFailure({ error })))

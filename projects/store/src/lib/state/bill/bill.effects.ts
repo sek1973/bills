@@ -53,7 +53,7 @@ export class BillEffects {
       .pipe(
         ofType(BillApiActions.updateBillSuccess),
         map((action) => {
-          this.snackBar.open('Zapisano zmiany dla rachunku', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Zapisano zmiany dla rachunku', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           if (action.redirect) { this.router.navigate(['/zestawienie']); }
         }),
         switchMap(() => of(BillsActions.loadBills())));
@@ -78,7 +78,7 @@ export class BillEffects {
       .pipe(
         ofType(BillApiActions.createBillSuccess),
         map((action) => {
-          this.snackBar.open('Utworzono nowy rachunek', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Utworzono nowy rachunek', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           if (action.redirect) {
             this.router.navigate(['/zestawienie']);
           } else {
@@ -122,7 +122,7 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillApiActions.deleteBillSuccess),
-        map(() => this.snackBar.open('Usunięto rachunek', 'Ukryj', { duration: 3000 })),
+        map(() => this.snackBar.open('Usunięto rachunek', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' })),
         map(() => this.router.navigate(['/zestawienie'])),
         switchMap(() => of(BillsActions.loadBills())));
   });
@@ -159,7 +159,7 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillApiActions.payBillSuccess),
-        map(() => this.snackBar.open('Opłacono rachunek', 'Ukryj', { duration: 3000 })),
+        map(() => this.snackBar.open('Opłacono rachunek', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' })),
         switchMap(() => of(BillsActions.loadBills())));
   });
 

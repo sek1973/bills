@@ -50,7 +50,7 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.updatePaymentSuccess),
         map(action => {
-          this.snackBar.open('Zapisano zmiany dla płatności', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Zapisano zmiany dla płatności', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.payment.billId || -1 }))));
@@ -75,7 +75,7 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.createPaymentSuccess),
         map(action => {
-          this.snackBar.open('Utworzono nową płatność', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Utworzono nową płatność', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.payment.billId || -1 }))));
@@ -112,7 +112,7 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.deletePaymentSuccess),
         map(action => {
-          this.snackBar.open('Usunięto płatność', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Usunięto płatność', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
@@ -157,7 +157,7 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.importPaymentsSuccess),
         map(action => {
-          this.snackBar.open('Zaimportowano płatności', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Zaimportowano płatności', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));

@@ -100,7 +100,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   onLogout(loggedIn: boolean): void {
     if (loggedIn === false) {
       this.router.navigate(['/login']);
-      this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000 });
+      this.snackBar.open('Wylogowano z aplikacji!', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
     }
   }
 

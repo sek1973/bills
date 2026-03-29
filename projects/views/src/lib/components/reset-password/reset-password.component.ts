@@ -43,7 +43,7 @@ export class ResetPasswordComponent {
         this.loading.set(false);
         if (success) {
           this.emailSent.set(true);
-          this.snackBar.open('Link do resetowania hasła został wysłany na podany adres e-mail.', 'Ukryj', { duration: 5000 });
+          this.snackBar.open('Link do resetowania hasła został wysłany na podany adres e-mail.', 'Ukryj', { duration: 5000, panelClass: 'snackbar-style-success' });
         } else {
           this.snackBar.open('Błąd wysyłania linku. Sprawdź adres e-mail i spróbuj ponownie.', 'Ukryj', { duration: 5000 });
         }

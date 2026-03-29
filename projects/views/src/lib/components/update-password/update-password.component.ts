@@ -62,7 +62,7 @@ export class UpdatePasswordComponent {
       next: success => {
         this.loading.set(false);
         if (success) {
-          this.snackBar.open('Hasło zostało zmienione. Zaloguj się ponownie.', 'Ukryj', { duration: 3000 });
+          this.snackBar.open('Hasło zostało zmienione. Zaloguj się ponownie.', 'Ukryj', { duration: 3000, panelClass: 'snackbar-style-success' });
           this.router.navigate(['/login']);
         } else {
           this.snackBar.open('Błąd zmiany hasła. Spróbuj ponownie.', 'Ukryj', { duration: 5000 });
