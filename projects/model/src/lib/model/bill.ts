@@ -91,5 +91,10 @@ export const BillDescription = new Map<string, FieldDescription>([
     tooltipText: 'Podaj login, którego używasz na stronie logowania dystrybutora',
     placeholderText: 'Login do konta u dystrybutora',
     labelText: 'Login'
-  }]
+  }],
+  ['lp', {
+    tooltipText: 'Liczba porządkowa rachunku',
+    placeholderText: 'Liczba porządkowa',
+    labelText: 'Liczba porządkowa'
+  },]
 ]);
