@@ -1,19 +1,57 @@
 <div class="bill-view">
   <div class="bill-titlebar">
     <div class="bill-title">
-      <span>
-        {{getTitle()}}
-      </span>
-    </div>
-    <div class="bill-toolbar">
       <button mat-icon-button
               matTooltip="Zestawienie"
               [routerLink]="['/zestawienie']"
               routerLinkActive="active">
         <span class="material-icons"
-              inline=true>view_list
+              inline=true>arrow_back
         </span>
       </button>
+      <span>
+        {{getTitle()}}
+      </span>
+    </div>
+    <div class="bill-toolbar">
+      @if (editMode()) {
+      <button mat-raised-button
+              color="accent"
+              class="toolbar-button"
+              (click)="cancel()">Anuluj</button>
+      }
+      @if (editMode()) {
+      <button mat-raised-button
+              color="warn"
+              class="toolbar-button"
+              (click)="deleteBill()">Usuń</button>
+      }
+      @if (editMode()) {
+      <button mat-raised-button
+              color="primary"
+              class="toolbar-button"
+              [disabled]="!billEdit()?.canSave()"
+              (click)="saveBill()">Zapisz</button>
+      }
+      @if (editMode() && billEdit()?.showSaveAndClose()) {
+      <button mat-raised-button
+              color="primary"
+              class="toolbar-button"
+              [disabled]="!billEdit()?.canSave()"
+              (click)="saveBillAndClose()">Zapisz i zamknij</button>
+      }
+      @if (!editMode()) {
+      <button mat-raised-button
+              color="primary"
+              class="toolbar-button"
+              (click)="editBill()">Edytuj</button>
+      }
+      @if (!editMode()) {
+      <button mat-raised-button
+              color="primary"
+              class="toolbar-button"
+              (click)="payBill()">Zapłacony</button>
+      }
     </div>
   </div>
 

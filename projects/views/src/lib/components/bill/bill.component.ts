@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -20,6 +20,8 @@ import { BillEditComponent } from './bill-edit/bill-edit.component';
   imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, MatTabsModule, BillEditComponent, PaymentsComponent, SchedulesComponent]
 })
 export class BillComponent implements OnInit {
+  billEdit = viewChild(BillEditComponent);
+
   #destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
   private store = inject(Store<AppState>);
@@ -84,5 +86,12 @@ export class BillComponent implements OnInit {
   onEditModeChange(event: boolean): void {
     this.editMode.set(event);
   }
+
+  editBill(): void { this.billEdit()?.editBill(); }
+  payBill(): void { this.billEdit()?.payBill(); }
+  saveBill(): void { this.billEdit()?.saveBill(); }
+  saveBillAndClose(): void { this.billEdit()?.saveBillAndClose(); }
+  deleteBill(): void { this.billEdit()?.deleteBill(); }
+  cancel(): void { this.billEdit()?.cancel(); }
 
 }

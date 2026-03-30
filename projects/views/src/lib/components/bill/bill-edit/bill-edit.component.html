@@ -1,106 +1,65 @@
-<div class="bill-toolbar">
-  @if (editMode()) {
-  <button mat-raised-button
-          color="accent"
-          class="toolbar-button"
-          (click)="cancel()">Anuluj</button>
-  }
-  @if (editMode()) {
-  <button mat-raised-button
-          color="warn"
-          class="toolbar-button"
-          (click)="deleteBill()">Usuń</button>
-  }
-  @if (editMode()) {
-  <button mat-raised-button
-          color="primary"
-          class="toolbar-button"
-          [disabled]="!canSave()"
-          (click)="saveBill()">Zapisz</button>
-  }
-  @if (editMode() && showSaveAndClose()) {
-  <button mat-raised-button
-          color="primary"
-          class="toolbar-button"
-          [disabled]="!canSave()"
-          (click)="saveBillAndClose()">Zapisz i zamknij</button>
-  }
-  @if (!editMode()) {
-  <button mat-raised-button
-          color="primary"
-          class="toolbar-button"
-          (click)="editBill()">Edytuj</button>
-  }
-  @if (!editMode()) {
-  <button mat-raised-button
-          color="primary"
-          class="toolbar-button"
-          (click)="payBill()">Zapłacony</button>
-  }
-</div>
-
 <div class="form-grid">
-  <app-input-text [formGroup]="form"
-                  [editMode]="editMode()"
-                  [path]="['name']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-text>
-  <app-input-text [formGroup]="form"
-                  [editMode]="editMode()"
-                  [path]="['description']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-text>
-  <app-input-hyperlink [formGroup]="form"
-                       [editMode]="editMode()"
-                       [path]="['url']"
-                       [descriptionProvider]="descriptionProvider">
-  </app-input-hyperlink>
-  <app-input-text [formGroup]="form"
-                  [editMode]="editMode()"
-                  [path]="['login']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-text>
-  <app-input-date [formGroup]="form"
-                  [editMode]="editMode()"
-                  [path]="['deadline']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-date>
-  <app-input-date [formGroup]="form"
-                  [editMode]="editMode()"
-                  [path]="['reminder']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-date>
-  <app-input-text [formGroup]="form"
-                  [editMode]="editMode()"
-                  type="number"
-                  [path]="['repeat']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-text>
-  <app-input-select [formGroup]="form"
-                    [editMode]="editMode()"
-                    [path]="['unit']"
-                    [descriptionProvider]="descriptionProvider"
-                    [selectItems]="unitEnumItems">
-  </app-input-select>
-  <app-input-currency [formGroup]="form"
-                      [editMode]="editMode()"
-                      [path]="['sum']"
-                      [descriptionProvider]="descriptionProvider">
-  </app-input-currency>
-  <app-input-percent [formGroup]="form"
-                     [editMode]="editMode()"
-                     type="number"
-                     [path]="['share']"
-                     [descriptionProvider]="descriptionProvider">
-  </app-input-percent>
-  <app-input-text [formGroup]="form"
-                  [editMode]="editMode()"
-                  [path]="['lp']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-text>
-  <app-input-toggle [formGroup]="form"
-                    [editMode]="editMode()"
-                    [path]="['active']"
-                    [descriptionProvider]="descriptionProvider">
-  </app-input-toggle>
+        <app-input-text [formGroup]="form"
+                        [editMode]="editMode()"
+                        [path]="['name']"
+                        [descriptionProvider]="descriptionProvider">
+        </app-input-text>
+        <app-input-text [formGroup]="form"
+                        [editMode]="editMode()"
+                        [path]="['description']"
+                        [descriptionProvider]="descriptionProvider">
+        </app-input-text>
+        <app-input-hyperlink [formGroup]="form"
+                             [editMode]="editMode()"
+                             [path]="['url']"
+                             [descriptionProvider]="descriptionProvider">
+        </app-input-hyperlink>
+        <app-input-text [formGroup]="form"
+                        [editMode]="editMode()"
+                        [path]="['login']"
+                        [descriptionProvider]="descriptionProvider">
+        </app-input-text>
+        <app-input-date [formGroup]="form"
+                        [editMode]="editMode()"
+                        [path]="['deadline']"
+                        [descriptionProvider]="descriptionProvider">
+        </app-input-date>
+        <app-input-date [formGroup]="form"
+                        [editMode]="editMode()"
+                        [path]="['reminder']"
+                        [descriptionProvider]="descriptionProvider">
+        </app-input-date>
+        <app-input-text [formGroup]="form"
+                        [editMode]="editMode()"
+                        type="number"
+                        [path]="['repeat']"
+                        [descriptionProvider]="descriptionProvider">
+        </app-input-text>
+        <app-input-select [formGroup]="form"
+                          [editMode]="editMode()"
+                          [path]="['unit']"
+                          [descriptionProvider]="descriptionProvider"
+                          [selectItems]="unitEnumItems">
+        </app-input-select>
+        <app-input-currency [formGroup]="form"
+                            [editMode]="editMode()"
+                            [path]="['sum']"
+                            [descriptionProvider]="descriptionProvider">
+        </app-input-currency>
+        <app-input-percent [formGroup]="form"
+                           [editMode]="editMode()"
+                           type="number"
+                           [path]="['share']"
+                           [descriptionProvider]="descriptionProvider">
+        </app-input-percent>
+        <app-input-text [formGroup]="form"
+                        [editMode]="editMode()"
+                        [path]="['lp']"
+                        [descriptionProvider]="descriptionProvider">
+        </app-input-text>
+        <app-input-toggle [formGroup]="form"
+                          [editMode]="editMode()"
+                          [path]="['active']"
+                          [descriptionProvider]="descriptionProvider">
+        </app-input-toggle>
 </div>
