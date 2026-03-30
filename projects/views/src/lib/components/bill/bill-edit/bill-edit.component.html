@@ -55,27 +55,38 @@
                        [path]="['url']"
                        [descriptionProvider]="descriptionProvider">
   </app-input-hyperlink>
-  <app-input-date [formGroup]="form"
-                  [editMode]="editMode()"
-                  [path]="['deadline']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-date>
-  <app-input-currency [formGroup]="form"
-                      [editMode]="editMode()"
-                      [path]="['sum']"
-                      [descriptionProvider]="descriptionProvider">
-  </app-input-currency>
   <app-input-text [formGroup]="form"
                   [editMode]="editMode()"
                   [path]="['login']"
                   [descriptionProvider]="descriptionProvider">
   </app-input-text>
+  <app-input-date [formGroup]="form"
+                  [editMode]="editMode()"
+                  [path]="['deadline']"
+                  [descriptionProvider]="descriptionProvider">
+  </app-input-date>
+  <app-input-date [formGroup]="form"
+                  [editMode]="editMode()"
+                  [path]="['reminder']"
+                  [descriptionProvider]="descriptionProvider">
+  </app-input-date>
   <app-input-text [formGroup]="form"
                   [editMode]="editMode()"
                   type="number"
                   [path]="['repeat']"
                   [descriptionProvider]="descriptionProvider">
   </app-input-text>
+  <app-input-select [formGroup]="form"
+                    [editMode]="editMode()"
+                    [path]="['unit']"
+                    [descriptionProvider]="descriptionProvider"
+                    [selectItems]="unitEnumItems">
+  </app-input-select>
+  <app-input-currency [formGroup]="form"
+                      [editMode]="editMode()"
+                      [path]="['sum']"
+                      [descriptionProvider]="descriptionProvider">
+  </app-input-currency>
   <app-input-percent [formGroup]="form"
                      [editMode]="editMode()"
                      type="number"
@@ -87,17 +98,6 @@
                   [path]="['lp']"
                   [descriptionProvider]="descriptionProvider">
   </app-input-text>
-  <app-input-select [formGroup]="form"
-                    [editMode]="editMode()"
-                    [path]="['unit']"
-                    [descriptionProvider]="descriptionProvider"
-                    [selectItems]="unitEnumItems">
-  </app-input-select>
-  <app-input-date [formGroup]="form"
-                  [editMode]="editMode()"
-                  [path]="['reminder']"
-                  [descriptionProvider]="descriptionProvider">
-  </app-input-date>
   <app-input-toggle [formGroup]="form"
                     [editMode]="editMode()"
                     [path]="['active']"
