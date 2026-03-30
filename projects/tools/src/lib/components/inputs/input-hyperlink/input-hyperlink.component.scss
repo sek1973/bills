@@ -24,6 +24,7 @@
   display: block;
   text-decoration: underline;
   cursor: pointer;
+  pointer-events: auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
