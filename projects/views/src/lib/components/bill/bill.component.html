@@ -18,39 +18,55 @@
       <button mat-raised-button
               color="accent"
               class="toolbar-button"
-              (click)="cancel()">Anuluj</button>
+              (click)="cancel()">
+        <span class="material-icons btn-icon">close</span>
+        <span class="btn-text">Anuluj</span>
+      </button>
       }
       @if (editMode()) {
       <button mat-raised-button
               color="warn"
               class="toolbar-button"
-              (click)="deleteBill()">Usuń</button>
+              (click)="deleteBill()">
+        <span class="material-icons btn-icon">delete</span>
+        <span class="btn-text">Usuń</span>
+      </button>
       }
       @if (editMode()) {
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
               [disabled]="!billEdit()?.canSave()"
-              (click)="saveBill()">Zapisz</button>
+              (click)="saveBill()">
+        <span class="material-icons btn-icon">save</span>
+        <span class="btn-text">Zapisz</span>
+      </button>
       }
       @if (editMode() && billEdit()?.showSaveAndClose()) {
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
               [disabled]="!billEdit()?.canSave()"
-              (click)="saveBillAndClose()">Zapisz i zamknij</button>
+              (click)="saveBillAndClose()">
+        <span class="material-icons btn-icon">done_all</span>
+        <span class="btn-text">Zapisz i zamknij</span>
+      </button>
       }
       @if (!editMode()) {
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
-              (click)="editBill()">Edytuj</button>
+              (click)="editBill()">
+        <span class="btn-text btn-text-always">Edytuj</span>
+      </button>
       }
       @if (!editMode()) {
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
-              (click)="payBill()">Zapłacony</button>
+              (click)="payBill()">
+        <span class="btn-text btn-text-always">Zapłacony</span>
+      </button>
       }
     </div>
   </div>
