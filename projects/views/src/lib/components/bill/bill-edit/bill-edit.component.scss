@@ -1,66 +1,20 @@
-.form {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-content: stretch;
+.form-grid {
+  display: grid;
+  gap: 0 20px;
+  padding: 0 20px;
+  grid-template-columns: 1fr;
 }
 
-@media(min-width: 800px) {
-  .form {
-    flex-direction: row;
-  }
-
-  .form-column-left {
-    width: 50%;
+@media (min-width: 600px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media(min-width: 800px) {
-  .form {
-    flex-direction: row;
+@media (min-width: 1024px) {
+  .form-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
-
-  .form-column-right {
-    width: 50%;
-  }
-}
-
-@media(max-width: 799px) {
-  .form {
-    flex-direction: column;
-  }
-
-  .form-column-left {
-    width: 100%;
-  }
-}
-
-@media(max-width: 799px) {
-  .form {
-    flex-direction: column;
-  }
-
-  .form-column-right {
-    width: 100%;
-  }
-}
-
-.form-column-left {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.form-column-right {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding-left: 20px;
-  padding-right: 20px;
 }
 
 .bill-toolbar {
