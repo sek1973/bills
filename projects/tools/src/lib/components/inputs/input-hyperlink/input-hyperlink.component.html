@@ -1,21 +1,28 @@
 @if (visible()) {
 <div class="form-item"
      [formGroup]="fieldFormGroup()">
-  <mat-form-field class="form-field">
+  <mat-form-field class="form-field"
+                  [floatLabel]="controlValue() ? 'always' : 'auto'">
     <mat-label>{{_labelText()}}</mat-label>
-    <a target="_blank"
+    @if (!editMode()) {
+    <a class="hyperlink-overlay"
+       target="_blank"
        rel="noopener noreferrer"
-       [appAddHrefAttribute]="formControl().disabled"
-       [appAddHrefAttributeLink]="formControl().value">{{hyperlink()}}
-      <input matInput
-             [appAddHiddenAttribute]="formControl().disabled"
-             [matTooltip]="_tooltipText()"
-             [matTooltipShowDelay]="tooltipShowDelayValue"
-             [matTooltipHideDelay]="tooltipHideDelayValue"
-             [id]="fieldName()"
-             [formControlName]="fieldName()"
-             [placeholder]="_placeholderText()">
-    </a>
+       [appAddHrefAttribute]="true"
+       [appAddHrefAttributeLink]="externalUrl()">{{controlValue()}}</a>
+    <input matInput
+           class="hidden-input"
+           [id]="fieldName()"
+           [formControlName]="fieldName()">
+    } @else {
+    <input matInput
+           [matTooltip]="_tooltipText()"
+           [matTooltipShowDelay]="tooltipShowDelayValue"
+           [matTooltipHideDelay]="tooltipHideDelayValue"
+           [id]="fieldName()"
+           [formControlName]="fieldName()"
+           [placeholder]="_placeholderText()">
+    }
     <mat-error>
       {{getErrorMessage(path())}}
     </mat-error>

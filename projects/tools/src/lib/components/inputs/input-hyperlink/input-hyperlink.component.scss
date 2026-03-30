@@ -7,4 +7,24 @@
 
 .form-field {
   flex-grow: 1;
+
+  input:not(.hidden-input) {
+    color: var(--mat-form-field-enabled-input-text-color, var(--mat-sys-on-surface));
+  }
+}
+
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.hyperlink-overlay {
+  display: block;
+  text-decoration: underline;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
