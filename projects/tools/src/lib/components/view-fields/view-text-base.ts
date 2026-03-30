@@ -14,7 +14,7 @@ export interface LabelProvider {
 export class ViewFieldComponentBase {
   valueProvider = input.required<ValueProvider>();
   descriptionProvider = input.required<DescriptionProvider>();
-  autoHide = input(true);
+  autoHide = input(false);
   path = input.required<string[]>();
 
   childAttr = computed(() => {

@@ -15,7 +15,7 @@ export class InputBaseComponent {
   tooltipShowDelayValue = 1000;
   tooltipHideDelayValue = 2000;
 
-  autoHide = input<boolean>(true);
+  autoHide = input<boolean>(false);
   formGroup = input.required<UntypedFormGroup>();
   descriptionProvider = input.required<DescriptionProvider>();
   editMode = input<boolean>(true);
