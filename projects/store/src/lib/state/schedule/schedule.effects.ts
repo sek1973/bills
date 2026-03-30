@@ -122,7 +122,7 @@ export class ScheduleEffects {
         ofType(SchedulesActions.importSchedules),
         mergeMap(action => this.confirmationService
           .confirm('Importuj planowane płatności',
-            'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.', 'Anuluj', 'Importuj',
+            'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.\nFormat (kolumny oddzielone tabulatorem, wiersze nową linią): termin | kwota | uwagi', 'Anuluj', 'Importuj',
             ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
           .pipe(
             filter(response => !!response),

@@ -3,7 +3,7 @@ import { concat, Observable, of } from 'rxjs';
 import { bufferCount, catchError, map } from 'rxjs/operators';
 import { currencyToNumber, stringToDate } from '../helpers';
 import { Payment } from '../model';
-import { ImportReport } from './common';
+import { IMPORT_COLUMN_SEPARATOR, IMPORT_LINE_SEPARATOR, ImportReport } from './common';
 
 @Injectable({
   providedIn: 'root',
@@ -22,12 +22,11 @@ export abstract class PaymentsService {
 
   abstract delete(payment: Payment): Observable<boolean>;
 
-  importPayments(data: string, billId: number, lineSeparator: string = '\n', columnSeparator: string = '\t'):
-    Observable<ImportReport[]> {
+  importPayments(data: string, billId: number): Observable<ImportReport[]> {
     const requests: Observable<ImportReport>[] = [];
     const errors: string[] = [];
-    data.split(lineSeparator).forEach((line, index) => {
-      const payment = this.parsePayment(line, billId, columnSeparator);
+    data.split(IMPORT_LINE_SEPARATOR).forEach((line, index) => {
+      const payment = this.parsePayment(line, billId);
       if (payment) {
         const request: Observable<ImportReport> = this.add(payment).pipe(
           map(id => ({ id })),
@@ -40,8 +39,8 @@ export abstract class PaymentsService {
     return requests.length ? concat(...requests).pipe(bufferCount(requests.length)) : of([]);
   }
 
-  private parsePayment(text: string, billId: number, columnSeparator: string = '\t'): Payment | undefined {
-    const cells = text.split(columnSeparator);
+  private parsePayment(text: string, billId: number): Payment | undefined {
+    const cells = text.split(IMPORT_COLUMN_SEPARATOR);
     const deadline: Date | undefined = stringToDate(cells[0]);
     const paiddate: Date | undefined = stringToDate(cells[1]);
     const sum: number | undefined = currencyToNumber(cells[2]);
