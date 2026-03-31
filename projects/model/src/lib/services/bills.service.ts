@@ -20,7 +20,7 @@ export abstract class BillsService {
 
   abstract getBills(): Bill[];
 
-  private createBillData(bill: any): Bill {
+  private createBillData(bill: Bill): Bill {
     if (bill.id === -1) {
       const bills = this.getBills();
       if (bills && bills.length) {
@@ -28,7 +28,7 @@ export abstract class BillsService {
       } else { bill.id = 0; }
     }
     const result: Bill = new Bill(
-      bill.lp ?? bill.id,
+      bill.position ?? bill.id,
       bill.name || '',
       bill.description || '',
       bill.active || false,
@@ -60,10 +60,9 @@ export abstract class BillsService {
   pay(bill: Bill, paid: number): Observable<boolean> {
     const payment = this.createPaymentData(bill, paid);
     const billCopy = this.createBillData(bill);
-    let schedule: Schedule | undefined;
     return this.schedulesService.fetchComming(bill.id)
       .pipe(switchMap(sch => {
-        schedule = sch;
+        const schedule: Schedule | undefined = sch;
         this.paymentsService.add(payment);
         this.adjustBillData(billCopy, schedule);
         if (schedule) { this.schedulesService.delete(schedule); }

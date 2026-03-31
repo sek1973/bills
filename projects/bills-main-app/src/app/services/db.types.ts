@@ -1,6 +1,6 @@
 export interface BillRow {
   id: number;
-  lp: number | null;
+  position: number | null;
   name: string;
   description: string | null;
   active: boolean;

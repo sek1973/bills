@@ -7,7 +7,7 @@ import { SchedulesServiceImpl } from './schedules.service';
 
 function createBill(
   id: number,
-  lp: number,
+  position: number,
   name: string,
   description: string,
   url: string,
@@ -20,7 +20,7 @@ function createBill(
   reminder: Date = new Date()): Bill {
   const result = new Bill();
   result.id = id;
-  result.lp = lp;
+  result.position = position;
   result.name = name;
   result.description = description;
   result.url = url;

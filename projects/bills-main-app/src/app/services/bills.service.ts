@@ -40,7 +40,7 @@ export class BillsServiceImpl extends BillsService {
 
   private fromRow(r: BillRow): Bill {
     return new Bill(
-      r.lp ?? undefined,
+      r.position ?? undefined,
       r.name,
       r.description ?? undefined,
       r.active,

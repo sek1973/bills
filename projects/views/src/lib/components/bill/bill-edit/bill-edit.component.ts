@@ -35,7 +35,7 @@ export class BillEditComponent {
   private loadingFormValue = false;
 
   form: FormGroup = new FormGroup({
-    lp: new FormControl<number | undefined>(-1),
+    position: new FormControl<number | undefined>(-1),
     name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
     description: new FormControl<string | undefined>(undefined),
     active: new FormControl<boolean>(true, Validators.required),
@@ -72,7 +72,7 @@ export class BillEditComponent {
   private createFormValueFromBill(bill: Bill): Partial<Bill> {
     return {
       id: bill.id,
-      lp: bill.lp,
+      position: bill.position,
       name: bill.name,
       description: bill.description,
       active: bill.active,
@@ -89,7 +89,7 @@ export class BillEditComponent {
 
   private createBillFromFormValue(value: Partial<Bill>): Bill {
     return new Bill(
-      value.lp,
+      value.position,
       value.name,
       value.description,
       value.active,

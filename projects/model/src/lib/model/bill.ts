@@ -4,7 +4,7 @@ import { Unit } from './unit';
 export class Bill {
 
   constructor(
-    public lp?: number,
+    public position?: number,
     public name: string = 'Nowy rachunek',
     public description?: string,
     public active: boolean = true,
@@ -20,7 +20,7 @@ export class Bill {
 
   clone(id?: number): Bill {
     return new Bill(
-      this.lp,
+      this.position,
       this.name,
       this.description,
       this.active,
@@ -92,7 +92,7 @@ export const BillDescription = new Map<string, FieldDescription>([
     placeholderText: 'Login do konta u dystrybutora',
     labelText: 'Login'
   }],
-  ['lp', {
+  ['position', {
     tooltipText: 'Liczba porządkowa rachunku',
     placeholderText: 'Liczba porządkowa',
     labelText: 'Liczba porządkowa'
