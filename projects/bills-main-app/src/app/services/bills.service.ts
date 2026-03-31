@@ -52,12 +52,29 @@ export class BillsServiceImpl extends BillsService {
       r.repeat,
       r.unit,
       r.reminder ? new Date(r.reminder) : undefined,
-      r.id,
+      r.id ?? -1,
     );
   }
 
+  private toRow(bill: Bill): Omit<BillRow, 'id'> {
+    return {
+      position: bill.position ?? null,
+      name: bill.name,
+      description: bill.description ?? null,
+      active: bill.active,
+      url: bill.url ?? null,
+      login: bill.login ?? null,
+      sum: bill.sum,
+      share: bill.share,
+      deadline: bill.deadline ? bill.deadline.toISOString() : null,
+      repeat: bill.repeat,
+      unit: bill.unit,
+      reminder: bill.reminder ? bill.reminder.toISOString() : null,
+    };
+  }
+
   add(bill: Bill): Observable<Bill> {
-    return from(this.serverService.client.from('bills').insert(bill).select().single<Bill>()).pipe(
+    return from(this.serverService.client.from('bills').insert(this.toRow(bill)).select().single<Bill>()).pipe(
       map(({ data, error }) => {
         if (error) throw error;
         return data;

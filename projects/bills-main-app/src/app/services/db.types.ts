@@ -1,5 +1,5 @@
 export interface BillRow {
-  id: number;
+  id: number | null;
   position: number | null;
   name: string;
   description: string | null;
@@ -15,7 +15,7 @@ export interface BillRow {
 }
 
 export interface PaymentRow {
-  id: number;
+  id: number | null;
   deadline: string;
   sum: number;
   share: number;
@@ -25,7 +25,7 @@ export interface PaymentRow {
 }
 
 export interface ScheduleRow {
-  id: number;
+  id: number | null;
   date: string | null;
   sum: number;
   remarks: string | null;

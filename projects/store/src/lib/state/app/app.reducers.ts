@@ -61,6 +61,10 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: true };
   }),
 
+  on(BillApiActions.deleteBillSuccess, (data: AppData) => {
+    return { ...data, currentBill: undefined, loading: false };
+  }),
+
   on(BillsActions.updateBill, (data: AppData) => {
     return { ...data, loading: true };
   }),

@@ -39,7 +39,7 @@ export class SchedulesServiceImpl extends SchedulesService {
     return from(this.serverService.client.from('schedules').insert(this.toRow(schedule)).select('id').single<ScheduleRow>()).pipe(
       map(({ data, error }) => {
         if (error) throw error;
-        return data.id;
+        return data.id ?? -1;
       })
     );
   }
@@ -59,7 +59,7 @@ export class SchedulesServiceImpl extends SchedulesService {
       r.sum,
       r.remarks ?? undefined,
       r.bill_id,
-      r.id,
+      r.id ?? -1,
     );
   }
 

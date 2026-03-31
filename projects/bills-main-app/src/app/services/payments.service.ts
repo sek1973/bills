@@ -28,7 +28,7 @@ export class PaymentsServiceImpl extends PaymentsService {
     return from(this.serverService.client.from('payments').insert(this.toRow(payment)).select('id').single<PaymentRow>()).pipe(
       map(({ data, error }) => {
         if (error) throw error;
-        return data.id;
+        return data.id ?? -1;
       })
     );
   }
@@ -50,7 +50,7 @@ export class PaymentsServiceImpl extends PaymentsService {
       r.paid_date ? new Date(r.paid_date) : undefined,
       r.remarks ?? undefined,
       r.bill_id,
-      r.id,
+      r.id ?? -1,
     );
   }
 
