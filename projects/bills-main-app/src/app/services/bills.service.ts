@@ -100,4 +100,18 @@ export class BillsServiceImpl extends BillsService {
     );
   }
 
+  swapPositions(billIdA: number, newPositionA: number, billIdB: number, newPositionB: number): Observable<boolean> {
+    return from(this.serverService.client.rpc('swap_bill_positions', {
+      p_bill_id_a: billIdA,
+      p_new_position_a: newPositionA,
+      p_bill_id_b: billIdB,
+      p_new_position_b: newPositionB,
+    })).pipe(
+      map(({ error }) => {
+        if (error) throw error;
+        return true;
+      })
+    );
+  }
+
 }

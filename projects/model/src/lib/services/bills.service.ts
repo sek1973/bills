@@ -53,6 +53,8 @@ export abstract class BillsService {
 
   abstract delete(billId: number): Observable<boolean>;
 
+  abstract swapPositions(billIdA: number, newPositionA: number, billIdB: number, newPositionB: number): Observable<boolean>;
+
   calculateNextDeadline(bill: Bill): Date | undefined {
     return calculateNextDeadline(bill.deadline, bill.unit, bill.repeat);
   }

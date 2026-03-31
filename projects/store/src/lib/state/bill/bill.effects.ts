@@ -36,13 +36,60 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillsActions.updateBill),
-        concatMap(action =>
-          this.billsService.update(action.bill)
-            .pipe(
+        concatMap(action => {
+          const bills = this.billsService.getBills();
+          const currentBill = bills.find(b => b.id === action.bill.id);
+          const positionChanged = currentBill && currentBill.position !== action.bill.position;
+          const n: number | null = action.bill.position === null ? null : Number(action.bill.position);
+          const conflictingBill = positionChanged
+            ? bills.find(b => b.position === n && b.id !== action.bill.id)
+            : undefined;
+
+          if (conflictingBill && currentBill?.position != null && action.bill.position != null) {
+            return this.confirmationService.confirm(
+              'Zamiana pozycji',
+              `Rachunek "${conflictingBill.name}" ma już pozycję ${action.bill.position}. Czy zamienić pozycje obu rachunków?`,
+              'Anuluj', 'Zamień',
+            ).pipe(
+              filter(response => !!response),
+              map(() => BillsActions.updateBillConfirmed({ bill: action.bill, redirect: action.redirect })),
+            );
+          }
+
+          return of(BillsActions.updateBillConfirmed({ bill: action.bill, redirect: action.redirect }));
+        })
+      );
+  });
+
+  updateBillConfirmed$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(BillsActions.updateBillConfirmed),
+        concatMap(action => {
+          const bills = this.billsService.getBills();
+          const currentBill = bills.find(b => b.id === action.bill.id);
+          const positionChanged = currentBill && currentBill.position !== action.bill.position;
+          const n: number | null = action.bill.position === null ? null : Number(action.bill.position);
+          const conflictingBill = positionChanged
+            ? bills.find(b => b.position === n && b.id !== action.bill.id)
+            : undefined;
+
+          if (conflictingBill && currentBill?.position != null && action.bill.position != null) {
+            return this.billsService.swapPositions(
+              action.bill.id, action.bill.position!,
+              conflictingBill.id, currentBill!.position!,
+            ).pipe(
+              switchMap(() => this.billsService.update(action.bill)),
               map(() => BillApiActions.updateBillSuccess({ bill: action.bill, redirect: action.redirect })),
-              catchError(error => of(BillApiActions.updateBillFailure({ error })))
-            )
-        )
+              catchError(error => of(BillApiActions.updateBillFailure({ error }))),
+            );
+          }
+
+          return this.billsService.update(action.bill).pipe(
+            map(() => BillApiActions.updateBillSuccess({ bill: action.bill, redirect: action.redirect })),
+            catchError(error => of(BillApiActions.updateBillFailure({ error }))),
+          );
+        })
       );
   });
 

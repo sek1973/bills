@@ -12,6 +12,11 @@ export const BillsActions = {
     props<{ bill: Bill, redirect: boolean }>()
   ),
 
+  updateBillConfirmed: createAction(
+    '[Bills] Update Bill Confirmed',
+    props<{ bill: Bill, redirect: boolean }>()
+  ),
+
   createBill: createAction(
     '[Bills] Create Bill',
     props<{ bill: Bill, redirect: boolean }>()

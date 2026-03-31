@@ -66,6 +66,10 @@ export const appReducer = createReducer<AppData>(
   }),
 
   on(BillsActions.updateBill, (data: AppData) => {
+    return { ...data, loading: false };
+  }),
+
+  on(BillsActions.updateBillConfirmed, (data: AppData) => {
     return { ...data, loading: true };
   }),
 

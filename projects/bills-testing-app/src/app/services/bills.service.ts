@@ -85,6 +85,16 @@ export class BillsServiceImpl extends BillsService {
     }
   }
 
+  swapPositions(billIdA: number, newPositionA: number, billIdB: number, newPositionB: number): Observable<boolean> {
+    this.modifyBills((bills: Bill[]) => {
+      const a = bills.find(b => b.id === billIdA);
+      const b = bills.find(b => b.id === billIdB);
+      if (a) a.position = newPositionA;
+      if (b) b.position = newPositionB;
+    });
+    return of(true).pipe(delay(1000));
+  }
+
   private modifyBills(operation: (bills: Bill[]) => void): void {
     const bills = [...this.bills];
     operation(bills);
