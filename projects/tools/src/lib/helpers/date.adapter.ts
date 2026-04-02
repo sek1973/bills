@@ -1,6 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { MatDateFormats, MAT_NATIVE_DATE_FORMATS, NativeDateAdapter } from '@angular/material/core';
+import { MAT_NATIVE_DATE_FORMATS, MatDateFormats, NativeDateAdapter } from '@angular/material/core';
 
 export const BILLS_DATE_FORMATS: MatDateFormats = {
   ...MAT_NATIVE_DATE_FORMATS,
@@ -55,8 +55,8 @@ export function compareDates(date1: Date | null = null, date2: Date | null = nul
   if (date1 === null && date2 === null) { return 0; }
   if (date1 === null) { return -1; }
   if (date2 === null) { return 1; }
-  const a = formatDate(date1, 'YYYY-MM-dd', 'en-US');
-  const b = formatDate(date2, 'YYYY-MM-dd', 'en-US');
+  const a = formatDate(date1, 'yyyy-MM-dd', 'en-US');
+  const b = formatDate(date2, 'yyyy-MM-dd', 'en-US');
   if (a === b) { return 0; }
   if (a > b) { return 1; } else { return -1; }
 }

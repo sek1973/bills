@@ -34,7 +34,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   form: UntypedFormGroup = new UntypedFormGroup({
     id: new UntypedFormControl(),
     date: new UntypedFormControl(new Date(), Validators.required),
-    sum: new UntypedFormControl(),
+    sum: new UntypedFormControl(0),
     remarks: new UntypedFormControl()
   });
 
@@ -67,7 +67,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
   }
 
   private setFormValue(): void {
-    let value: any;
+    let value: Partial<Schedule>;
     if (this.schedule) {
       value = {
         id: this.schedule.id,
