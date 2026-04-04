@@ -3,6 +3,7 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import { calculateNextDeadline } from 'projects/model/src/lib/helpers/common.functions';
 import { Bill, Payment, PaymentDescription } from 'projects/model/src/lib/model';
 import { AppState, PaymentsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
@@ -11,7 +12,9 @@ import { InputCurrencyComponent, InputDateComponent, InputTextComponent } from '
 export interface PaymentDialogData {
   bill: Bill;
   payment?: Payment;
+  suggestedBase?: Date;
 }
+
 @Component({
   selector: 'app-payment-dialog',
   templateUrl: './payment-dialog.component.html',
@@ -70,8 +73,10 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
         remarks: this.payment.remarks
       };
     } else {
+      const base = this.data?.suggestedBase ?? new Date();
+      const deadline = calculateNextDeadline(base, this.bill?.unit, this.bill?.repeat);
       value = {
-        deadline: new Date(),
+        deadline,
         paiddate: undefined,
         sum: this.bill?.sum ?? 0,
       };

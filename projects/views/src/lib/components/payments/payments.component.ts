@@ -123,9 +123,29 @@ export class PaymentsComponent implements OnInit {
   }
 
   private openDialog(payment?: Payment): void {
+    // compute suggested base date for next payment
+    let suggestedBase: Date = new Date();
+    const list = this.data();
+    if (list && list.length) {
+      const unpaid = list
+        .filter(p => !p.paiddate && p.deadline)
+        .sort((a, b) => moment(a.deadline).diff(moment(b.deadline)));
+      if (unpaid.length) {
+        // take the latest upcoming deadline as base
+        suggestedBase = unpaid[unpaid.length - 1].deadline ? new Date(unpaid[unpaid.length - 1].deadline) : new Date();
+      } else {
+        const paidWithDeadline = list
+          .filter(p => p.paiddate && p.deadline)
+          .sort((a, b) => moment(b.deadline).diff(moment(a.deadline)));
+        if (paidWithDeadline.length) {
+          suggestedBase = paidWithDeadline[0].deadline ? new Date(paidWithDeadline[0].deadline) : new Date();
+        }
+      }
+    }
+
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
       width: '500px',
-      data: { payment, bill: this.bill }
+      data: { payment, bill: this.bill, suggestedBase }
     });
 
     dialogRef.afterClosed().subscribe();

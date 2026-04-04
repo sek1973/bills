@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { Unit } from '../model';
 
 export function getSafe(fn: () => any): any {
@@ -83,24 +84,31 @@ export function calculateNextDeadline(
   deadline?: Date,
   unit: Unit = Unit.Month,
   repeat: number = 1): Date {
-  const result = deadline ? new Date(deadline) : new Date();
-  if (result !== undefined) {
-    switch (unit) {
-      case Unit.Day:
-        result.setDate(result.getDate() + repeat);
-        break;
-      case Unit.Month:
-        result.setMonth(result.getMonth() + repeat);
-        break;
-      case Unit.Week:
-        result.setDate(result.getDate() + 7 * repeat);
-        break;
-      case Unit.Year:
-        result.setFullYear(result.getFullYear() + repeat);
-        break;
-      default:
-        break;
+  const m = deadline ? moment(deadline) : moment();
+  const originalDay = m.date();
+  switch (unit) {
+    case Unit.Day:
+      m.add(repeat, 'days');
+      break;
+    case Unit.Week:
+      m.add(7 * repeat, 'days');
+      break;
+    case Unit.Month: {
+      const isOrigLast = originalDay === m.clone().endOf('month').date();
+      m.add(repeat, 'months');
+      if (isOrigLast) m.endOf('month');
+      else m.date(Math.min(originalDay, m.daysInMonth()));
+      break;
     }
+    case Unit.Year: {
+      const isOrigLast = originalDay === m.clone().endOf('month').date();
+      m.add(repeat, 'years');
+      if (isOrigLast) m.endOf('month');
+      else m.date(Math.min(originalDay, m.daysInMonth()));
+      break;
+    }
+    default:
+      break;
   }
-  return result;
+  return m.toDate();
 }
