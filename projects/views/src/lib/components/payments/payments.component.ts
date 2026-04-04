@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, ViewChild, inje
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import moment from 'moment';
 import { Bill, Payment } from 'projects/model/src/lib/model';
 import { AppState, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
@@ -78,6 +79,16 @@ export class PaymentsComponent implements OnInit {
   refresh(): void {
     this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill?.id || -1 }));
   }
+
+  paymentRowStyle = (row: Payment, index: number): Record<string, string> => {
+    const even = index % 2 === 0;
+    if (row.paidDate) return { 'background-color': even ? '#c8e6c9' : '#e8f5e9' };
+    const now = moment();
+    const deadline = moment(row.deadline);
+    if (deadline.isBefore(now, 'day')) return { 'background-color': even ? '#ffcdd2' : '#ffebee' };
+    if (deadline.diff(now, 'days') <= 7) return { 'background-color': even ? '#f9ef9b' : '#faf5cf' };
+    return {};
+  };
 
   addPayment(): void {
     this.openDialog();

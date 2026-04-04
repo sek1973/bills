@@ -275,6 +275,7 @@
       <tr mat-row
           *matRowDef="let row; let rowIndex = dataIndex; columns: columnsNames();"
           class="row-row"
+          [style]="rowStyle()(row, rowIndex)"
           [class.active-row]="activeRow() === row && activeRow() !== expandedRow()"
           [class.active-row-expanded]="activeRow() === row && activeRow() === expandedRow()"
           [class.odd-row]="rowIndex % 2 === 1"

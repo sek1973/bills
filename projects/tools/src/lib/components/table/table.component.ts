@@ -137,6 +137,7 @@ export class TableComponent<T> {
   readonly exportFileName = input('data');
   readonly disableExpand = input<(dataRow: T) => boolean>(() => false);
   readonly expandable = input(false);
+  readonly rowStyle = input<(row: T, index: number) => Record<string, string>>((_row, _index) => ({}));
 
   readonly rawColumnsDefinition = input<TableColumn[]>([], { alias: 'columnsDefinition' });
 
