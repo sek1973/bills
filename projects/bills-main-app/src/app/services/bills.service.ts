@@ -48,10 +48,8 @@ export class BillsServiceImpl extends BillsService {
       r.login ?? undefined,
       r.sum,
       r.share,
-      r.deadline ? new Date(r.deadline) : undefined,
       r.repeat,
       r.unit,
-      r.reminder ? new Date(r.reminder) : undefined,
       r.id ?? -1,
     );
   }
@@ -66,10 +64,8 @@ export class BillsServiceImpl extends BillsService {
       login: bill.login ?? null,
       sum: bill.sum,
       share: bill.share,
-      deadline: bill.deadline ? bill.deadline.toISOString() : null,
       repeat: bill.repeat,
       unit: bill.unit,
-      reminder: bill.reminder ? bill.reminder.toISOString() : null,
     };
   }
 

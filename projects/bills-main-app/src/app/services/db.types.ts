@@ -8,10 +8,8 @@ export interface BillRow {
   login: string | null;
   sum: number;
   share: number;
-  deadline: string | null;
   repeat: number;
   unit: number;
-  reminder: string | null;
 }
 
 export interface PaymentRow {
@@ -30,4 +28,5 @@ export interface ScheduleRow {
   sum: number;
   remarks: string | null;
   bill_id: number;
+  reminder: string | null;
 }

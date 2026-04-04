@@ -60,6 +60,7 @@ export class SchedulesServiceImpl extends SchedulesService {
       r.remarks ?? undefined,
       r.bill_id,
       r.id ?? -1,
+      r.reminder ? new Date(r.reminder) : undefined,
     );
   }
 
@@ -69,6 +70,7 @@ export class SchedulesServiceImpl extends SchedulesService {
       sum: schedule.sum,
       remarks: schedule.remarks ?? null,
       bill_id: schedule.billId,
+      reminder: schedule.reminder?.toISOString() ?? null,
     };
   }
 

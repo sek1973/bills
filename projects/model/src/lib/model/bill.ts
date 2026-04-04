@@ -12,10 +12,8 @@ export class Bill {
     public login?: string,
     public sum: number = 0,
     public share: number = 1,
-    public deadline?: Date,
     public repeat: number = 1,
     public unit: Unit = Unit.Month,
-    public reminder?: Date,
     public id: number = -1) { }
 
   clone(id?: number): Bill {
@@ -28,10 +26,8 @@ export class Bill {
       this.login,
       this.sum,
       this.share,
-      this.deadline,
       this.repeat,
       this.unit,
-      this.reminder,
       id);
   }
 }
@@ -52,11 +48,6 @@ export const BillDescription = new Map<string, FieldDescription>([
     placeholderText: 'Aktywny',
     labelText: 'Aktywny'
   }],
-  ['deadline', {
-    tooltipText: 'Podaj termin dla najbliższej płatności',
-    placeholderText: 'Termin płatności',
-    labelText: 'Termin płatności'
-  }],
   ['repeat', {
     tooltipText: 'Co ile jednostek (dni, miesięcy, lat) następuje rozliczenie',
     placeholderText: 'Co ile jednostek (np. co ile miesięcy)',
@@ -66,11 +57,6 @@ export const BillDescription = new Map<string, FieldDescription>([
     tooltipText: 'Podaj jednostkę dla okresu rozliczania (dzień, miesiąc, rok...)',
     placeholderText: 'Jednostka okresu rozliczania np. miesiąc',
     labelText: 'Jednostka'
-  }],
-  ['reminder', {
-    tooltipText: 'Podaj datę przypomnienia o płatności',
-    placeholderText: 'Przypomnienie o płatności',
-    labelText: 'Przypomnienie'
   }],
   ['sum', {
     tooltipText: 'Podaj kwotę do zapłacenia',

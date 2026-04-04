@@ -8,7 +8,7 @@ import { calculateNextScheduleDate } from 'projects/model/src/public-api';
 import { AppState } from 'projects/store/src/lib/state';
 import { SchedulesActions } from 'projects/store/src/lib/state/schedule';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputCurrencyComponent, InputDateComponent, InputTextComponent, validateDisinctScheduleDate, validateScheduleDate } from 'projects/tools/src/public-api';
+import { InputCurrencyComponent, InputDateComponent, InputTextComponent, validateDisinctScheduleDate } from 'projects/tools/src/public-api';
 
 export interface ScheduleDialogData {
   bill: Bill;
@@ -35,7 +35,8 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     id: new UntypedFormControl(),
     date: new UntypedFormControl(new Date(), Validators.required),
     sum: new UntypedFormControl(0),
-    remarks: new UntypedFormControl()
+    remarks: new UntypedFormControl(),
+    reminder: new UntypedFormControl()
   });
 
   constructor(
@@ -61,8 +62,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     const dateCtl = this.form.get('date') as UntypedFormControl;
     dateCtl?.setValidators([
       Validators.required,
-      validateDisinctScheduleDate(this.data.schedules, this.schedule),
-      validateScheduleDate(this.bill?.deadline || null)]);
+      validateDisinctScheduleDate(this.data.schedules, this.schedule)]);
     dateCtl?.updateValueAndValidity();
   }
 
@@ -73,12 +73,13 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
         id: this.schedule.id,
         date: this.schedule.date,
         sum: this.schedule.sum,
-        remarks: this.schedule.remarks
+        remarks: this.schedule.remarks,
+        reminder: this.schedule.reminder
       };
     } else {
       value = {
         id: -1,
-        date: calculateNextScheduleDate(this.bill, this.bill?.deadline, this.data.schedules),
+        date: calculateNextScheduleDate(this.bill, undefined, this.data.schedules),
         sum: this.bill?.sum
       };
     }
@@ -103,6 +104,7 @@ export class ScheduleDialogComponent implements OnInit, AfterViewInit {
     schedule.date = val.date;
     schedule.sum = val.sum;
     schedule.remarks = val.remarks;
+    schedule.reminder = val.reminder;
     schedule.billId = this.bill?.id || -1;
     if (schedule.id > -1) {
       this.store.dispatch(SchedulesActions.updateSchedule({ schedule }));

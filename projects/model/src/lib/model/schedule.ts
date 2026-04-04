@@ -7,10 +7,11 @@ export class Schedule {
     public sum: number = 0,
     public remarks?: string,
     public billId: number = -1,
-    public id: number = -1) { }
+    public id: number = -1,
+    public reminder?: Date) { }
 
   clone(id?: number): Schedule {
-    return new Schedule(this.date, this.sum, this.remarks, this.billId, id);
+    return new Schedule(this.date, this.sum, this.remarks, this.billId, id, this.reminder);
   }
 }
 
@@ -29,5 +30,10 @@ export const ScheduleDescription = new Map<string, FieldDescription>([
     tooltipText: 'Dodaj opcjonalny opis',
     placeholderText: 'Opis / uwagi',
     labelText: 'Opis'
+  }],
+  ['reminder', {
+    tooltipText: 'Podaj datę przypomnienia o płatności',
+    placeholderText: 'Przypomnienie o płatności',
+    labelText: 'Przypomnienie'
   }]
 ]);

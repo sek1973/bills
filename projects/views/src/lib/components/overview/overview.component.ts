@@ -5,11 +5,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
-import { addDays, getSafe } from 'projects/model/src/public-api';
+import { getSafe } from 'projects/model/src/public-api';
 import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
-import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { NotificationService, TableComponent } from 'projects/tools/src/public-api';
 import { Subscription } from 'rxjs';
 import { BillEditComponent } from '../bill/bill-edit/bill-edit.component';
@@ -19,14 +18,13 @@ import { BillEditComponent } from '../bill/bill-edit/bill-edit.component';
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, NgStyle, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, DateToStringPipe, CurrencyToStringPipe, BillEditComponent]
+  imports: [RouterLink, RouterLinkActive, NgStyle, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, CurrencyToStringPipe, BillEditComponent]
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   editMode = signal(false);
   data = signal<Bill[]>([]);
   columns = [
     { name: 'name', header: 'Nazwa' },
-    { name: 'deadline', header: 'Termin' },
     { name: 'sum', header: 'Kwota' }
   ];
   private dataSubscription = Subscription.EMPTY;
@@ -112,11 +110,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   formatColor(row: Bill): string {
-    const color = this.formatActiveColor(row);
-    if (color !== '') { return color; }
-    if (row.deadline && row.deadline < new Date()) { return 'red'; }
-    if (row.deadline && row.deadline < addDays()) { return 'darkgoldenrod'; }
-    return '';
+    return this.formatActiveColor(row);
   }
 
   payBill(): void {

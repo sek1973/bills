@@ -1,22 +1,21 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
-import { addDays } from 'projects/model/src/public-api';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputCurrencyComponent, InputDateComponent, InputHyperlinkComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, InputToggleComponent, SelectItem, unitsToSelectItems, validateDistinctBillName, validatePaymentReminderDate } from 'projects/tools/src/public-api';
-import { filter, map } from 'rxjs';
+import { InputCurrencyComponent, InputHyperlinkComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, InputToggleComponent, SelectItem, unitsToSelectItems, validateDistinctBillName } from 'projects/tools/src/public-api';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-bill-edit',
   templateUrl: './bill-edit.component.html',
   styleUrls: ['./bill-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputDateComponent, InputToggleComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
+  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputToggleComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
 })
 export class BillEditComponent {
   bill = input<Bill>();
@@ -29,7 +28,6 @@ export class BillEditComponent {
 
   unitEnumItems: SelectItem<Unit>[] = unitsToSelectItems();
 
-  #destroyRef = inject(DestroyRef);
   private store = inject(Store<AppState>);
   private router = inject(Router);
   private loadingFormValue = false;
@@ -43,10 +41,8 @@ export class BillEditComponent {
     login: new FormControl<string | undefined>(undefined),
     sum: new FormControl<number>(0),
     share: new FormControl<number>(1, Validators.required),
-    deadline: new FormControl<Date | undefined>(undefined, Validators.required),
     repeat: new FormControl<number>(1),
     unit: new FormControl<Unit>(Unit.Month),
-    reminder: new FormControl<Date | undefined>(undefined),
     id: new FormControl<number>(-1),
   });
 
@@ -60,12 +56,6 @@ export class BillEditComponent {
   };
 
   constructor() {
-    const deadlineCtl = this.form.get('deadline') as FormControl<Date | undefined>;
-    const reminderCtl = this.form.get('reminder') as FormControl<Date | undefined>;
-    deadlineCtl.valueChanges
-      .pipe(takeUntilDestroyed(this.#destroyRef), filter(() => !this.loadingFormValue))
-      .subscribe(val => reminderCtl.setValue(addDays(-7, val)));
-
     effect(() => this.loadBill());
   }
 
@@ -76,10 +66,8 @@ export class BillEditComponent {
       name: bill.name,
       description: bill.description,
       active: bill.active,
-      deadline: bill.deadline,
       repeat: bill.repeat,
       unit: bill.unit,
-      reminder: bill.reminder,
       sum: bill.sum,
       share: bill.share,
       url: bill.url,
@@ -97,10 +85,8 @@ export class BillEditComponent {
       value.login,
       value.sum,
       value.share,
-      value.deadline,
       value.repeat,
       value.unit,
-      value.reminder,
       value.id
     );
   }
@@ -111,7 +97,6 @@ export class BillEditComponent {
     const value = this.createFormValueFromBill(bill);
     this.form.patchValue(value, { emitEvent: false, onlySelf: true });
     this.setNameValidators();
-    this.setReminderValidators();
     this.form.markAllAsTouched();
     this.loadingFormValue = false;
   }
@@ -121,13 +106,6 @@ export class BillEditComponent {
     const name = this.form.get('name');
     name?.setValidators([Validators.required, Validators.minLength(3), validateDistinctBillName(billsNames)]);
     name?.updateValueAndValidity();
-  }
-
-  private setReminderValidators(): void {
-    const reminder = this.form.get('reminder') as FormControl<Date | undefined>;
-    const deadline = this.form.get('deadline') as FormControl<Date | undefined>;
-    reminder?.setValidators([validatePaymentReminderDate(deadline)]);
-    reminder?.updateValueAndValidity();
   }
 
   editBill(): void {

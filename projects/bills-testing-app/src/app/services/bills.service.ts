@@ -14,10 +14,8 @@ function createBill(
   login: string,
   sum: number,
   share: number,
-  deadline: Date = new Date(),
   repeat: number = 1,
-  unit: Unit = Unit.Month,
-  reminder: Date = new Date()): Bill {
+  unit: Unit = Unit.Month): Bill {
   const result = new Bill();
   result.id = id;
   result.position = position;
@@ -27,10 +25,8 @@ function createBill(
   result.login = login;
   result.sum = sum;
   result.share = share;
-  result.deadline = deadline;
   result.repeat = repeat;
   result.unit = unit;
-  result.reminder = reminder;
   return result;
 }
 

@@ -71,7 +71,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
       };
     } else {
       value = {
-        deadline: this.bill?.deadline ? new Date(this.bill?.deadline) : new Date(),
+        deadline: new Date(),
         paidDate: new Date(),
         sum: this.bill?.sum ?? 0,
         share: (this.bill?.sum || 0) * (this.bill?.share || 1)

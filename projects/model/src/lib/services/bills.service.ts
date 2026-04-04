@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { addDays, calculateNextDeadline } from '../helpers';
 import { Bill, Payment, Schedule, Unit } from '../model';
 import { PaymentsService } from './payments.service';
 import { SchedulesService } from './schedules.service';
@@ -36,14 +35,9 @@ export abstract class BillsService {
       bill.login || '',
       bill.sum || 0,
       bill.share || 1,
-      bill.deadline || new Date(),
       bill.repeat || 1,
       bill.unit || Unit.Month,
-      bill.reminder || addDays(-7, bill.deadline),
       bill.id);
-    if (result.deadline && result.reminder && result.reminder > result.deadline) {
-      result.reminder = addDays(-7, result.deadline);
-    }
     return result;
   }
 
@@ -54,10 +48,6 @@ export abstract class BillsService {
   abstract delete(billId: number): Observable<boolean>;
 
   abstract swapPositions(billIdA: number, newPositionA: number, billIdB: number, newPositionB: number): Observable<boolean>;
-
-  calculateNextDeadline(bill: Bill): Date | undefined {
-    return calculateNextDeadline(bill.deadline, bill.unit, bill.repeat);
-  }
 
   pay(bill: Bill, paid: number): Observable<boolean> {
     const payment = this.createPaymentData(bill, paid);
@@ -73,14 +63,11 @@ export abstract class BillsService {
   }
 
   private createPaymentData(bill: Bill, paid: number): Payment {
-    return new Payment(bill.deadline, paid, paid * bill.share, new Date(), undefined, bill.id);
+    return new Payment(new Date(), paid, paid * bill.share, new Date(), undefined, bill.id);
   }
 
   private adjustBillData(billCopy: Bill, schedule?: Schedule): Bill {
-    const deadline = schedule ? schedule.date : this.calculateNextDeadline(billCopy);
-    const sum = schedule ? schedule.sum : billCopy.sum; // consider remarks
-    billCopy.deadline = deadline;
-    billCopy.reminder = addDays(-7, deadline);
+    const sum = schedule ? schedule.sum : billCopy.sum;
     billCopy.sum = sum;
     return billCopy;
   }
