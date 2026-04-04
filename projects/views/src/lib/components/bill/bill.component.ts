@@ -52,6 +52,10 @@ export class BillComponent implements OnInit {
         const val = this.route.snapshot.params['id' as keyof Params];
         this.dispatchSelectedBill(val);
       });
+
+    if (!this.bills()?.length) {
+      this.store.dispatch(BillsActions.loadBills());
+    }
   }
 
   ngOnInit(): void {
