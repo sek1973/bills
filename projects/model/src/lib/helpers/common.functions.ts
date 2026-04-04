@@ -1,4 +1,4 @@
-import { Bill, Schedule, Unit } from '../model';
+import { Unit } from '../model';
 
 export function getSafe(fn: () => any): any {
   try {
@@ -103,15 +103,4 @@ export function calculateNextDeadline(
     }
   }
   return result;
-}
-
-export function calculateNextScheduleDate(
-  bill?: Bill,
-  deadline?: Date,
-  schedules: Schedule[] = []): Date {
-  const dates = schedules.map((s) => s.date);
-  dates.push(deadline);
-  const filtered = dates.filter((d) => (d !== null && d !== undefined)) as Date[];
-  const sorted = filtered.sort((a, b) => a > b ? -1 : 1); // descending
-  return calculateNextDeadline(sorted[0], bill?.unit, bill?.repeat);
 }

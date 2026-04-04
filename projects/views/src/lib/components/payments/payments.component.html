@@ -27,8 +27,8 @@
                let-row="row">
     {{row.sum | currencyToString }}
   </ng-template>
-  <ng-template cellTemplateForColumn="share"
+  <ng-template cellTemplateForColumn="reminder"
                let-row="row">
-    {{row.share | currencyToString }}
+    {{row.reminder | timespanToString }}
   </ng-template>
 </app-table>

@@ -3,7 +3,6 @@ import { Bill, BillsService } from 'projects/model/src/public-api';
 import { from, map, Observable } from 'rxjs';
 import { BillRow } from './db.types';
 import { PaymentsServiceImpl } from './payments.service';
-import { SchedulesServiceImpl } from './schedules.service';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({
@@ -12,7 +11,6 @@ import { SupabaseService } from './supabase.service';
 export class BillsServiceImpl extends BillsService {
 
   protected paymentsService: PaymentsServiceImpl = inject(PaymentsServiceImpl);
-  protected schedulesService: SchedulesServiceImpl = inject(SchedulesServiceImpl);
   protected serverService: SupabaseService = inject(SupabaseService);
 
   private _bills: Bill[] = [];

@@ -28,7 +28,7 @@ export class PaymentsComponent implements OnInit {
     { name: 'deadline', header: 'Termin' },
     { name: 'paiddate', header: 'Zapłacono' },
     { name: 'sum', header: 'Kwota' },
-    { name: 'share', header: 'Udział' },
+    { name: 'reminder', header: 'Przypomnienie' },
     { name: 'remarks', header: 'Uwagi' }
   ];
   bill?: Bill;

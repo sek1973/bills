@@ -21,7 +21,7 @@ export interface PaymentDialogData {
 })
 export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
-  protected readonly dialogTitle = computed(() => (this.payment ? 'Edytuj' : 'Dodaj') + ' zrealizowaną płatność');
+  protected readonly dialogTitle = computed(() => (this.payment ? 'Edytuj' : 'Dodaj') + ' płatność');
   protected payment?: Payment;
   protected bill?: Bill;
   protected dialogMode: 'add' | 'edit' = 'add';
@@ -32,7 +32,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     deadline: new UntypedFormControl(new Date(), Validators.required),
     paiddate: new UntypedFormControl(new Date(), Validators.required),
     sum: new UntypedFormControl(0, Validators.required),
-    share: new UntypedFormControl(0, Validators.required),
+    reminder: new UntypedFormControl(),
     remarks: new UntypedFormControl(),
     billId: new UntypedFormControl() // not visible
   });
@@ -66,7 +66,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
         deadline: this.payment.deadline,
         paidDate: this.payment.paidDate,
         sum: this.payment.sum,
-        share: this.payment.share,
+        reminder: this.payment.reminder,
         remarks: this.payment.remarks
       };
     } else {
@@ -74,7 +74,6 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
         deadline: new Date(),
         paidDate: new Date(),
         sum: this.bill?.sum ?? 0,
-        share: (this.bill?.sum || 0) * (this.bill?.share || 1)
       };
     }
     this.form.patchValue(value);
@@ -90,7 +89,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     const payment = this.payment ? this.payment.clone(this.payment.id) : new Payment();
     payment.deadline = val.deadline;
     payment.sum = val.sum;
-    payment.share = val.share;
+    payment.reminder = val.reminder;
     payment.paidDate = val.paiddate;
     payment.remarks = val.remarks;
     payment.billId = this.bill?.id || -1;

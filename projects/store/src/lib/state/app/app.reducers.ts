@@ -1,10 +1,9 @@
-import { createReducer, on } from '@ngrx/store';
-import { Bill, Payment, Schedule } from 'projects/model/src/lib/model';
-import { AuthActions } from '../auth';
-import { BillApiActions, BillsActions } from '../bill';
-import { PaymentApiActions, PaymentsActions } from '../payment';
-import { ScheduleApiActions, SchedulesActions } from '../schedule';
-import { AppData, appInitialState } from './app.state';
+import { createReducer, on } from "@ngrx/store";
+import { Bill, Payment } from "projects/model/src/lib/model";
+import { AuthActions } from "../auth";
+import { BillApiActions, BillsActions } from "../bill";
+import { PaymentApiActions, PaymentsActions } from "../payment";
+import { AppData, appInitialState } from "./app.state";
 
 export const appReducer = createReducer<AppData>(
   appInitialState,
@@ -105,35 +104,7 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: true };
   }),
 
-  on(SchedulesActions.loadSchedules, (data: AppData) => {
-    return { ...data, loading: true };
-  }),
-
   on(PaymentsActions.importPaymentsConfirmed, (data: AppData) => {
-    return { ...data, loading: true };
-  }),
-
-  on(ScheduleApiActions.loadSchedulesSuccess, (data: AppData, action: { schedules: Schedule[] }) => {
-    return { ...data, schedules: action.schedules, loading: false };
-  }),
-
-  on(SchedulesActions.createSchedule, (data: AppData) => {
-    return { ...data, loading: true };
-  }),
-
-  on(SchedulesActions.deleteScheduleConfirmed, (data: AppData) => {
-    return { ...data, loading: true };
-  }),
-
-  on(ScheduleApiActions.deleteScheduleSuccess, (data: AppData) => {
-    return { ...data, loading: false };
-  }),
-
-  on(SchedulesActions.updateSchedule, (data: AppData) => {
-    return { ...data, loading: true };
-  }),
-
-  on(SchedulesActions.importSchedulesConfirmed, (data: AppData) => {
     return { ...data, loading: true };
   }),
 
@@ -147,11 +118,6 @@ export const appReducer = createReducer<AppData>(
     PaymentApiActions.createPaymentFailure,
     PaymentApiActions.deletePaymentFailure,
     PaymentApiActions.importPaymentsFailure,
-    ScheduleApiActions.loadSchedulesFailure,
-    ScheduleApiActions.updateScheduleFailure,
-    ScheduleApiActions.createScheduleFailure,
-    ScheduleApiActions.deleteScheduleFailure,
-    ScheduleApiActions.importSchedulesFailure,
     (data: AppData) => {
       return { ...data, loading: false };
     }

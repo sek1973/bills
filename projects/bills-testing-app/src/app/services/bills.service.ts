@@ -3,7 +3,6 @@ import { Bill, BillsService, Unit } from 'projects/model/src/public-api';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { PaymentsServiceImpl } from './payments.service';
-import { SchedulesServiceImpl } from './schedules.service';
 
 function createBill(
   id: number,
@@ -42,7 +41,6 @@ export class BillsServiceImpl extends BillsService {
   ];
 
   protected paymentsService: PaymentsServiceImpl = inject(PaymentsServiceImpl);
-  protected schedulesService: SchedulesServiceImpl = inject(SchedulesServiceImpl);
 
   load(): Observable<Bill[]> {
     return of(this.bills).pipe(delay(1000));

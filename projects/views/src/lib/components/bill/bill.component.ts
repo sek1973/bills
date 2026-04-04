@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, injec
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -10,7 +9,6 @@ import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { PaymentsComponent } from '../payments/payments.component';
-import { SchedulesComponent } from '../schedules/schedules.component';
 import { BillEditComponent } from './bill-edit/bill-edit.component';
 
 @Component({
@@ -18,7 +16,7 @@ import { BillEditComponent } from './bill-edit/bill-edit.component';
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatTooltipModule, MatTabsModule, BillEditComponent, PaymentsComponent, SchedulesComponent]
+  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatTooltipModule, BillEditComponent, PaymentsComponent]
 })
 export class BillComponent implements OnInit {
   billEdit = viewChild(BillEditComponent);

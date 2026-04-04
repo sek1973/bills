@@ -44,10 +44,9 @@ export abstract class PaymentsService {
     const deadline: Date | undefined = stringToDate(cells[0]);
     const paiddate: Date | undefined = stringToDate(cells[1]);
     const sum: number | undefined = currencyToNumber(cells[2]);
-    const share: number | undefined = currencyToNumber(cells[3]);
-    const remarks: string = cells[4];
-    if (deadline && paiddate && sum !== undefined && share !== undefined) {
-      return new Payment(deadline, sum, share, paiddate, remarks, billId);
+    const remarks: string = cells[3];
+    if (deadline && paiddate && sum !== undefined) {
+      return new Payment(deadline, sum, paiddate, remarks, undefined, billId);
     }
     return undefined;
   }

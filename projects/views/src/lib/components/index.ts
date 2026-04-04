@@ -7,7 +7,5 @@ export * from './page-not-found/page-not-found.component';
 export * from './payments/payment-dialog/payment-dialog.component';
 export * from './payments/payments.component';
 export * from './reset-password/reset-password.component';
-export * from './schedules/schedule-dialog/schedule-dialog.component';
-export * from './schedules/schedules.component';
 export * from './update-password/update-password.component';
 

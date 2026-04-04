@@ -97,16 +97,8 @@
   </app-bill-edit>
 
   @if (!newBill()) {
-  <mat-tab-group>
-    <mat-tab label="Historia płatności">
-      <app-payments class="bill-payments">
-      </app-payments>
-    </mat-tab>
-    <mat-tab label="Planowane płatności">
-      <app-schedules class="bill-schedules">
-      </app-schedules>
-    </mat-tab>
-  </mat-tab-group>
+  <app-payments class="bill-payments">
+  </app-payments>
   }
 
 </div>

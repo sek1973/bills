@@ -5,15 +5,15 @@ export class Payment {
   constructor(
     public deadline = new Date(),
     public sum: number = 0,
-    public share: number = 1,
     public paidDate?: Date,
     public remarks?: string,
+    public reminder?: Date,
     public billId?: number,
     public id: number = -1
   ) { }
 
   clone(id?: number, billId = this.billId): Payment {
-    return new Payment(this.deadline, this.sum, this.share, this.paidDate, this.remarks, billId, id);
+    return new Payment(this.deadline, this.sum, this.paidDate, this.remarks, this.reminder, billId, id);
   }
 }
 
@@ -33,10 +33,10 @@ export const PaymentDescription = new Map<string, FieldDescription>([
     placeholderText: 'Kwota do zapłacenia',
     labelText: 'Kwota'
   }],
-  ['share', {
-    tooltipText: 'Podaj kwotę jaka została zapłacona',
-    placeholderText: 'Kwota zapłacona / udział',
-    labelText: 'Udział'
+  ['reminder', {
+    tooltipText: 'Podaj datę przypomnienia o płatności',
+    placeholderText: 'Przypomnienie o płatności',
+    labelText: 'Przypomnienie'
   }],
   ['remarks', {
     tooltipText: 'Dodaj opcjonalny opis',

@@ -16,10 +16,10 @@ export interface PaymentRow {
   id: number | null;
   deadline: string;
   sum: number;
-  share: number;
   paid_date: string | null;
   remarks: string | null;
   bill_id: number;
+  reminder: string | null;
 }
 
 export interface OverviewBillRow {
@@ -32,13 +32,4 @@ export interface OverviewBillRow {
   login: string | null;
   due_date: string | null;
   sum: number | null;
-}
-
-export interface ScheduleRow {
-  id: number | null;
-  date: string | null;
-  sum: number;
-  remarks: string | null;
-  bill_id: number;
-  reminder: string | null;
 }

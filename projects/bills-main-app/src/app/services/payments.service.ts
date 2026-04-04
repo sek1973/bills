@@ -46,9 +46,9 @@ export class PaymentsServiceImpl extends PaymentsService {
     return new Payment(
       r.deadline ? new Date(r.deadline) : new Date(),
       r.sum,
-      r.share,
       r.paid_date ? new Date(r.paid_date) : undefined,
       r.remarks ?? undefined,
+      r.reminder ? new Date(r.reminder) : undefined,
       r.bill_id,
       r.id ?? -1,
     );
@@ -58,10 +58,10 @@ export class PaymentsServiceImpl extends PaymentsService {
     return {
       deadline: payment.deadline?.toISOString() ?? new Date().toISOString(),
       sum: payment.sum,
-      share: payment.share,
       paid_date: payment.paidDate?.toISOString() ?? null,
       remarks: payment.remarks ?? null,
       bill_id: payment.billId ?? -1,
+      reminder: payment.reminder?.toISOString() ?? null,
     };
   }
 

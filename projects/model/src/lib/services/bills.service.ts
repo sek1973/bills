@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { Bill, Payment, Schedule, Unit } from '../model';
+import { Bill, Payment, Unit } from '../model';
 import { PaymentsService } from './payments.service';
-import { SchedulesService } from './schedules.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +9,6 @@ import { SchedulesService } from './schedules.service';
 export abstract class BillsService {
 
   protected abstract paymentsService: PaymentsService;
-  protected abstract schedulesService: SchedulesService;
 
   abstract load(): Observable<Bill[]>;
 
@@ -52,24 +49,12 @@ export abstract class BillsService {
   pay(bill: Bill, paid: number): Observable<boolean> {
     const payment = this.createPaymentData(bill, paid);
     const billCopy = this.createBillData(bill);
-    return this.schedulesService.fetchComming(bill.id)
-      .pipe(switchMap(sch => {
-        const schedule: Schedule | undefined = sch;
-        this.paymentsService.add(payment);
-        this.adjustBillData(billCopy, schedule);
-        if (schedule) { this.schedulesService.delete(schedule); }
-        return this.update(billCopy);
-      }));
+    this.paymentsService.add(payment);
+    return this.update(billCopy);
   }
 
   private createPaymentData(bill: Bill, paid: number): Payment {
-    return new Payment(new Date(), paid, paid * bill.share, new Date(), undefined, bill.id);
-  }
-
-  private adjustBillData(billCopy: Bill, schedule?: Schedule): Bill {
-    const sum = schedule ? schedule.sum : billCopy.sum;
-    billCopy.sum = sum;
-    return billCopy;
+    return new Payment(new Date(), paid, new Date(), undefined, undefined, bill.id);
   }
 
 }
