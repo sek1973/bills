@@ -68,6 +68,15 @@
         <span class="btn-text btn-text-always">Zapłacony</span>
       </button>
       }
+      @if (!editMode()) {
+      <button mat-raised-button
+              [color]="bill()?.active ? 'primary' : 'basic'"
+              class="toolbar-button"
+              [disabled]="newBill()"
+              (click)="toggleActive()">
+        <span class="btn-text btn-text-always">{{bill()?.active ? 'Aktywny' : 'Nieaktywny'}}</span>
+      </button>
+      }
     </div>
   </div>
 

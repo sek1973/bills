@@ -93,5 +93,6 @@ export class BillComponent implements OnInit {
   saveBillAndClose(): void { this.billEdit()?.saveBillAndClose(); }
   deleteBill(): void { this.billEdit()?.deleteBill(); }
   cancel(): void { this.billEdit()?.cancel(); }
+  toggleActive(): void { this.billEdit()?.toggleActive(); }
 
 }

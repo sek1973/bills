@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputCurrencyComponent, InputHyperlinkComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, InputToggleComponent, SelectItem, unitsToSelectItems, validateDistinctBillName } from 'projects/tools/src/public-api';
+import { InputCurrencyComponent, InputHyperlinkComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, SelectItem, unitsToSelectItems, validateDistinctBillName } from 'projects/tools/src/public-api';
 import { map } from 'rxjs';
 
 @Component({
@@ -15,7 +15,7 @@ import { map } from 'rxjs';
   templateUrl: './bill-edit.component.html',
   styleUrls: ['./bill-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputToggleComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
+  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
 })
 export class BillEditComponent {
   bill = input<Bill>();
@@ -134,6 +134,17 @@ export class BillEditComponent {
       this.store.dispatch(BillsActions.createBill({ bill, redirect: false }));
     } else {
       this.store.dispatch(BillsActions.updateBill({ bill, redirect: true }));
+    }
+  }
+
+  toggleActive(): void {
+    const bill = this.bill();
+    if (bill) {
+      const updated = new Bill(
+        bill.position, bill.name, bill.description, !bill.active,
+        bill.url, bill.login, bill.sum, bill.share, bill.repeat, bill.unit, bill.id
+      );
+      this.store.dispatch(BillsActions.updateBill({ bill: updated, redirect: false }));
     }
   }
 
