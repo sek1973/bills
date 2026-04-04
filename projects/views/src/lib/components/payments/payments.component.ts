@@ -82,11 +82,11 @@ export class PaymentsComponent implements OnInit {
 
   paymentRowStyle = (row: Payment, index: number): Record<string, string> => {
     const even = index % 2 === 0;
-    if (row.paidDate) return { 'background-color': even ? '#c8e6c9' : '#e8f5e9' };
+    if (row.paiddate) return { 'background-color': even ? '#c8e6c9' : '#e8f5e9' };
     const now = moment();
     const deadline = moment(row.deadline);
     if (deadline.isBefore(now, 'day')) return { 'background-color': even ? '#ffcdd2' : '#ffebee' };
-    if (deadline.diff(now, 'days') <= 7) return { 'background-color': even ? '#f9ef9b' : '#faf5cf' };
+    if (deadline.diff(now, 'days') <= 7) return { 'background-color': even ? '#fcf7cb' : '#fbf9e6' };
     return {};
   };
 

@@ -5,7 +5,7 @@ export class Payment {
   constructor(
     public deadline = new Date(),
     public sum: number = 0,
-    public paidDate?: Date,
+    public paiddate?: Date,
     public remarks?: string,
     public reminder?: Date,
     public billId?: number,
@@ -13,7 +13,7 @@ export class Payment {
   ) { }
 
   clone(id?: number, billId = this.billId): Payment {
-    return new Payment(this.deadline, this.sum, this.paidDate, this.remarks, this.reminder, billId, id);
+    return new Payment(this.deadline, this.sum, this.paiddate, this.remarks, this.reminder, billId, id);
   }
 }
 

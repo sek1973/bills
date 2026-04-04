@@ -183,7 +183,7 @@ export class BillEffects {
             ConfirmDialogInputType.InputTypeCurrency, action.bill.sum, [Validators.required], 'Kwota', 'Kwota')
           .pipe(
             filter(response => response !== false),
-            map(response => BillsActions.payBillConfirmed({ bill: action.bill, value: (response as ConfirmDialogResponse).value })),
+            map(response => BillsActions.payBillConfirmed({ bill: action.bill, value: (response as ConfirmDialogResponse).value, dueDate: action.dueDate })),
             catchError(error => of(BillApiActions.payBillFailure({ error })))
           )
         )
@@ -194,7 +194,7 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillsActions.payBillConfirmed),
-        switchMap(action => this.billsService.pay(action.bill, action.value)
+        switchMap(action => this.billsService.pay(action.bill, action.value, action.dueDate)
           .pipe(map(() => BillApiActions.payBillSuccess({ billId: action.bill.id })),
             catchError(error => of(BillApiActions.payBillFailure({ error })))
           )));

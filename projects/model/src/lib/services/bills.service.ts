@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { Bill, Payment, Unit } from '../model';
 import { PaymentsService } from './payments.service';
 
@@ -46,15 +47,16 @@ export abstract class BillsService {
 
   abstract swapPositions(billIdA: number, newPositionA: number, billIdB: number, newPositionB: number): Observable<boolean>;
 
-  pay(bill: Bill, paid: number): Observable<boolean> {
-    const payment = this.createPaymentData(bill, paid);
+  pay(bill: Bill, paid: number, dueDate?: Date): Observable<boolean> {
+    const payment = this.createPaymentData(bill, paid, dueDate);
     const billCopy = this.createBillData(bill);
-    this.paymentsService.add(payment);
-    return this.update(billCopy);
+    return this.paymentsService.add(payment).pipe(
+      switchMap(() => this.update(billCopy))
+    );
   }
 
-  private createPaymentData(bill: Bill, paid: number): Payment {
-    return new Payment(new Date(), paid, new Date(), undefined, undefined, bill.id);
+  private createPaymentData(bill: Bill, paid: number, dueDate?: Date): Payment {
+    return new Payment(dueDate ?? new Date(), paid, new Date(), undefined, undefined, bill.id);
   }
 
 }

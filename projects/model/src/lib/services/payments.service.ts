@@ -24,7 +24,6 @@ export abstract class PaymentsService {
 
   importPayments(data: string, billId: number): Observable<ImportReport[]> {
     const requests: Observable<ImportReport>[] = [];
-    const errors: string[] = [];
     data.split(IMPORT_LINE_SEPARATOR).forEach((line, index) => {
       const payment = this.parsePayment(line, billId);
       if (payment) {

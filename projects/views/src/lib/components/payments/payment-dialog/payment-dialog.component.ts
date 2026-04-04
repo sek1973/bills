@@ -64,7 +64,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
       value = {
         id: this.payment.id,
         deadline: this.payment.deadline,
-        paidDate: this.payment.paidDate,
+        paiddate: this.payment.paiddate,
         sum: this.payment.sum,
         reminder: this.payment.reminder,
         remarks: this.payment.remarks
@@ -72,7 +72,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     } else {
       value = {
         deadline: new Date(),
-        paidDate: undefined,
+        paiddate: undefined,
         sum: this.bill?.sum ?? 0,
       };
     }
@@ -90,7 +90,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     payment.deadline = val.deadline;
     payment.sum = val.sum;
     payment.reminder = val.reminder;
-    payment.paidDate = val.paiddate;
+    payment.paiddate = val.paiddate;
     payment.remarks = val.remarks;
     payment.billId = this.bill?.id || -1;
     if (this.payment) {

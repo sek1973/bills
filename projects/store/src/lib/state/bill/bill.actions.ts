@@ -34,12 +34,12 @@ export const BillsActions = {
 
   payBill: createAction(
     '[Bills] Pay Bill',
-    props<{ bill: Bill }>()
+    props<{ bill: Bill, dueDate?: Date }>()
   ),
 
   payBillConfirmed: createAction(
     '[Bills] Pay Bill Confirmed',
-    props<{ bill: Bill, value: number }>()
+    props<{ bill: Bill, value: number, dueDate?: Date }>()
   ),
 
   setCurrentBill: createAction(

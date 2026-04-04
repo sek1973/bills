@@ -109,7 +109,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     const OverviewBill = this.table.activeRow();
     if (OverviewBill) {
       const bill = this.getBillById(OverviewBill.id);
-      if (bill) { this.store.dispatch(BillsActions.payBill({ bill })); }
+      if (bill) { this.store.dispatch(BillsActions.payBill({ bill, dueDate: OverviewBill.dueDate })); }
     }
   }
 

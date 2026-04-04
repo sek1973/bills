@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import moment from 'moment';
 import { Payment, PaymentsService } from 'projects/model/src/public-api';
 import { from, map, Observable } from 'rxjs';
 import { PaymentRow } from './db.types';
@@ -12,7 +13,7 @@ export class PaymentsServiceImpl extends PaymentsService {
   private serverService: SupabaseService = inject(SupabaseService);
 
   load(billId: number): Observable<Payment[]> {
-    return from(this.serverService.client.from('payments').select<'*', PaymentRow>('*').eq('bill_id', billId)).pipe(
+    return from(this.serverService.client.from('payments_overview').select<'*', PaymentRow>('*').eq('bill_id', billId)).pipe(
       map(({ data, error }) => {
         if (error) throw error;
         return data.map(r => this.fromRow(r));
@@ -44,11 +45,11 @@ export class PaymentsServiceImpl extends PaymentsService {
 
   private fromRow(r: PaymentRow): Payment {
     return new Payment(
-      r.deadline ? new Date(r.deadline) : new Date(),
+      r.deadline ? moment(r.deadline).toDate() : new Date(),
       r.sum,
-      r.paid_date ? new Date(r.paid_date) : undefined,
+      r.paid_date ? moment(r.paid_date).toDate() : undefined,
       r.remarks ?? undefined,
-      r.reminder ? new Date(r.reminder) : undefined,
+      r.reminder ? moment(r.reminder).toDate() : undefined,
       r.bill_id,
       r.id ?? -1,
     );
@@ -56,12 +57,12 @@ export class PaymentsServiceImpl extends PaymentsService {
 
   private toRow(payment: Payment): Omit<PaymentRow, 'id'> {
     return {
-      deadline: payment.deadline?.toISOString() ?? new Date().toISOString(),
+      deadline: moment(payment.deadline ?? new Date()).format('YYYY-MM-DD'),
       sum: payment.sum,
-      paid_date: payment.paidDate?.toISOString() ?? null,
+      paid_date: payment.paiddate ? moment(payment.paiddate).format('YYYY-MM-DD') : null,
       remarks: payment.remarks ?? null,
       bill_id: payment.billId ?? -1,
-      reminder: payment.reminder?.toISOString() ?? null,
+      reminder: payment.reminder ? moment(payment.reminder).format('YYYY-MM-DD') : null,
     };
   }
 
