@@ -1,9 +1,8 @@
 import { computed, Directive, input } from '@angular/core';
-import { getSafe } from 'projects/model/src/public-api';
 import { DescriptionProvider } from '../inputs/input-component-base';
 
 export interface ValueProvider {
-  getValue(...path: string[]): any;
+  getValue(...path: string[]): unknown;
 }
 
 export interface LabelProvider {
@@ -24,7 +23,7 @@ export class ViewFieldComponentBase {
   id = computed(() => this.path()?.join(':') ?? '');
   value = computed(() => this.valueProvider().getValue(...this.path()));
   labelText = computed(() =>
-    getSafe(() => this.descriptionProvider().getDescriptionObj(...this.path()).labelText) || ''
+    () => this.descriptionProvider().getDescriptionObj(...this.path()).labelText ?? ''
   );
   hasValue = computed(() => {
     const v = this.value();

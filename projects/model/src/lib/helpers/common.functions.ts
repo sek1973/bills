@@ -1,14 +1,6 @@
 import moment from 'moment';
 import { Unit } from '../model';
 
-export function getSafe(fn: () => any): any {
-  try {
-    return fn();
-  } catch {
-    return undefined;
-  }
-}
-
 export function dateToString(val: Date): string | undefined {
   return (val !== undefined && val !== null) ? val.toLocaleDateString('pl-PL') : undefined;
 }
@@ -38,13 +30,13 @@ export function stringToDate(val: string): Date | undefined {
   return undefined;
 }
 
-export function currencyToString(val: number, NaNvalue: any = 0): string | undefined {
+export function currencyToString(val: number, NaNvalue: unknown = 0): string | undefined {
   const formatter = new Intl.NumberFormat('pl-PL', {
     style: 'currency',
     currency: 'PLN',
   });
   if (val === undefined || val === null || Number.isNaN(+val)) {
-    return formatter.format(NaNvalue);
+    return formatter.format(NaNvalue as number);
   }
   return formatter.format(val);
 }
@@ -58,9 +50,9 @@ export function currencyToNumber(val: string): number | undefined {
   return undefined;
 }
 
-export function percentToString(val: number, NaNvalue: any = 0): string | undefined {
+export function percentToString(val: number, NaNvalue: unknown = 0): string | undefined {
   if (val === undefined || val === null || Number.isNaN(+val)) {
-    return Math.round(NaNvalue * 100) + ' %';
+    return Math.round((NaNvalue as number) * 100) + ' %';
   }
   return Math.round(val * 100) + ' %';
 }

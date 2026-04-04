@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/f
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { getSafe } from 'projects/model/src/public-api';
 import { map, merge, of, startWith, switchMap } from 'rxjs';
 import { AddHrefAttributeDirective } from '../directives/add-href-attribute.directive';
 import { InputBaseComponent } from './../input-component-base';
@@ -18,7 +17,7 @@ import { InputBaseComponent } from './../input-component-base';
 })
 export class InputHyperlinkComponent extends InputBaseComponent {
 
-  override formControl = computed(() => getSafe(() => this.fieldFormGroup()?.get(this.fieldName()) as UntypedFormControl));
+  override formControl = computed(() => this.fieldFormGroup()?.get(this.fieldName()) as UntypedFormControl);
 
   private fcState = toSignal(
     toObservable(this.formControl).pipe(

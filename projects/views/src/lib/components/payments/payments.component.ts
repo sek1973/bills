@@ -25,7 +25,7 @@ export class PaymentsComponent implements OnInit {
 
   activeRow?: Payment;
   data = signal<Payment[]>([]);
-  closestUpcomingId = signal<number | undefined>(undefined);
+  closestUpcoming = signal<Payment | undefined>(undefined);
   columns = [
     { name: 'deadline', header: 'Termin' },
     { name: 'paiddate', header: 'Zapłacono' },
@@ -62,7 +62,7 @@ export class PaymentsComponent implements OnInit {
     const unpaid = payments
       .filter(p => !p.paiddate && p.deadline)
       .sort((a, b) => moment(a.deadline).diff(moment(b.deadline)));
-    this.closestUpcomingId.set(unpaid.length ? unpaid[0].id : undefined);
+    this.closestUpcoming.set(unpaid.length ? unpaid[0] : undefined);
   }
 
   private subscribeToBill(): void {
@@ -106,12 +106,41 @@ export class PaymentsComponent implements OnInit {
       }
     }
 
-    if (row?.id && row.id === this.closestUpcomingId()) {
+    if (row?.id && row.id === this.closestUpcoming()?.id) {
       style['font-weight'] = 'bold';
     }
 
     return style;
   };
+
+  payClosest(): void {
+    const closest = this.closestUpcoming();
+    if (closest) {
+      const withPaid = closest.clone(closest.id);
+      withPaid.paiddate = new Date();
+      this.dialog.open(PaymentDialogComponent, {
+        width: '500px',
+        data: { payment: withPaid, bill: this.bill, title: 'Edytuj zrealizowaną płatność' }
+      }).afterClosed().subscribe(result => {
+        if (result && result !== 'cancel') {
+          const otherUpcoming = this.data().filter(p => !p.paiddate && p.deadline && p.id !== closest.id);
+          if (!otherUpcoming.length) {
+            this.addPayment();
+          }
+        }
+      });
+    } else {
+      const today = new Date();
+      this.dialog.open(PaymentDialogComponent, {
+        width: '500px',
+        data: { bill: this.bill, prefillPaidDate: today, prefillDeadline: today, title: 'Dodaj zrealizowaną płatność' }
+      }).afterClosed().subscribe(result => {
+        if (result && result !== 'cancel') {
+          this.addPayment();
+        }
+      });
+    }
+  }
 
   addPayment(): void {
     this.openDialog();

@@ -179,7 +179,7 @@ export class BillEffects {
         filter(action => action.bill.id >= 0),
         mergeMap(action => this.confirmationService
           .confirm('Rachunek opłacony',
-            'Podaj kwotę do zapłacenia (udział zostanie wyliczony automatycznie):', 'Anuluj', 'OK',
+            'Podaj zapłaconą kwotę:', 'Anuluj', 'OK',
             ConfirmDialogInputType.InputTypeCurrency, action.bill.sum, [Validators.required], 'Kwota', 'Kwota')
           .pipe(
             filter(response => response !== false),

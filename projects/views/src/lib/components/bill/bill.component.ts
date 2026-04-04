@@ -20,6 +20,7 @@ import { BillEditComponent } from './bill-edit/bill-edit.component';
 })
 export class BillComponent implements OnInit {
   billEdit = viewChild(BillEditComponent);
+  paymentsComp = viewChild(PaymentsComponent);
 
   #destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
@@ -93,7 +94,7 @@ export class BillComponent implements OnInit {
   }
 
   editBill(): void { this.billEdit()?.editBill(); }
-  payBill(): void { this.billEdit()?.payBill(); }
+  payBill(): void { this.paymentsComp()?.payClosest(); }
   saveBill(): void { this.billEdit()?.saveBill(); }
   saveBillAndClose(): void { this.billEdit()?.saveBillAndClose(); }
   deleteBill(): void { this.billEdit()?.deleteBill(); }

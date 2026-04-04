@@ -13,6 +13,9 @@ export interface PaymentDialogData {
   bill: Bill;
   payment?: Payment;
   suggestedBase?: Date;
+  prefillPaidDate?: Date;
+  prefillDeadline?: Date;
+  title?: string;
 }
 
 @Component({
@@ -24,7 +27,7 @@ export interface PaymentDialogData {
 })
 export class PaymentDialogComponent implements OnInit, AfterViewInit {
 
-  protected readonly dialogTitle = computed(() => (this.payment ? 'Edytuj' : 'Dodaj') + ' płatność');
+  protected readonly dialogTitle = computed(() => this.data?.title ?? ((this.payment ? 'Edytuj' : 'Dodaj') + ' płatność'));
   protected payment?: Payment;
   protected bill?: Bill;
   protected dialogMode: 'add' | 'edit' = 'add';
@@ -74,10 +77,10 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
       };
     } else {
       const base = this.data?.suggestedBase ?? new Date();
-      const deadline = calculateNextDeadline(base, this.bill?.unit, this.bill?.repeat);
+      const calculated = calculateNextDeadline(base, this.bill?.unit, this.bill?.repeat);
       value = {
-        deadline,
-        paiddate: undefined,
+        deadline: this.data?.prefillDeadline ?? calculated,
+        paiddate: this.data?.prefillPaidDate ?? undefined,
         sum: this.bill?.sum ?? 0,
       };
     }
