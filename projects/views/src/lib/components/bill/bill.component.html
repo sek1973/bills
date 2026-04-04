@@ -53,6 +53,14 @@
       </button>
       }
       @if (!editMode()) {
+      <button mat-icon-button
+              class="toolbar-button"
+              [matTooltip]="detailsTooltip()"
+              (click)="toggleAmountDetails()">
+        <mat-icon>{{ detailsIcon() }}</mat-icon>
+      </button>
+      }
+      @if (!editMode()) {
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
@@ -70,11 +78,11 @@
       }
       @if (!editMode()) {
       <button mat-raised-button
-              [color]="bill()?.active ? 'primary' : 'basic'"
+              [color]="activeColor()"
               class="toolbar-button"
               [disabled]="newBill()"
               (click)="toggleActive()">
-        <span class="btn-text btn-text-always">{{bill()?.active ? 'Aktywny' : 'Nieaktywny'}}</span>
+        <span class="btn-text btn-text-always">{{activeLabel()}}</span>
       </button>
       }
     </div>

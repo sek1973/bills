@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,6 +25,8 @@ export class BillEditComponent {
   showSaveAndClose = input<boolean>(true);
 
   editModeChange = output<boolean>();
+
+  showAmountDetails = signal(false);
 
   unitEnumItems: SelectItem<Unit>[] = unitsToSelectItems();
 

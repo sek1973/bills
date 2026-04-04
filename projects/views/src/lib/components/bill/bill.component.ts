@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
@@ -17,7 +18,7 @@ import { BillEditComponent } from './bill-edit/bill-edit.component';
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, MatTabsModule, BillEditComponent, PaymentsComponent, SchedulesComponent]
+  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatTooltipModule, MatTabsModule, BillEditComponent, PaymentsComponent, SchedulesComponent]
 })
 export class BillComponent implements OnInit {
   billEdit = viewChild(BillEditComponent);
@@ -26,11 +27,17 @@ export class BillComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private store = inject(Store<AppState>);
 
-  editMode = signal(false);
-  newBill = signal(false);
-  bill = signal<Bill | undefined>(undefined);
-  bills = signal<Bill[] | undefined>(undefined);
-  routeParamId: number = -1;
+  protected readonly editMode = signal(false);
+  protected readonly newBill = signal(false);
+  protected readonly bill = signal<Bill | undefined>(undefined);
+  protected readonly bills = signal<Bill[] | undefined>(undefined);
+  protected routeParamId: number = -1;
+
+  protected readonly activeColor = computed(() => this.bill()?.active ? 'primary' : 'basic');
+  protected readonly amountDetailsVisible = computed(() => this.billEdit()?.showAmountDetails() ?? false);
+  protected readonly detailsTooltip = computed(() => this.billEdit()?.showAmountDetails() ? 'Ukryj szczegóły' : 'Pokaż szczegóły');
+  protected readonly detailsIcon = computed(() => this.billEdit()?.showAmountDetails() ? 'close' : 'more_horiz');
+  protected readonly activeLabel = computed(() => this.bill()?.active ? 'Aktywny' : 'Nieaktywny');
 
   constructor() {
     this.store.select(BillsSelectors.selectBill)
@@ -94,5 +101,9 @@ export class BillComponent implements OnInit {
   deleteBill(): void { this.billEdit()?.deleteBill(); }
   cancel(): void { this.billEdit()?.cancel(); }
   toggleActive(): void { this.billEdit()?.toggleActive(); }
+  toggleAmountDetails(): void {
+    const edit = this.billEdit();
+    if (edit) edit.showAmountDetails.set(!edit.showAmountDetails());
+  }
 
 }

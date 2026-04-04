@@ -19,6 +19,12 @@
                         [path]="['login']"
                         [descriptionProvider]="descriptionProvider">
         </app-input-text>
+        @if (editMode() || showAmountDetails()) {
+        <app-input-text [formGroup]="form"
+                        [editMode]="editMode()"
+                        [path]="['position']"
+                        [descriptionProvider]="descriptionProvider">
+        </app-input-text>
         <app-input-text [formGroup]="form"
                         [editMode]="editMode()"
                         type="number"
@@ -42,10 +48,6 @@
                            [path]="['share']"
                            [descriptionProvider]="descriptionProvider">
         </app-input-percent>
-        <app-input-text [formGroup]="form"
-                        [editMode]="editMode()"
-                        [path]="['position']"
-                        [descriptionProvider]="descriptionProvider">
-        </app-input-text>
+        }
 
 </div>
