@@ -1,6 +1,6 @@
 <app-table #table
            [tableTitle]="'Rachunki'"
-           [data]="data()"
+           [data]="dueBills()"
            [columnsDefinition]="columns"
            [editable]="true"
            [canAdd]="true"
@@ -15,17 +15,21 @@
            (rowDblClick)="editBill()">
 
   <ng-template cellTemplateForColumn="name"
-               let-row="row"
-               let-column="column">
-    <a [routerLink]="['/rachunek', getId(row)]"
-       routerLinkActive="active"
-       [ngStyle]="{'color': formatActiveColor(row) }">{{getValue(row, column)}}</a>
+               let-row="row">
+    <a [routerLink]="['/rachunek', row.id]"
+       routerLinkActive="active">{{row.name}}</a>
+  </ng-template>
+
+  <ng-template cellTemplateForColumn="dueDate"
+               let-row="row">
+    <span [billDueColor]="row.dueDate">
+      {{row.dueDate | timespanToString}}
+    </span>
   </ng-template>
 
   <ng-template cellTemplateForColumn="sum"
-               let-row="row"><span [ngStyle]="{'color': formatActiveColor(row) }">
-      {{row.sum | currencyToString}}
-    </span>
+               let-row="row">
+    <span>{{row.sum | currencyToString}}</span>
   </ng-template>
 
   <ng-template #rightToolbarPanelTemplate>
@@ -51,7 +55,7 @@
 
   <ng-template #expandedRowTemplate
                let-row="row">
-    <app-bill-edit [bill]="row"
+    <app-bill-edit [bill]="getBillById(row.id)"
                    [bills]="data()"
                    [newBill]="false"
                    [editMode]="editMode()"

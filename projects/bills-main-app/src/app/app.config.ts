@@ -1,10 +1,10 @@
 import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
-import { AuthService, BillsService, PaymentsService, SchedulesService } from 'projects/model/src/public-api';
+import { AuthService, BillsService, DueBillsService, PaymentsService, SchedulesService } from 'projects/model/src/public-api';
 import { provideBillsStore } from 'projects/store/src/public-api';
 import { provideToolsDeps } from 'projects/tools/src/public-api';
 import { provideViews } from 'projects/views/src/public-api';
 import { environment } from '../environments/environment';
-import { BillsServiceImpl, PaymentsServiceImpl, SchedulesServiceImpl } from './services';
+import { BillsServiceImpl, DueBillsServiceImpl, PaymentsServiceImpl, SchedulesServiceImpl } from './services';
 import { AuthServiceImpl } from './services/auth.service';
 
 export const appConfig: ApplicationConfig = {
@@ -17,5 +17,6 @@ export const appConfig: ApplicationConfig = {
     { provide: BillsService, useExisting: BillsServiceImpl },
     { provide: PaymentsService, useExisting: PaymentsServiceImpl },
     { provide: SchedulesService, useExisting: SchedulesServiceImpl },
+    { provide: DueBillsService, useExisting: DueBillsServiceImpl },
   ]
 };

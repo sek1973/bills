@@ -22,6 +22,18 @@ export interface PaymentRow {
   bill_id: number;
 }
 
+export interface DueBillRow {
+  id: number;
+  position: number | null;
+  name: string;
+  description: string | null;
+  active: boolean;
+  url: string | null;
+  login: string | null;
+  due_date: string | null;
+  sum: number | null;
+}
+
 export interface ScheduleRow {
   id: number | null;
   date: string | null;
