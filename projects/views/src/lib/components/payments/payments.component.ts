@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
 import { Bill, Payment } from 'projects/model/src/lib/model';
-import { AppState, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
+import { AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
@@ -114,32 +114,7 @@ export class PaymentsComponent implements OnInit {
   };
 
   payClosest(): void {
-    const closest = this.closestUpcoming();
-    if (closest) {
-      const withPaid = closest.clone(closest.id);
-      withPaid.paiddate = new Date();
-      this.dialog.open(PaymentDialogComponent, {
-        width: '500px',
-        data: { payment: withPaid, bill: this.bill, title: 'Edytuj zrealizowaną płatność' }
-      }).afterClosed().subscribe(result => {
-        if (result && result !== 'cancel') {
-          const otherUpcoming = this.data().filter(p => !p.paiddate && p.deadline && p.id !== closest.id);
-          if (!otherUpcoming.length) {
-            this.addPayment();
-          }
-        }
-      });
-    } else {
-      const today = new Date();
-      this.dialog.open(PaymentDialogComponent, {
-        width: '500px',
-        data: { bill: this.bill, prefillPaidDate: today, prefillDeadline: today, title: 'Dodaj zrealizowaną płatność' }
-      }).afterClosed().subscribe(result => {
-        if (result && result !== 'cancel') {
-          this.addPayment();
-        }
-      });
-    }
+    if (this.bill) { this.store.dispatch(BillsActions.payBill({ bill: this.bill })); }
   }
 
   addPayment(): void {

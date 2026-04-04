@@ -2,9 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { BillsService } from 'projects/model/src/public-api';
+import moment from 'moment';
+import { BillsService, calculateNextDeadline, Payment, PaymentsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService, validateBillName } from 'projects/tools/src/public-api';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { BillApiActions } from './bill-api.actions';
 import { BillsActions } from './bill.actions';
@@ -14,6 +15,7 @@ export class BillEffects {
 
   private actions$ = inject(Actions);
   private billsService = inject(BillsService);
+  private paymentsService = inject(PaymentsService);
   private confirmationService = inject(ConfirmationService);
   private notification = inject(NotificationService);
   private router = inject(Router);
@@ -177,27 +179,65 @@ export class BillEffects {
       .pipe(
         ofType(BillsActions.payBill),
         filter(action => action.bill.id >= 0),
-        mergeMap(action => this.confirmationService
-          .confirm('Rachunek opłacony',
-            'Podaj zapłaconą kwotę:', 'Anuluj', 'OK',
-            ConfirmDialogInputType.InputTypeCurrency, action.bill.sum, [Validators.required], 'Kwota', 'Kwota')
-          .pipe(
-            filter(response => response !== false),
-            map(response => BillsActions.payBillConfirmed({ bill: action.bill, value: (response as ConfirmDialogResponse).value, dueDate: action.dueDate })),
-            catchError(error => of(BillApiActions.payBillFailure({ error })))
+        mergeMap(action =>
+          this.paymentsService.load(action.bill.id).pipe(
+            catchError(() => of([] as Payment[])),
+            switchMap(payments => {
+              const closest = payments
+                .filter(p => !p.paiddate && p.deadline)
+                .sort((a, b) => moment(a.deadline).diff(moment(b.deadline)))[0] as Payment | undefined;
+
+              return this.confirmationService.confirm(
+                'Rachunek opłacony',
+                'Podaj zapłaconą kwotę:', 'Anuluj', 'OK',
+                ConfirmDialogInputType.InputTypeCurrency,
+                closest?.sum ?? action.bill.sum,
+                [Validators.required], 'Kwota', 'Kwota'
+              ).pipe(
+                filter(response => response !== false),
+                switchMap(response => {
+                  const value = (response as ConfirmDialogResponse).value;
+                  const today = new Date();
+                  const payOp: Observable<boolean | number> = closest
+                    ? this.paymentsService.update(new Payment(
+                      closest.deadline, value, today,
+                      closest.remarks, closest.reminder, closest.billId, closest.id
+                    ))
+                    : this.paymentsService.add(
+                      new Payment(today, value, today, undefined, undefined, action.bill.id)
+                    );
+
+                  return payOp.pipe(
+                    switchMap(() => {
+                      const otherUpcoming = payments.filter(p =>
+                        !p.paiddate && p.deadline && p.id !== closest?.id
+                      );
+                      if (otherUpcoming.length) {
+                        return of(BillApiActions.payBillSuccess({ billId: action.bill.id }));
+                      }
+                      const base = closest?.deadline ?? today;
+                      const nextDeadline = calculateNextDeadline(base, action.bill.unit, action.bill.repeat);
+                      const nextPayment = new Payment(nextDeadline, action.bill.sum, undefined, undefined, undefined, action.bill.id);
+                      return this.paymentsService.add(nextPayment).pipe(
+                        switchMap(() => this.confirmationService.confirm(
+                          'Następna płatność',
+                          `Dodano termin następnej płatności: ${moment(nextDeadline).format('DD.MM.YYYY')}`,
+                          'Zamknij', 'OK'
+                        ).pipe(
+                          map(() => BillApiActions.payBillSuccess({ billId: action.bill.id }))
+                        )),
+                        catchError(error => of(BillApiActions.payBillFailure({ error })))
+                      );
+                    }),
+                    catchError(error => of(BillApiActions.payBillFailure({ error })))
+                  );
+                }),
+                catchError(error => of(BillApiActions.payBillFailure({ error })))
+              );
+            })
           )
         )
       );
-  });
-
-  payBillConfirmed$ = createEffect(() => {
-    return this.actions$
-      .pipe(
-        ofType(BillsActions.payBillConfirmed),
-        switchMap(action => this.billsService.pay(action.bill, action.value, action.dueDate)
-          .pipe(map(() => BillApiActions.payBillSuccess({ billId: action.bill.id })),
-            catchError(error => of(BillApiActions.payBillFailure({ error })))
-          )));
   });
 
   payBillSuccess$ = createEffect(() => {

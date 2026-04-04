@@ -13,7 +13,7 @@ export class ConfirmDialogModel {
     public cancelButtonLabel = 'Anuluj',
     public applyButtonLabel = 'OK',
     public inputType?: ConfirmDialogInputType,
-    public inputValue?: any,
+    public inputValue?: unknown,
     public inputValidators?: ValidatorFn | ValidatorFn[],
     public inputLabelText?: string,
     public inputPlaceholderText?: string,

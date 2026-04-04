@@ -16,7 +16,7 @@ export class ConfirmationService {
     cancelButtonLabel = 'Cancel',
     applyButtonLabel = 'Apply',
     inputType?: ConfirmDialogInputType,
-    inputValue?: any,
+    inputValue?: unknown,
     inputValidators?: ValidatorFn | ValidatorFn[],
     inputLabelText?: string,
     inputPlaceholderText?: string,
