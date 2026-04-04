@@ -85,8 +85,8 @@ export class PaymentsComponent implements OnInit {
     if (row.paiddate) return { 'background-color': even ? '#c8e6c9' : '#e8f5e9' };
     const now = moment();
     const deadline = moment(row.deadline);
-    if (deadline.isBefore(now, 'day')) return { 'background-color': even ? '#ffcdd2' : '#ffebee' };
-    if (deadline.diff(now, 'days') <= 7) return { 'background-color': even ? '#fcf7cb' : '#fbf9e6' };
+    if (deadline.diff(now, 'days') < 1) return { 'background-color': even ? '#ffcdd2' : '#ffebee' };
+    if (deadline.isBetween(moment().add(1, 'days'), moment().add(7, 'days'))) return { 'background-color': even ? '#fcf7cb' : '#fbf9e6' };
     return {};
   };
 
