@@ -30,7 +30,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
   form: UntypedFormGroup = new UntypedFormGroup({
     id: new UntypedFormControl(),
     deadline: new UntypedFormControl(new Date(), Validators.required),
-    paiddate: new UntypedFormControl(new Date(), Validators.required),
+    paiddate: new UntypedFormControl(null),
     sum: new UntypedFormControl(0, Validators.required),
     reminder: new UntypedFormControl(),
     remarks: new UntypedFormControl(),
@@ -72,7 +72,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     } else {
       value = {
         deadline: new Date(),
-        paidDate: new Date(),
+        paidDate: undefined,
         sum: this.bill?.sum ?? 0,
       };
     }
