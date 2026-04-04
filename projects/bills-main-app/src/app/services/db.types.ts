@@ -22,7 +22,7 @@ export interface PaymentRow {
   bill_id: number;
 }
 
-export interface DueBillRow {
+export interface OverviewBillRow {
   id: number;
   position: number | null;
   name: string;

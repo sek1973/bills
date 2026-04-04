@@ -1,4 +1,4 @@
-export interface DueBill {
+export interface OverviewBill {
   id: number;
   position?: number;
   name: string;

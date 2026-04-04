@@ -4,7 +4,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
-import { DueBill, DueBillsService } from 'projects/model/src/public-api';
+import { OverviewBill, OverviewBillsService } from 'projects/model/src/public-api';
 import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { BillDueColorDirective } from 'projects/tools/src/lib/components/table/directives/bill-due-color.directive';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
@@ -24,7 +24,7 @@ import { BillEditComponent } from '../bill/bill-edit/bill-edit.component';
 export class OverviewComponent implements OnInit, OnDestroy {
   editMode = signal(false);
   data = signal<Bill[]>([]);
-  dueBills = signal<DueBill[]>([]);
+  OverviewBills = signal<OverviewBill[]>([]);
   columns = [
     { name: 'name', header: 'Nazwa' },
     { name: 'dueDate', header: 'Termin' },
@@ -33,12 +33,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private dataSubscription = Subscription.EMPTY;
 
   @ViewChild('table')
-  table!: TableComponent<DueBill>;
+  table!: TableComponent<OverviewBill>;
 
   private store = inject(Store<AppState>);
   private router = inject(Router);
   private notification = inject(NotificationService);
-  private dueBillsService = inject(DueBillsService);
+  private OverviewBillsService = inject(OverviewBillsService);
 
   ngOnInit(): void {
     this.subscribeToData();
@@ -49,16 +49,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .select(BillsSelectors.selectAll)
       .pipe(
         tap(bills => this.data.set(bills || [])),
-        switchMap(() => this.dueBillsService.load().pipe(catchError(() => of([]))))
+        switchMap(() => this.OverviewBillsService.load().pipe(catchError(() => of([]))))
       )
-      .subscribe(dueBills => this.dueBills.set(dueBills));
+      .subscribe(OverviewBills => this.OverviewBills.set(OverviewBills));
   }
 
   ngOnDestroy(): void {
     this.dataSubscription.unsubscribe();
   }
 
-  onRowClicked(row: DueBill | undefined): void {
+  onRowClicked(row: OverviewBill | undefined): void {
     if (this.table) {
       this.table.canDelete.set(row ? true : false);
       this.table.canEdit.set(row ? true : false);
@@ -70,9 +70,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   deleteBill(): void {
-    const dueBill = this.table.activeRow();
-    if (dueBill) {
-      const bill = this.getBillById(dueBill.id);
+    const OverviewBill = this.table.activeRow();
+    if (OverviewBill) {
+      const bill = this.getBillById(OverviewBill.id);
       if (bill) { this.store.dispatch(BillsActions.deleteBill({ bill })); }
     }
   }
@@ -106,9 +106,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   payBill(): void {
-    const dueBill = this.table.activeRow();
-    if (dueBill) {
-      const bill = this.getBillById(dueBill.id);
+    const OverviewBill = this.table.activeRow();
+    if (OverviewBill) {
+      const bill = this.getBillById(OverviewBill.id);
       if (bill) { this.store.dispatch(BillsActions.payBill({ bill })); }
     }
   }

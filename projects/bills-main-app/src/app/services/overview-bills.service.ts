@@ -1,18 +1,18 @@
 import { inject, Injectable } from '@angular/core';
-import { DueBill, DueBillsService } from 'projects/model/src/public-api';
+import { OverviewBill, OverviewBillsService } from 'projects/model/src/public-api';
 import { from, map, Observable } from 'rxjs';
-import { DueBillRow } from './db.types';
+import { OverviewBillRow } from './db.types';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DueBillsServiceImpl extends DueBillsService {
+export class OverviewBillsServiceImpl extends OverviewBillsService {
 
   private serverService = inject(SupabaseService);
 
-  load(): Observable<DueBill[]> {
-    return from(this.serverService.client.from('bills_overview').select<'*', DueBillRow>('*')).pipe(
+  load(): Observable<OverviewBill[]> {
+    return from(this.serverService.client.from('bills_overview').select<'*', OverviewBillRow>('*')).pipe(
       map(({ data, error }) => {
         if (error) throw error;
         return data.map(r => ({
