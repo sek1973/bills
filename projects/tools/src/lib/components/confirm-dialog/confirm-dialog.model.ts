@@ -6,17 +6,16 @@ export enum ConfirmDialogInputType {
   InputTypeTextArea
 }
 
-export class ConfirmDialogModel {
-  constructor(
-    public dialogTitle: string,
-    public message: string,
-    public cancelButtonLabel = 'Anuluj',
-    public applyButtonLabel = 'OK',
-    public inputType?: ConfirmDialogInputType,
-    public inputValue?: unknown,
-    public inputValidators?: ValidatorFn | ValidatorFn[],
-    public inputLabelText?: string,
-    public inputPlaceholderText?: string,
-    public inputTooltipText?: string
-  ) { }
+export interface ConfirmDialogModel {
+  dialogTitle: string;
+  message: string;
+  cancelButtonLabel?: string;
+  cancelButtonVisible?: boolean;
+  applyButtonLabel?: string;
+  inputType?: ConfirmDialogInputType;
+  inputValue?: unknown;
+  inputValidators?: ValidatorFn | ValidatorFn[];
+  inputLabelText?: string;
+  inputPlaceholderText?: string;
+  inputTooltipText?: string;
 }

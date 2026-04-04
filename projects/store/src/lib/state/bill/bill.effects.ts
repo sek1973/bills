@@ -48,11 +48,12 @@ export class BillEffects {
             : undefined;
 
           if (conflictingBill && currentBill?.position != null && action.bill.position != null) {
-            return this.confirmationService.confirm(
-              'Zamiana pozycji',
-              `Rachunek "${conflictingBill.name}" ma już pozycję ${action.bill.position}. Czy zamienić pozycje obu rachunków?`,
-              'Anuluj', 'Zamień',
-            ).pipe(
+            return this.confirmationService.confirm({
+              dialogTitle: 'Zamiana pozycji',
+              message: `Rachunek "${conflictingBill.name}" ma już pozycję ${action.bill.position}. Czy zamienić pozycje obu rachunków?`,
+              cancelButtonLabel: 'Anuluj',
+              applyButtonLabel: 'Zamień'
+            }).pipe(
               filter(response => !!response),
               map(() => BillsActions.updateBillConfirmed({ bill: action.bill, redirect: action.redirect })),
             );
@@ -140,17 +141,20 @@ export class BillEffects {
       .pipe(
         ofType(BillsActions.deleteBill),
         filter(action => action.bill.id >= 0),
-        mergeMap(action => this.confirmationService
-          .confirm('Usuń rachunek',
-            'Czy na pewno chcesz usunąć bieżący rachunek wraz z historią płatności? Operacji nie będzie można cofnąć! ' +
-            'Aby potwierdzić podaj nazwę rachunku.', 'Nie', 'Tak',
-            ConfirmDialogInputType.InputTypeText, undefined,
-            [Validators.required, validateBillName(action.bill.name)],
-            'Nazwa rachunku', 'Nazwa rachunku')
-          .pipe(
-            filter(response => !!response),
-            map(() => BillsActions.deleteBillConfirmed({ bill: action.bill }))
-          )
+        mergeMap(action => this.confirmationService.confirm({
+          dialogTitle: 'Usuń rachunek',
+          message: 'Czy na pewno chcesz usunąć bieżący rachunek wraz z historią płatności? Operacji nie będzie można cofnąć! ' +
+            'Aby potwierdzić podaj nazwę rachunku.',
+          cancelButtonLabel: 'Nie',
+          applyButtonLabel: 'Tak',
+          inputType: ConfirmDialogInputType.InputTypeText,
+          inputValidators: [Validators.required, validateBillName(action.bill.name)],
+          inputLabelText: 'Nazwa rachunku',
+          inputPlaceholderText: 'Nazwa rachunku'
+        }).pipe(
+          filter(response => !!response),
+          map(() => BillsActions.deleteBillConfirmed({ bill: action.bill }))
+        )
         )
       );
   });
@@ -187,24 +191,28 @@ export class BillEffects {
                 .filter(p => !p.paiddate && p.deadline)
                 .sort((a, b) => moment(a.deadline).diff(moment(b.deadline)))[0] as Payment | undefined;
 
-              return this.confirmationService.confirm(
-                'Rachunek opłacony',
-                'Podaj zapłaconą kwotę:', 'Anuluj', 'OK',
-                ConfirmDialogInputType.InputTypeCurrency,
-                closest?.sum ?? action.bill.sum,
-                [Validators.required], 'Kwota', 'Kwota'
-              ).pipe(
+              return this.confirmationService.confirm({
+                dialogTitle: 'Rachunek opłacony',
+                message: 'Podaj zapłaconą kwotę:',
+                cancelButtonLabel: 'Anuluj',
+                applyButtonLabel: 'OK',
+                inputType: ConfirmDialogInputType.InputTypeCurrency,
+                inputValue: closest?.sum ?? action.bill.sum,
+                inputValidators: [Validators.required],
+                inputLabelText: 'Kwota',
+                inputPlaceholderText: 'Kwota'
+              }).pipe(
                 filter(response => response !== false),
                 switchMap(response => {
                   const value = (response as ConfirmDialogResponse).value;
                   const today = new Date();
                   const payOp: Observable<boolean | number> = closest
                     ? this.paymentsService.update(new Payment(
-                      closest.deadline, value, today,
+                      closest.deadline, value as number, today,
                       closest.remarks, closest.reminder, closest.billId, closest.id
                     ))
                     : this.paymentsService.add(
-                      new Payment(today, value, today, undefined, undefined, action.bill.id)
+                      new Payment(today, value as number, today, undefined, undefined, action.bill.id)
                     );
 
                   return payOp.pipe(
@@ -219,11 +227,12 @@ export class BillEffects {
                       const nextDeadline = calculateNextDeadline(base, action.bill.unit, action.bill.repeat);
                       const nextPayment = new Payment(nextDeadline, action.bill.sum, undefined, undefined, undefined, action.bill.id);
                       return this.paymentsService.add(nextPayment).pipe(
-                        switchMap(() => this.confirmationService.confirm(
-                          'Następna płatność',
-                          `Dodano termin następnej płatności: ${moment(nextDeadline).format('DD.MM.YYYY')}`,
-                          'Zamknij', 'OK'
-                        ).pipe(
+                        switchMap(() => this.confirmationService.confirm({
+                          dialogTitle: 'Następna płatność',
+                          message: `Dodano termin następnej płatności: ${moment(nextDeadline).format('DD.MM.YYYY')}`,
+                          cancelButtonVisible: false,
+                          applyButtonLabel: 'OK'
+                        }).pipe(
                           map(() => BillApiActions.payBillSuccess({ billId: action.bill.id }))
                         )),
                         catchError(error => of(BillApiActions.payBillFailure({ error })))

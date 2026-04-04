@@ -1,8 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { ConfirmDialogComponent, ConfirmDialogInputType, ConfirmDialogModel, ConfirmDialogResponse } from '../components/confirm-dialog';
+import { ConfirmDialogComponent, ConfirmDialogModel, ConfirmDialogResponse } from '../components/confirm-dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -10,20 +9,7 @@ import { ConfirmDialogComponent, ConfirmDialogInputType, ConfirmDialogModel, Con
 export class ConfirmationService {
   private dialog = inject(MatDialog);
 
-  confirm(
-    dialogTitle: string,
-    message: string,
-    cancelButtonLabel = 'Cancel',
-    applyButtonLabel = 'Apply',
-    inputType?: ConfirmDialogInputType,
-    inputValue?: unknown,
-    inputValidators?: ValidatorFn | ValidatorFn[],
-    inputLabelText?: string,
-    inputPlaceholderText?: string,
-    inputTooltipText?: string
-  ): Observable<boolean | ConfirmDialogResponse> {
-    const dialogData = new ConfirmDialogModel(dialogTitle, message, cancelButtonLabel, applyButtonLabel,
-      inputType, inputValue, inputValidators, inputLabelText, inputPlaceholderText, inputTooltipText);
+  confirm(dialogData: ConfirmDialogModel): Observable<boolean | ConfirmDialogResponse> {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       maxWidth: '600px',
       maxHeight: '800px',

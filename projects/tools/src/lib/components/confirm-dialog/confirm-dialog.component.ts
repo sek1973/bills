@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -10,7 +10,7 @@ import { ConfirmDialogInputType, ConfirmDialogModel } from './confirm-dialog.mod
 
 export interface ConfirmDialogResponse {
   response: boolean;
-  value: any;
+  value: unknown;
 }
 
 @Component({
@@ -21,33 +21,35 @@ export interface ConfirmDialogResponse {
   imports: [InputTextComponent, FormsModule, ReactiveFormsModule, InputCurrencyComponent, InputTextareaComponent, MatButtonModule]
 })
 export class ConfirmDialogComponent {
-  dialogTitle: string;
-  message: string;
-  cancelButtonLabel: string;
-  applyButtonLabel: string;
-  canApply = signal(true);
+  protected dialogTitle: string;
+  protected message: string;
+  protected cancelButtonLabel: string;
+  protected cancelButtonVisible: boolean = true;
+  protected applyButtonLabel: string;
+  protected canApply = signal(true);
 
-  form: UntypedFormGroup = new UntypedFormGroup({});
-  inputType?: ConfirmDialogInputType;
-  confirmDialogInputType = ConfirmDialogInputType;
-  descriptionProvider!: DescriptionProvider;
+  protected form: UntypedFormGroup = new UntypedFormGroup({});
+  protected inputType?: ConfirmDialogInputType;
+  protected confirmDialogInputType = ConfirmDialogInputType;
+  protected descriptionProvider!: DescriptionProvider;
 
-  constructor(
-    @Inject(MatDialogRef) public dialogRef: MatDialogRef<ConfirmDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogModel
-  ) {
-    this.dialogTitle = data.dialogTitle;
-    this.message = data.message;
-    this.cancelButtonLabel = data.cancelButtonLabel;
-    this.applyButtonLabel = data.applyButtonLabel;
-    this.initInput(data);
+  public dialogRef = inject(MatDialogRef<ConfirmDialogComponent>);
+  public data = inject(MAT_DIALOG_DATA) as ConfirmDialogModel;
+
+  constructor() {
+    this.dialogTitle = this.data.dialogTitle;
+    this.message = this.data.message;
+    this.cancelButtonVisible = this.data.cancelButtonVisible ?? true;
+    this.cancelButtonLabel = this.data.cancelButtonLabel || 'Cancel';
+    this.applyButtonLabel = this.data.applyButtonLabel || 'Apply';
+    this.initInput(this.data);
   }
 
   initInput(data: ConfirmDialogModel): void {
     if (data.inputType !== undefined) {
       this.inputType = data.inputType;
       this.descriptionProvider = {
-        getDescriptionObj: (...path: string[]) => {
+        getDescriptionObj: () => {
           return {
             tooltipText: data.inputTooltipText || '',
             placeholderText: data.inputPlaceholderText || '',

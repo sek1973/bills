@@ -85,9 +85,12 @@ export class PaymentEffects {
         ofType(PaymentsActions.deletePayment),
         filter(action => action.payment.id >= 0),
         mergeMap(action => this.confirmationService
-          .confirm('Usuń płatność',
-            'Czy na pewno chcesz usunąć bieżącą płatność? Operacji nie będzie można cofnąć!', 'Nie', 'Tak')
-          .pipe(
+          .confirm({
+            dialogTitle: 'Usuń płatność',
+            message: 'Czy na pewno chcesz usunąć bieżącą płatność? Operacji nie będzie można cofnąć!',
+            cancelButtonLabel: 'Nie',
+            applyButtonLabel: 'Tak'
+          }).pipe(
             filter(response => !!response),
             map(() => PaymentsActions.deletePaymentConfirmed({ payment: action.payment }))
           )
@@ -121,10 +124,16 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentsActions.importPayments),
         mergeMap(action => this.confirmationService
-          .confirm('Importuj historyczne płatności',
-            'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.\nFormat (kolumny oddzielone tabulatorem, wiersze nową linią): termin | data płatności | kwota | udział | uwagi', 'Anuluj', 'Importuj',
-            ConfirmDialogInputType.InputTypeTextArea, undefined, [Validators.required], 'Dane', 'Dane')
-          .pipe(
+          .confirm({
+            dialogTitle: 'Importuj historyczne płatności',
+            message: 'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.\nFormat (kolumny oddzielone tabulatorem, wiersze nową linią): termin | data płatności | kwota | udział | uwagi',
+            cancelButtonLabel: 'Anuluj',
+            applyButtonLabel: 'Importuj',
+            inputType: ConfirmDialogInputType.InputTypeTextArea,
+            inputValidators: [Validators.required],
+            inputLabelText: 'Dane',
+            inputPlaceholderText: 'Dane'
+          }).pipe(
             filter(response => !!response),
             map(response => {
               const data = (response as ConfirmDialogResponse).value as string;
