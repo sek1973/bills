@@ -25,6 +25,7 @@ export class PaymentsComponent implements OnInit {
 
   activeRow?: Payment;
   data = signal<Payment[]>([]);
+  closestUpcomingId = signal<number | undefined>(undefined);
   columns = [
     { name: 'deadline', header: 'Termin' },
     { name: 'paiddate', header: 'Zapłacono' },
@@ -49,8 +50,19 @@ export class PaymentsComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.#destroyRef),
         filter(() => !!this.bill))
       .subscribe({
-        next: payments => this.data.set(payments || [])
+        next: payments => {
+          const list = payments || [];
+          this.data.set(list);
+          this.updateClosestUpcoming(list);
+        }
       });
+  }
+
+  private updateClosestUpcoming(payments: Payment[]): void {
+    const unpaid = payments
+      .filter(p => !p.paiddate && p.deadline)
+      .sort((a, b) => moment(a.deadline).diff(moment(b.deadline)));
+    this.closestUpcomingId.set(unpaid.length ? unpaid[0].id : undefined);
   }
 
   private subscribeToBill(): void {
@@ -64,7 +76,6 @@ export class PaymentsComponent implements OnInit {
         }
       });
   }
-
 
   onRowClicked(row: Payment): void {
     if (this.activeRow !== row) {
@@ -81,13 +92,25 @@ export class PaymentsComponent implements OnInit {
   }
 
   paymentRowStyle = (row: Payment, index: number): Record<string, string> => {
+    const style: Record<string, string> = {};
     const even = index % 2 === 0;
-    if (row.paiddate) return { 'background-color': even ? '#c8e6c9' : '#e8f5e9' };
-    const now = moment();
-    const deadline = moment(row.deadline);
-    if (deadline.diff(now, 'days') < 1) return { 'background-color': even ? '#ffcdd2' : '#ffebee' };
-    if (deadline.isBetween(moment().add(1, 'days'), moment().add(7, 'days'))) return { 'background-color': even ? '#fcf7cb' : '#fbf9e6' };
-    return {};
+    if (row.paiddate) {
+      style['background-color'] = even ? '#c8e6c9' : '#e8f5e9';
+    } else {
+      const now = moment();
+      const deadline = moment(row.deadline);
+      if (deadline.diff(now, 'days') < 1) {
+        style['background-color'] = even ? '#ffcdd2' : '#ffebee';
+      } else if (deadline.isBetween(moment().add(1, 'days'), moment().add(7, 'days'))) {
+        style['background-color'] = even ? '#fcf7cb' : '#fbf9e6';
+      }
+    }
+
+    if (row?.id && row.id === this.closestUpcomingId()) {
+      style['font-weight'] = 'bold';
+    }
+
+    return style;
   };
 
   addPayment(): void {
