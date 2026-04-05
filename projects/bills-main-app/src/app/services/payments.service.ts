@@ -13,10 +13,10 @@ export class PaymentsServiceImpl extends PaymentsService {
   private serverService: SupabaseService = inject(SupabaseService);
 
   load(billId: number): Observable<Payment[]> {
-    return from(this.serverService.client.from('payments_overview').select<'*', PaymentRow>('*').eq('bill_id', billId)).pipe(
+    return from(this.serverService.client.rpc('bill_payments_overview', { p_bill_id: billId })).pipe(
       map(({ data, error }) => {
         if (error) throw error;
-        return data.map(r => this.fromRow(r));
+        return (data ?? []).map((r: PaymentRow) => this.fromRow(r));
       })
     );
   }
