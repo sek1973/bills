@@ -34,7 +34,6 @@ export class BillComponent implements OnInit {
   protected readonly activeColor = computed(() => this.bill()?.active ? 'primary' : 'basic');
   protected readonly amountDetailsVisible = computed(() => this.billEdit()?.showAmountDetails() ?? false);
   protected readonly detailsTooltip = computed(() => this.billEdit()?.showAmountDetails() ? 'Ukryj szczegóły' : 'Pokaż szczegóły');
-  protected readonly detailsIcon = computed(() => this.billEdit()?.showAmountDetails() ? 'close' : 'more_horiz');
   protected readonly activeLabel = computed(() => this.bill()?.active ? 'Aktywny' : 'Nieaktywny');
 
   constructor() {

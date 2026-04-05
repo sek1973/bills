@@ -30,6 +30,16 @@
   margin-right: 5px;
 }
 
+/* Visual indication for the details toggle button */
+.toolbar-button.toggled {
+  background-color: rgba(103, 58, 183, 0.75);
+  border-radius: 50%;
+}
+.toolbar-button.toggled mat-icon,
+.toolbar-button.toggled .mat-icon {
+  color: white;
+}
+
 .bill-details {
   min-height: 100px;
 }
