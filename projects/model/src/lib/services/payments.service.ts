@@ -31,7 +31,10 @@ export abstract class PaymentsService {
         const request: Observable<ImportReport> = this.add(payment).pipe(
           map(id => ({ id })),
           catchError(e => {
-            return of({ error: payment.deadline ? moment(payment.deadline).format('YYYY.MM.DD') : '' + ' - ' + (e.message ?? e.toString()) })
+            return of({
+              error: (payment.deadline ? moment(payment.deadline).format('YYYY.MM.DD') : '')
+                + ' - ' + (e.message ?? e.toString())
+            })
           }));
         requests.push(request);
       } else {
