@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import moment from 'moment';
 import { concat, Observable, of } from 'rxjs';
 import { bufferCount, catchError, map } from 'rxjs/operators';
 import { currencyToNumber, stringToDate } from '../helpers';
@@ -30,7 +31,7 @@ export abstract class PaymentsService {
         const request: Observable<ImportReport> = this.add(payment).pipe(
           map(id => ({ id })),
           catchError(e => {
-            return of({ error: e.message ?? e.toString() })
+            return of({ error: payment.deadline ? moment(payment.deadline).format('YYYY.MM.DD') : '' + ' - ' + (e.message ?? e.toString()) })
           }));
         requests.push(request);
       } else {
