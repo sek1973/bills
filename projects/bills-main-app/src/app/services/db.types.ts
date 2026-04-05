@@ -6,6 +6,7 @@ export interface BillRow {
   active: boolean;
   url: string | null;
   login: string | null;
+  account: string | null;
   sum: number;
   repeat: number;
   unit: number;

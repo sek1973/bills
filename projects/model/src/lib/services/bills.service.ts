@@ -31,6 +31,7 @@ export abstract class BillsService {
       bill.active || false,
       bill.url || '',
       bill.login || '',
+      bill.account || '',
       bill.sum || 0,
       bill.repeat || 1,
       bill.unit || Unit.Month,

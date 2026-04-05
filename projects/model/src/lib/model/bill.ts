@@ -10,6 +10,7 @@ export class Bill {
     public active: boolean = true,
     public url?: string,
     public login?: string,
+    public account?: string,
     public sum: number = 0,
     public repeat: number = 1,
     public unit: Unit = Unit.Month,
@@ -23,6 +24,7 @@ export class Bill {
       this.active,
       this.url,
       this.login,
+      this.account,
       this.sum,
       this.repeat,
       this.unit,
@@ -70,6 +72,11 @@ export const BillDescription = new Map<string, FieldDescription>([
     tooltipText: 'Podaj login, którego używasz na stronie logowania dystrybutora',
     placeholderText: 'Login do konta u dystrybutora',
     labelText: 'Login'
+  }],
+  ['account', {
+    tooltipText: 'Podaj numer rachunku bankowego do płatności',
+    placeholderText: 'Numer rachunku bankowego',
+    labelText: 'Numer rachunku'
   }],
   ['position', {
     tooltipText: 'Liczba porządkowa rachunku',

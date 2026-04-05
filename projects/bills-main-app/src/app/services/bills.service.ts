@@ -44,6 +44,7 @@ export class BillsServiceImpl extends BillsService {
       r.active,
       r.url ?? undefined,
       r.login ?? undefined,
+      r.account ?? undefined,
       r.sum,
       r.repeat,
       r.unit,
@@ -51,7 +52,7 @@ export class BillsServiceImpl extends BillsService {
     );
   }
 
-  private toRow(bill: Bill): Omit<BillRow, 'id'> {
+  private toRow(bill: Bill): Omit<BillRow, 'id' | 'owner_id' | 'created_at'> {
     return {
       position: bill.position ?? null,
       name: bill.name,
@@ -59,6 +60,7 @@ export class BillsServiceImpl extends BillsService {
       active: bill.active,
       url: bill.url ?? null,
       login: bill.login ?? null,
+      account: bill.account ?? null,
       sum: bill.sum,
       repeat: bill.repeat,
       unit: bill.unit,
