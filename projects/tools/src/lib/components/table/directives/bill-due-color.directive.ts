@@ -7,8 +7,10 @@ import { addDays } from 'projects/model/src/public-api';
 })
 export class BillDueColorDirective {
   readonly billDueColor = input<Date | undefined>();
+  readonly active = input<boolean>(true);
 
   protected readonly color = computed(() => {
+    if (!this.active()) return 'grey';
     const dueDate = this.billDueColor();
     if (!dueDate) return '';
     if (dueDate < new Date()) return 'red';

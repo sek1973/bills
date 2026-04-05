@@ -30,6 +30,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     { name: 'dueDate', header: 'Termin' },
     { name: 'sum', header: 'Kwota' }
   ];
+  inactiveRowStyle = (row: OverviewBill): Record<string, string> => row.active ? {} : { color: 'grey' };
   private dataSubscription = Subscription.EMPTY;
 
   @ViewChild('table')

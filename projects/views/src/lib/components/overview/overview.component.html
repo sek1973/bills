@@ -7,6 +7,7 @@
            [showPasteButton]="false"
            [pageable]="false"
            [expandable]="true"
+           [rowStyle]="inactiveRowStyle"
            (rowActivated)="onRowClicked($event)"
            (deleteButtonClicked)="deleteBill()"
            (editButtonClicked)="editBill()"
@@ -17,12 +18,14 @@
   <ng-template cellTemplateForColumn="name"
                let-row="row">
     <a [routerLink]="['/rachunek', row.id]"
-       routerLinkActive="active">{{row.name}}</a>
+       routerLinkActive="active"
+       [style.color]="row.active ? null : 'grey'">{{row.name}}</a>
   </ng-template>
 
   <ng-template cellTemplateForColumn="dueDate"
                let-row="row">
-    <span [billDueColor]="row.dueDate">
+    <span [billDueColor]="row.dueDate"
+          [active]="row.active">
       {{row.dueDate | timespanToString}}
     </span>
   </ng-template>
