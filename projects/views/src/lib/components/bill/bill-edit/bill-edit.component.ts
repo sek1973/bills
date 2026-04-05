@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputCurrencyComponent, InputHyperlinkComponent, InputPercentComponent, InputSelectComponent, InputTextComponent, SelectItem, unitsToSelectItems, validateDistinctBillName } from 'projects/tools/src/public-api';
+import { InputCurrencyComponent, InputHyperlinkComponent, InputSelectComponent, InputTextComponent, SelectItem, unitsToSelectItems, validateDistinctBillName } from 'projects/tools/src/public-api';
 import { map } from 'rxjs';
 
 @Component({
@@ -15,7 +15,7 @@ import { map } from 'rxjs';
   templateUrl: './bill-edit.component.html',
   styleUrls: ['./bill-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputSelectComponent, InputCurrencyComponent, InputPercentComponent, InputHyperlinkComponent]
+  imports: [ReactiveFormsModule, MatButtonModule, InputTextComponent, InputSelectComponent, InputCurrencyComponent, InputHyperlinkComponent]
 })
 export class BillEditComponent {
   bill = input<Bill>();
@@ -42,7 +42,6 @@ export class BillEditComponent {
     url: new FormControl<string | undefined>(undefined),
     login: new FormControl<string | undefined>(undefined),
     sum: new FormControl<number>(0),
-    share: new FormControl<number>(1, Validators.required),
     repeat: new FormControl<number>(1),
     unit: new FormControl<Unit>(Unit.Month),
     id: new FormControl<number>(-1),
@@ -71,7 +70,6 @@ export class BillEditComponent {
       repeat: bill.repeat,
       unit: bill.unit,
       sum: bill.sum,
-      share: bill.share,
       url: bill.url,
       login: bill.login,
     };
@@ -86,7 +84,6 @@ export class BillEditComponent {
       value.url,
       value.login,
       value.sum,
-      value.share,
       value.repeat,
       value.unit,
       value.id
@@ -144,7 +141,7 @@ export class BillEditComponent {
     if (bill) {
       const updated = new Bill(
         bill.position, bill.name, bill.description, !bill.active,
-        bill.url, bill.login, bill.sum, bill.share, bill.repeat, bill.unit, bill.id
+        bill.url, bill.login, bill.sum, bill.repeat, bill.unit, bill.id
       );
       this.store.dispatch(BillsActions.updateBill({ bill: updated, redirect: false }));
     }

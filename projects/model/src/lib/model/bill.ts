@@ -11,7 +11,6 @@ export class Bill {
     public url?: string,
     public login?: string,
     public sum: number = 0,
-    public share: number = 1,
     public repeat: number = 1,
     public unit: Unit = Unit.Month,
     public id: number = -1) { }
@@ -25,7 +24,6 @@ export class Bill {
       this.url,
       this.login,
       this.sum,
-      this.share,
       this.repeat,
       this.unit,
       id);
@@ -62,11 +60,6 @@ export const BillDescription = new Map<string, FieldDescription>([
     tooltipText: 'Podaj kwotę do zapłacenia',
     placeholderText: 'Kwota do zapłacenia',
     labelText: 'Kwota'
-  }],
-  ['share', {
-    tooltipText: 'Jeżeli rachunek opłacasz wspólnie, podaj Twój udział',
-    placeholderText: 'Udział w opłacie',
-    labelText: 'Udział'
   }],
   ['url', {
     tooltipText: 'Podaj adres www dla rachunku np. 24.energa.pl (strona do logowania)',

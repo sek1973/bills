@@ -12,7 +12,6 @@ function createBill(
   url: string,
   login: string,
   sum: number,
-  share: number,
   repeat: number = 1,
   unit: Unit = Unit.Month): Bill {
   const result = new Bill();
@@ -23,7 +22,6 @@ function createBill(
   result.url = url;
   result.login = login;
   result.sum = sum;
-  result.share = share;
   result.repeat = repeat;
   result.unit = unit;
   return result;
@@ -35,9 +33,9 @@ function createBill(
 export class BillsServiceImpl extends BillsService {
 
   private bills: Bill[] = [
-    createBill(1, 1, 'Gaz', 'Opłaty za gaz', 'https://www.wp.pl/', 'gaz_login', 199.50, 0.5),
-    createBill(2, 2, 'Prąd', 'Opłaty za prąd', 'https://www.wp.pl/', 'prad_login', 45.70, 0.5),
-    createBill(3, 3, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 25, 0.66),
+    createBill(1, 1, 'Gaz', 'Opłaty za gaz', 'https://www.wp.pl/', 'gaz_login', 199.50),
+    createBill(2, 2, 'Prąd', 'Opłaty za prąd', 'https://www.wp.pl/', 'prad_login', 45.70),
+    createBill(3, 3, 'Woda', 'Opłaty za wodę', 'https://www.wp.pl/', 'woda_login', 25),
   ];
 
   protected paymentsService: PaymentsServiceImpl = inject(PaymentsServiceImpl);
