@@ -1,0 +1,35 @@
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 480px;
+  max-width: 720px;
+  padding: 24px;
+}
+
+.dialog-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.report-table {
+  width: 100%;
+  max-height: 420px;
+  overflow-y: auto;
+  display: block;
+}
+
+.status-ok {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.status-error {
+  color: #c62828;
+  font-weight: 500;
+}
+
+.buttons-panel {
+  display: flex;
+  justify-content: flex-end;
+}

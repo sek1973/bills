@@ -29,7 +29,9 @@ export abstract class PaymentsService {
       if (payment) {
         const request: Observable<ImportReport> = this.add(payment).pipe(
           map(id => ({ id })),
-          catchError(e => of({ error: e.toString() })));
+          catchError(e => {
+            return of({ error: e.message ?? e.toString() })
+          }));
         requests.push(request);
       } else {
         requests.push(of({ error: `Nie można zaimportować wiersza (${index + 1}): ${line}` }));

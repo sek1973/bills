@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PaymentsService } from 'projects/model/src/public-api';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService } from 'projects/tools/src/public-api';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NotificationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { PaymentApiActions } from './payment-api.actions';
@@ -15,6 +15,7 @@ export class PaymentEffects {
   private paymentsService = inject(PaymentsService);
   private confirmationService = inject(ConfirmationService);
   private notification = inject(NotificationService);
+  private importReportService = inject(ImportReportService);
 
   loadPayments$ = createEffect(() => {
     return this.actions$
@@ -126,7 +127,7 @@ export class PaymentEffects {
         mergeMap(action => this.confirmationService
           .confirm({
             dialogTitle: 'Importuj historyczne płatności',
-            message: 'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.\nFormat (kolumny oddzielone tabulatorem, wiersze nową linią): termin | data płatności | kwota | udział | uwagi',
+            message: 'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.\nFormat (kolumny oddzielone tabulatorem, wiersze nową linią): termin | data płatności | kwota | uwagi',
             cancelButtonLabel: 'Anuluj',
             applyButtonLabel: 'Importuj',
             inputType: ConfirmDialogInputType.InputTypeTextArea,
@@ -164,7 +165,12 @@ export class PaymentEffects {
       .pipe(
         ofType(PaymentApiActions.importPaymentsSuccess),
         map(action => {
-          this.notification.success('Zaimportowano płatności');
+          if (Array.isArray(action.report) && action.report.some(r => r.error)) {
+            this.importReportService.show(action.report);
+            this.notification.warning('Import zakończony z błędami. Sprawdź raport importu.');
+          } else {
+            this.notification.success('Zaimportowano płatności');
+          }
           return action;
         }),
         switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
