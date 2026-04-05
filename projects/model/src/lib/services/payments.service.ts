@@ -44,9 +44,9 @@ export abstract class PaymentsService {
     const cells = text.split(IMPORT_COLUMN_SEPARATOR);
     const deadline: Date | undefined = stringToDate(cells[0]);
     const paiddate: Date | undefined = stringToDate(cells[1]);
-    const sum: number | undefined = currencyToNumber(cells[2]);
+    const sum: number = currencyToNumber(cells[2]) ?? 0;
     const remarks: string = cells[3];
-    if (deadline && paiddate && sum !== undefined) {
+    if (deadline && sum !== undefined) {
       return new Payment(deadline, sum, paiddate, remarks, undefined, billId);
     }
     return undefined;
