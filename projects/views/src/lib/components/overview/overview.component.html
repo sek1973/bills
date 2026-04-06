@@ -7,7 +7,7 @@
            [showPasteButton]="false"
            [showRefreshButton]="false"
            [pageable]="false"
-           [expandable]="true"
+           [expandable]="false"
            [rowStyle]="inactiveRowStyle"
            [extraMenuItems]="menuItems()"
            (rowActivated)="onRowClicked($event)"
@@ -65,18 +65,6 @@
       <span class="material-icons"
             inline=true>check</span>
     </button>
-  </ng-template>
-
-  <ng-template #expandedRowTemplate
-               let-row="row">
-    <app-bill-edit [bill]="getBillById(row.id)"
-                   [bills]="data()"
-                   [newBill]="false"
-                   [editMode]="editMode()"
-                   [showSaveAndClose]="false"
-                   class="bill-details"
-                   (editModeChange)="onEditModeChange($event)">
-    </app-bill-edit>
   </ng-template>
 
 </app-table>

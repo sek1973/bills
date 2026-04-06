@@ -13,14 +13,13 @@ import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-s
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { NotificationService, TableComponent } from 'projects/tools/src/public-api';
 import { catchError, of, Subscription, switchMap, tap } from 'rxjs';
-import { BillEditComponent } from '../bill/bill-edit/bill-edit.component';
 
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, BillDueColorDirective, DateToStringPipe, CurrencyToStringPipe, BillEditComponent]
+  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, BillDueColorDirective, DateToStringPipe, CurrencyToStringPipe]
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   editMode = signal(false);
@@ -125,10 +124,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
       const bill = this.getBillById(OverviewBill.id);
       if (bill) { this.store.dispatch(BillsActions.payBill({ bill })); }
     }
-  }
-
-  onEditModeChange(event: boolean): void {
-    this.editMode.set(event);
   }
 
   toggleInactiveFilter(): void {
