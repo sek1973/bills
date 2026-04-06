@@ -13,6 +13,6 @@ export class AppComponent {
   private titleService = inject(Title);
 
   constructor() {
-    this.titleService.setTitle('Rachunki: java backend');
+    this.titleService.setTitle('Rachunki');
   }
 }
