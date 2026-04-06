@@ -2,6 +2,16 @@ table {
   width: 100%;
 }
 
+.only-large-screen {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .only-large-screen {
+    display: inline-flex;
+  }
+}
+
 tr.expanded-row {
   height: 0;
 }

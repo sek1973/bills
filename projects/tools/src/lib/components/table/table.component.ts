@@ -27,7 +27,7 @@ import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
-import { TableColumn } from './table-column.model';
+import { TableColumn, TableMenuItem } from './table-column.model';
 import { TableDataSource } from './table-data-source';
 
 export interface TablePanelComponent<T> extends Component {
@@ -138,6 +138,7 @@ export class TableComponent<T> {
   readonly disableExpand = input<(dataRow: T) => boolean>(() => false);
   readonly expandable = input(false);
   readonly rowStyle = input<(row: T, index: number) => Record<string, string>>((_row, _index) => ({}));
+  readonly extraMenuItems = input<TableMenuItem[]>([]);
 
   readonly rawColumnsDefinition = input<TableColumn[]>([], { alias: 'columnsDefinition' });
 
@@ -167,6 +168,7 @@ export class TableComponent<T> {
   readonly menuVisible = computed(() =>
     this.addButtonVisible() || this.editButtonVisible() || this.removeButtonVisible()
     || this.pasteButtonVisible() || this.showRefreshButton() || this.exportable()
+    || this.extraMenuItems().length > 0
   );
 
   // --- Effects ---

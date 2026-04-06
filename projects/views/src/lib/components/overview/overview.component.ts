@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -8,6 +8,7 @@ import { OverviewBill, OverviewBillsService } from 'projects/model/src/public-ap
 import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { BillDueColorDirective } from 'projects/tools/src/lib/components/table/directives/bill-due-color.directive';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
+import { TableMenuItem } from 'projects/tools/src/lib/components/table/table-column.model';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { NotificationService, TableComponent } from 'projects/tools/src/public-api';
@@ -25,6 +26,22 @@ export class OverviewComponent implements OnInit, OnDestroy {
   editMode = signal(false);
   data = signal<Bill[]>([]);
   OverviewBills = signal<OverviewBill[]>([]);
+  filterInactive = signal(true);
+  filteredOverviewBills = computed(() =>
+    this.filterInactive() ? this.OverviewBills().filter(b => b.active) : this.OverviewBills()
+  );
+  menuItems = computed<TableMenuItem[]>(() => [
+    {
+      label: this.filterInactive() ? 'Pokaż nieaktywne' : 'Ukryj nieaktywne',
+      icon: 'filter_alt',
+      action: () => this.toggleInactiveFilter()
+    },
+    {
+      label: 'Wyloguj',
+      icon: 'power_settings_new',
+      action: () => this.logout()
+    }
+  ]);
   columns = [
     { name: 'name', header: 'Nazwa' },
     { name: 'dueDate', header: 'Termin' },
@@ -91,10 +108,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.store.dispatch(AuthActions.logout());
   }
 
-  changePassword(): void {
-    this.router.navigate(['/zmien-haslo']);
-  }
-
   onLogout(loggedIn: boolean): void {
     if (loggedIn === false) {
       this.router.navigate(['/login']);
@@ -116,6 +129,10 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   onEditModeChange(event: boolean): void {
     this.editMode.set(event);
+  }
+
+  toggleInactiveFilter(): void {
+    this.filterInactive.update(v => !v);
   }
 
 }

@@ -1,13 +1,15 @@
 <app-table #table
            [tableTitle]="'Rachunki'"
-           [data]="OverviewBills()"
+           [data]="filteredOverviewBills()"
            [columnsDefinition]="columns"
            [editable]="true"
            [canAdd]="true"
            [showPasteButton]="false"
+           [showRefreshButton]="false"
            [pageable]="false"
            [expandable]="true"
            [rowStyle]="inactiveRowStyle"
+           [extraMenuItems]="menuItems()"
            (rowActivated)="onRowClicked($event)"
            (deleteButtonClicked)="deleteBill()"
            (editButtonClicked)="editBill()"
@@ -37,12 +39,21 @@
 
   <ng-template #rightToolbarPanelTemplate>
     <button mat-icon-button
-            matTooltip="Zmień hasło"
-            (click)="changePassword()">
+            matTooltip="Odśwież"
+            (click)="refresh()">
       <span class="material-icons"
-            inline=true>lock</span>
+            inline=true>refresh</span>
     </button>
     <button mat-icon-button
+            class="only-large-screen"
+            [color]="filterInactive() ? 'primary' : ''"
+            [matTooltip]="filterInactive() ? 'Pokaż nieaktywne' : 'Ukryj nieaktywne'"
+            (click)="toggleInactiveFilter()">
+      <span class="material-icons"
+            inline=true>filter_alt</span>
+    </button>
+    <button mat-icon-button
+            class="only-large-screen"
             matTooltip="Wyloguj"
             (click)="logout()">
       <span class="material-icons"

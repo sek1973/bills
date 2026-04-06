@@ -7,3 +7,9 @@ export interface TableColumn {
     filter?: boolean;
     hidden?: boolean;
 }
+
+export interface TableMenuItem {
+    label: string;
+    icon: string;
+    action: () => void;
+}

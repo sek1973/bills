@@ -79,6 +79,15 @@
   }
 
   }
+
+  @for (item of extraMenuItems(); track item.label) {
+  <button mat-menu-item
+          class="menu-button"
+          (click)="item.action()">
+    <span class="material-icons menu-icon">{{item.icon}}</span>
+    {{item.label}}
+  </button>
+  }
 </mat-menu>
 
 
