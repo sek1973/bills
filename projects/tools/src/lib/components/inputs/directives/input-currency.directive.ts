@@ -49,13 +49,13 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   @HostListener('keydown', ['$event']) onKeyDown(event: KeyboardEvent): void {
     if (['.', 'Backspace', 'Tab', 'Escape', 'Enter'].indexOf(event.key) !== -1 ||
       // Allow: Ctrl+A
-      (event.key.toUpperCase() === 'A' && (event.ctrlKey || event.metaKey)) ||
+      (event.key?.toUpperCase() === 'A' && (event.ctrlKey || event.metaKey)) ||
       // Allow: Ctrl+C
-      (event.key.toUpperCase() === 'C' && (event.ctrlKey || event.metaKey)) ||
+      (event.key?.toUpperCase() === 'C' && (event.ctrlKey || event.metaKey)) ||
       // Allow: Ctrl+V
-      (event.key.toUpperCase() === 'V' && (event.ctrlKey || event.metaKey)) ||
+      (event.key?.toUpperCase() === 'V' && (event.ctrlKey || event.metaKey)) ||
       // Allow: Ctrl+X
-      (event.key.toUpperCase() === 'X' && (event.ctrlKey || event.metaKey)) ||
+      (event.key?.toUpperCase() === 'X' && (event.ctrlKey || event.metaKey)) ||
       // Allow: home, end, left, right
       (['Home', 'End', 'ArrowLeft', 'ArrowRight'].indexOf(event.key)) !== -1 ||
       // any digit
