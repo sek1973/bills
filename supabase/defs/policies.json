@@ -1,0 +1,182 @@
+[
+  {
+    "schemaname": "cron",
+    "tablename": "job",
+    "policyname": "cron_job_policy",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "ALL",
+    "using_expression": "(username = CURRENT_USER)",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "cron",
+    "tablename": "job_run_details",
+    "policyname": "cron_job_run_details_policy",
+    "permissive": "PERMISSIVE",
+    "roles": "{public}",
+    "cmd": "ALL",
+    "using_expression": "(username = CURRENT_USER)",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "app_roles",
+    "policyname": "app_roles_delete_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "DELETE",
+    "using_expression": "( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission)",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "app_roles",
+    "policyname": "app_roles_insert_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "INSERT",
+    "using_expression": null,
+    "with_check_expression": "( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "app_roles",
+    "policyname": "app_roles_select_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{anon,authenticated}",
+    "cmd": "SELECT",
+    "using_expression": "true",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "app_roles",
+    "policyname": "app_roles_update_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "UPDATE",
+    "using_expression": "( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission)",
+    "with_check_expression": "( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "bills",
+    "policyname": "bills_delete_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "DELETE",
+    "using_expression": "( SELECT private.user_has_permission('can_delete'::text) AS user_has_permission)",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "bills",
+    "policyname": "bills_insert_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "INSERT",
+    "using_expression": null,
+    "with_check_expression": "( SELECT private.user_has_permission('can_insert'::text) AS user_has_permission)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "bills",
+    "policyname": "bills_select_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "SELECT",
+    "using_expression": "( SELECT private.user_has_permission('can_read'::text) AS user_has_permission)",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "bills",
+    "policyname": "bills_update_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "UPDATE",
+    "using_expression": "( SELECT private.user_has_permission('can_update'::text) AS user_has_permission)",
+    "with_check_expression": "( SELECT private.user_has_permission('can_update'::text) AS user_has_permission)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "payments",
+    "policyname": "payments_delete_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "DELETE",
+    "using_expression": "( SELECT private.user_has_permission('can_delete'::text) AS user_has_permission)",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "payments",
+    "policyname": "payments_insert_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "INSERT",
+    "using_expression": null,
+    "with_check_expression": "( SELECT private.user_has_permission('can_insert'::text) AS user_has_permission)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "payments",
+    "policyname": "payments_select_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "SELECT",
+    "using_expression": "( SELECT private.user_has_permission('can_read'::text) AS user_has_permission)",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "payments",
+    "policyname": "payments_update_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "UPDATE",
+    "using_expression": "( SELECT private.user_has_permission('can_update'::text) AS user_has_permission)",
+    "with_check_expression": "( SELECT private.user_has_permission('can_update'::text) AS user_has_permission)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "role_members",
+    "policyname": "role_members_delete_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "DELETE",
+    "using_expression": "( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission)",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "role_members",
+    "policyname": "role_members_insert_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "INSERT",
+    "using_expression": null,
+    "with_check_expression": "( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission)"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "role_members",
+    "policyname": "role_members_select_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "SELECT",
+    "using_expression": "((user_id = ( SELECT auth.uid() AS uid)) OR ( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission))",
+    "with_check_expression": null
+  },
+  {
+    "schemaname": "public",
+    "tablename": "role_members",
+    "policyname": "role_members_update_by_role",
+    "permissive": "PERMISSIVE",
+    "roles": "{authenticated}",
+    "cmd": "UPDATE",
+    "using_expression": "( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission)",
+    "with_check_expression": "( SELECT private.user_has_permission('is_admin'::text) AS user_has_permission)"
+  }
+]

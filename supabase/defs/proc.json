@@ -1,0 +1,602 @@
+[
+  {
+    "schema": "auth",
+    "function_name": "email",
+    "args": "",
+    "result_type": "text"
+  },
+  {
+    "schema": "auth",
+    "function_name": "jwt",
+    "args": "",
+    "result_type": "jsonb"
+  },
+  {
+    "schema": "auth",
+    "function_name": "role",
+    "args": "",
+    "result_type": "text"
+  },
+  {
+    "schema": "auth",
+    "function_name": "uid",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "cron",
+    "function_name": "alter_job",
+    "args": "job_id bigint, schedule text, command text, database text, username text, active boolean",
+    "result_type": "void"
+  },
+  {
+    "schema": "cron",
+    "function_name": "job_cache_invalidate",
+    "args": "",
+    "result_type": "trigger"
+  },
+  {
+    "schema": "cron",
+    "function_name": "schedule",
+    "args": "schedule text, command text",
+    "result_type": "bigint"
+  },
+  {
+    "schema": "cron",
+    "function_name": "schedule",
+    "args": "job_name text, schedule text, command text",
+    "result_type": "bigint"
+  },
+  {
+    "schema": "cron",
+    "function_name": "schedule_in_database",
+    "args": "job_name text, schedule text, command text, database text, username text, active boolean",
+    "result_type": "bigint"
+  },
+  {
+    "schema": "cron",
+    "function_name": "unschedule",
+    "args": "job_id bigint",
+    "result_type": "boolean"
+  },
+  {
+    "schema": "cron",
+    "function_name": "unschedule",
+    "args": "job_name text",
+    "result_type": "boolean"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "armor",
+    "args": "bytea",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "armor",
+    "args": "bytea, text[], text[]",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "crypt",
+    "args": "text, text",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "dearmor",
+    "args": "text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "decrypt",
+    "args": "bytea, bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "decrypt_iv",
+    "args": "bytea, bytea, bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "digest",
+    "args": "bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "digest",
+    "args": "text, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "encrypt",
+    "args": "bytea, bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "encrypt_iv",
+    "args": "bytea, bytea, bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "gen_random_bytes",
+    "args": "integer",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "gen_random_uuid",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "gen_salt",
+    "args": "text",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "gen_salt",
+    "args": "text, integer",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "grant_pg_cron_access",
+    "args": "",
+    "result_type": "event_trigger"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "grant_pg_graphql_access",
+    "args": "",
+    "result_type": "event_trigger"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "grant_pg_net_access",
+    "args": "",
+    "result_type": "event_trigger"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "hmac",
+    "args": "bytea, bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "hmac",
+    "args": "text, text, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pg_stat_statements",
+    "args": "showtext boolean, OUT userid oid, OUT dbid oid, OUT toplevel boolean, OUT queryid bigint, OUT query text, OUT plans bigint, OUT total_plan_time double precision, OUT min_plan_time double precision, OUT max_plan_time double precision, OUT mean_plan_time double precision, OUT stddev_plan_time double precision, OUT calls bigint, OUT total_exec_time double precision, OUT min_exec_time double precision, OUT max_exec_time double precision, OUT mean_exec_time double precision, OUT stddev_exec_time double precision, OUT rows bigint, OUT shared_blks_hit bigint, OUT shared_blks_read bigint, OUT shared_blks_dirtied bigint, OUT shared_blks_written bigint, OUT local_blks_hit bigint, OUT local_blks_read bigint, OUT local_blks_dirtied bigint, OUT local_blks_written bigint, OUT temp_blks_read bigint, OUT temp_blks_written bigint, OUT shared_blk_read_time double precision, OUT shared_blk_write_time double precision, OUT local_blk_read_time double precision, OUT local_blk_write_time double precision, OUT temp_blk_read_time double precision, OUT temp_blk_write_time double precision, OUT wal_records bigint, OUT wal_fpi bigint, OUT wal_bytes numeric, OUT jit_functions bigint, OUT jit_generation_time double precision, OUT jit_inlining_count bigint, OUT jit_inlining_time double precision, OUT jit_optimization_count bigint, OUT jit_optimization_time double precision, OUT jit_emission_count bigint, OUT jit_emission_time double precision, OUT jit_deform_count bigint, OUT jit_deform_time double precision, OUT stats_since timestamp with time zone, OUT minmax_stats_since timestamp with time zone",
+    "result_type": "SETOF record"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pg_stat_statements_info",
+    "args": "OUT dealloc bigint, OUT stats_reset timestamp with time zone",
+    "result_type": "record"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pg_stat_statements_reset",
+    "args": "userid oid, dbid oid, queryid bigint, minmax_only boolean",
+    "result_type": "timestamp with time zone"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_armor_headers",
+    "args": "text, OUT key text, OUT value text",
+    "result_type": "SETOF record"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_key_id",
+    "args": "bytea",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_decrypt",
+    "args": "bytea, bytea",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_decrypt",
+    "args": "bytea, bytea, text",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_decrypt",
+    "args": "bytea, bytea, text, text",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_decrypt_bytea",
+    "args": "bytea, bytea",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_decrypt_bytea",
+    "args": "bytea, bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_decrypt_bytea",
+    "args": "bytea, bytea, text, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_encrypt",
+    "args": "text, bytea",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_encrypt",
+    "args": "text, bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_encrypt_bytea",
+    "args": "bytea, bytea",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_pub_encrypt_bytea",
+    "args": "bytea, bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_sym_decrypt",
+    "args": "bytea, text",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_sym_decrypt",
+    "args": "bytea, text, text",
+    "result_type": "text"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_sym_decrypt_bytea",
+    "args": "bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_sym_decrypt_bytea",
+    "args": "bytea, text, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_sym_encrypt",
+    "args": "text, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_sym_encrypt",
+    "args": "text, text, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_sym_encrypt_bytea",
+    "args": "bytea, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgp_sym_encrypt_bytea",
+    "args": "bytea, text, text",
+    "result_type": "bytea"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgrst_ddl_watch",
+    "args": "",
+    "result_type": "event_trigger"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "pgrst_drop_watch",
+    "args": "",
+    "result_type": "event_trigger"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "set_graphql_placeholder",
+    "args": "",
+    "result_type": "event_trigger"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_generate_v1",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_generate_v1mc",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_generate_v3",
+    "args": "namespace uuid, name text",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_generate_v4",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_generate_v5",
+    "args": "namespace uuid, name text",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_nil",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_ns_dns",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_ns_oid",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_ns_url",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "extensions",
+    "function_name": "uuid_ns_x500",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "graphql",
+    "function_name": "_internal_resolve",
+    "args": "query text, variables jsonb, \"operationName\" text, extensions jsonb",
+    "result_type": "jsonb"
+  },
+  {
+    "schema": "graphql",
+    "function_name": "comment_directive",
+    "args": "comment_ text",
+    "result_type": "jsonb"
+  },
+  {
+    "schema": "graphql",
+    "function_name": "exception",
+    "args": "message text",
+    "result_type": "text"
+  },
+  {
+    "schema": "graphql",
+    "function_name": "get_schema_version",
+    "args": "",
+    "result_type": "integer"
+  },
+  {
+    "schema": "graphql",
+    "function_name": "increment_schema_version",
+    "args": "",
+    "result_type": "event_trigger"
+  },
+  {
+    "schema": "graphql",
+    "function_name": "resolve",
+    "args": "query text, variables jsonb, \"operationName\" text, extensions jsonb",
+    "result_type": "jsonb"
+  },
+  {
+    "schema": "graphql_public",
+    "function_name": "graphql",
+    "args": "\"operationName\" text, query text, variables jsonb, extensions jsonb",
+    "result_type": "jsonb"
+  },
+  {
+    "schema": "net",
+    "function_name": "_await_response",
+    "args": "request_id bigint",
+    "result_type": "boolean"
+  },
+  {
+    "schema": "net",
+    "function_name": "_encode_url_with_params_array",
+    "args": "url text, params_array text[]",
+    "result_type": "text"
+  },
+  {
+    "schema": "net",
+    "function_name": "_http_collect_response",
+    "args": "request_id bigint, async boolean",
+    "result_type": "net.http_response_result"
+  },
+  {
+    "schema": "net",
+    "function_name": "_urlencode_string",
+    "args": "string character varying",
+    "result_type": "text"
+  },
+  {
+    "schema": "net",
+    "function_name": "check_worker_is_up",
+    "args": "",
+    "result_type": "void"
+  },
+  {
+    "schema": "net",
+    "function_name": "http_collect_response",
+    "args": "request_id bigint, async boolean",
+    "result_type": "net.http_response_result"
+  },
+  {
+    "schema": "net",
+    "function_name": "http_delete",
+    "args": "url text, params jsonb, headers jsonb, timeout_milliseconds integer, body jsonb",
+    "result_type": "bigint"
+  },
+  {
+    "schema": "net",
+    "function_name": "http_get",
+    "args": "url text, params jsonb, headers jsonb, timeout_milliseconds integer",
+    "result_type": "bigint"
+  },
+  {
+    "schema": "net",
+    "function_name": "http_post",
+    "args": "url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer",
+    "result_type": "bigint"
+  },
+  {
+    "schema": "net",
+    "function_name": "wait_until_running",
+    "args": "",
+    "result_type": "void"
+  },
+  {
+    "schema": "net",
+    "function_name": "wake",
+    "args": "",
+    "result_type": "void"
+  },
+  {
+    "schema": "net",
+    "function_name": "worker_restart",
+    "args": "",
+    "result_type": "boolean"
+  },
+  {
+    "schema": "pgbouncer",
+    "function_name": "get_auth",
+    "args": "p_usename text",
+    "result_type": "TABLE(username text, password text)"
+  },
+  {
+    "schema": "private",
+    "function_name": "user_has_permission",
+    "args": "p_perm text, p_user uuid",
+    "result_type": "boolean"
+  },
+  {
+    "schema": "private",
+    "function_name": "user_roles",
+    "args": "p_user uuid",
+    "result_type": "TABLE(role_id uuid, name text, description text, can_read boolean, can_insert boolean, can_update boolean, can_delete boolean, is_admin boolean)"
+  },
+  {
+    "schema": "public",
+    "function_name": "bill_payments_overview",
+    "args": "p_bill_id bigint",
+    "result_type": "TABLE(id bigint, created_at timestamp with time zone, bill_id bigint, deadline date, sum numeric, paid_date date, remarks character varying, reminder date)"
+  },
+  {
+    "schema": "public",
+    "function_name": "current_auth_uid",
+    "args": "",
+    "result_type": "uuid"
+  },
+  {
+    "schema": "public",
+    "function_name": "find_first_free_position_for_bills",
+    "args": "",
+    "result_type": "integer"
+  },
+  {
+    "schema": "public",
+    "function_name": "is_admin",
+    "args": "",
+    "result_type": "boolean"
+  },
+  {
+    "schema": "public",
+    "function_name": "set_position_before_insert",
+    "args": "",
+    "result_type": "trigger"
+  },
+  {
+    "schema": "public",
+    "function_name": "swap_bill_positions",
+    "args": "p_bill_id_a bigint, p_new_position_a integer, p_bill_id_b bigint, p_new_position_b integer",
+    "result_type": "void"
+  },
+  {
+    "schema": "public",
+    "function_name": "user_in_role",
+    "args": "p_user uuid, p_role_name text",
+    "result_type": "boolean"
+  },
+  {
+    "schema": "public",
+    "function_name": "user_in_role",
+    "args": "p_user uuid, p_role_id uuid",
+    "result_type": "boolean"
+  },
+  {
+    "schema": "realtime",
+    "function_name": "apply_rls",
+    "args": "wal jsonb, max_record_bytes integer",
+    "result_type": "SETOF realtime.wal_rls"
+  },
+  {
+    "schema": "realtime",
+    "function_name": "broadcast_changes",
+    "args": "topic_name text, event_name text, operation text, table_name text, table_schema text, new record, old record, level text",
+    "result_type": "void"
+  },
+  {
+    "schema": "realtime",
+    "function_name": "build_prepared_statement_sql",
+    "args": "prepared_statement_name text, entity regclass, columns realtime.wal_column[]",
+    "result_type": "text"
+  },
+  {
+    "schema": "realtime",
+    "function_name": "cast",
+    "args": "val text, type_ regtype",
+    "result_type": "jsonb"
+  }
+]

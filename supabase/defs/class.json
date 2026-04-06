@@ -1,0 +1,7 @@
+[
+  {
+    "schema": "realtime",
+    "name": "messages",
+    "relkind": "p"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "schemaname": "public",
+    "tablename": "app_roles"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "bills"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "payments"
+  },
+  {
+    "schemaname": "public",
+    "tablename": "role_members"
+  }
+]

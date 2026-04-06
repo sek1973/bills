@@ -1,0 +1,107 @@
+[
+  {
+    "table_schema": "extensions",
+    "table_name": "pg_stat_statements",
+    "table_type": "VIEW"
+  },
+  {
+    "table_schema": "extensions",
+    "table_name": "pg_stat_statements_info",
+    "table_type": "VIEW"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "app_roles",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "bills",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "payments",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "role_members",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "bill_payments",
+    "table_type": "VIEW"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "bills_overview",
+    "table_type": "VIEW"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "due_bill_payments",
+    "table_type": "VIEW"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "due_bills",
+    "table_type": "VIEW"
+  },
+  {
+    "table_schema": "public",
+    "table_name": "payments_overview",
+    "table_type": "VIEW"
+  },
+  {
+    "table_schema": "storage",
+    "table_name": "buckets",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "storage",
+    "table_name": "buckets_analytics",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "storage",
+    "table_name": "buckets_vectors",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "storage",
+    "table_name": "migrations",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "storage",
+    "table_name": "objects",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "storage",
+    "table_name": "s3_multipart_uploads",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "storage",
+    "table_name": "s3_multipart_uploads_parts",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "storage",
+    "table_name": "vector_indexes",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "vault",
+    "table_name": "secrets",
+    "table_type": "BASE TABLE"
+  },
+  {
+    "table_schema": "vault",
+    "table_name": "decrypted_secrets",
+    "table_type": "VIEW"
+  }
+]
