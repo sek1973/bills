@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#FFD54A"/>
+      <stop offset="1" stop-color="#FFC107"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <ellipse cx="24" cy="30" rx="14" ry="6" fill="url(#g)" stroke="#D4A017" stroke-width="1"/>
+    <ellipse cx="24" cy="24" rx="12" ry="5" fill="#FFD54A" stroke="#D4A017" stroke-width="1"/>
+    <ellipse cx="24" cy="18" rx="10" ry="4" fill="#FFF8E1" stroke="#D4A017" stroke-width="1"/>
+    <path d="M16 20c0 1.2 2.5 2.2 8 2.2s8-1 8-2.2" stroke="#D4A017" stroke-width="1" fill="none"/>
+    <rect x="29" y="11" width="2" height="10" rx="1" fill="#D4A017" opacity="0.9"/>
+    <circle cx="24" cy="18" r="2" fill="#D4A017"/>
+  </g>
+</svg>
