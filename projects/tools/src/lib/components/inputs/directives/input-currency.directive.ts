@@ -2,7 +2,7 @@ import { Directive, ElementRef, forwardRef, HostListener, Renderer2 } from '@ang
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { currencyToNumber, currencyToString } from 'projects/model/src/public-api';
 
-export const APP_CURRENCY_VALUE_ACCESSOR: any = {
+export const APP_CURRENCY_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,
   // tslint:disable-next-line: no-use-before-declare
   useExisting: forwardRef(() => InputCurrencyDirective),
@@ -17,8 +17,8 @@ export class InputCurrencyDirective implements ControlValueAccessor {
 
   inputElement: HTMLInputElement;
   isDisabled: boolean = false;
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: (value: unknown) => void = () => { };
+  onTouched: () => void = () => { };
 
   @HostListener('input', ['$event'])
   input(event: Event): void {
@@ -96,7 +96,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
     this.inputElement = element.nativeElement;
   }
 
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -104,12 +104,12 @@ export class InputCurrencyDirective implements ControlValueAccessor {
     this.isDisabled = isDisabled;
   }
 
-  writeValue(value: any): void {
+  writeValue(value: unknown): void {
     const element = this.element.nativeElement;
-    this.renderer.setProperty(element, 'value', currencyToString(value));
+    this.renderer.setProperty(element, 'value', currencyToString(value as number));
   }
 
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (value: unknown) => void): void {
     this.onChange = fn;
   }
 
