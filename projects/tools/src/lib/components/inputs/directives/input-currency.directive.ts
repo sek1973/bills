@@ -24,7 +24,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   input(event: Event): void {
     let value = (event.target as HTMLInputElement).value;
     if (value !== undefined && value !== null) {
-      value = value.replace(/[^0-9,.]/g, '')
+      value = value.replace(/[^0-9,.-]/g, '')
         .replace(',', '.');
     }
     this.onChange(value);
@@ -34,7 +34,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   blur(event: Event): void {
     let value = (event.target as HTMLInputElement).value;
     if (value !== undefined && value !== null) {
-      value = value.replace(/[^0-9,.]/g, '')
+      value = value.replace(/[^0-9,.-]/g, '')
         .replace(',', '.');
     }
     this.renderer.setProperty(this.element.nativeElement, 'value', currencyToString(currencyToNumber(value) ?? 0));
@@ -47,7 +47,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   }
 
   @HostListener('keydown', ['$event']) onKeyDown(event: KeyboardEvent): void {
-    if (['.', 'Backspace', 'Tab', 'Escape', 'Enter'].indexOf(event.key) !== -1 ||
+    if (['-', '.', 'Backspace', 'Tab', 'Escape', 'Enter'].indexOf(event.key) !== -1 ||
       // Allow: Ctrl+A
       (event.key?.toUpperCase() === 'A' && (event.ctrlKey || event.metaKey)) ||
       // Allow: Ctrl+C
@@ -72,7 +72,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
       event.preventDefault();
       const pastedInput: string = event.clipboardData
         .getData('text/plain')
-        .replace(/[^0-9,.]/g, '')
+        .replace(/[^0-9,.-]/g, '')
         .replace(',', '.');
       document.execCommand('insertText', false, pastedInput);
     }
@@ -83,7 +83,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
       event.preventDefault();
       const textData = event.dataTransfer
         .getData('text')
-        .replace(/[^0-9,.]/g, '')
+        .replace(/[^0-9,.-]/g, '')
         .replace(',', '.');
       this.inputElement.focus();
       document.execCommand('insertText', false, textData);

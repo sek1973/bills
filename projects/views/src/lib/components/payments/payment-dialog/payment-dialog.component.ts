@@ -37,7 +37,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     id: new UntypedFormControl(),
     deadline: new UntypedFormControl(new Date(), Validators.required),
     paiddate: new UntypedFormControl(null),
-    sum: new UntypedFormControl(0, Validators.required),
+    sum: new UntypedFormControl(0),
     reminder: new UntypedFormControl(),
     remarks: new UntypedFormControl(),
     billId: new UntypedFormControl() // not visible
