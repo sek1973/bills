@@ -24,8 +24,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   input(event: Event): void {
     let value = (event.target as HTMLInputElement).value;
     if (value !== undefined && value !== null) {
-      value = value.replace(/[^0-9,.-]/g, '')
-        .replace(',', '.');
+      value = this.normalizeCurrency(value.replace(',', '.'));
     }
     this.onChange(value);
   }
@@ -34,8 +33,7 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   blur(event: Event): void {
     let value = (event.target as HTMLInputElement).value;
     if (value !== undefined && value !== null) {
-      value = value.replace(/[^0-9,.-]/g, '')
-        .replace(',', '.');
+      value = this.normalizeCurrency(value.replace(',', '.'));
     }
     this.renderer.setProperty(this.element.nativeElement, 'value', currencyToString(currencyToNumber(value) ?? 0));
   }
@@ -46,8 +44,22 @@ export class InputCurrencyDirective implements ControlValueAccessor {
     this.renderer.setProperty(this.element.nativeElement, 'value', currencyToNumber(value));
   }
 
+  private normalizeCurrency(value: string): string {
+    const isNegative = value.startsWith('-');
+    const digits = value.replace(/[^0-9.]/g, '');
+    return isNegative ? '-' + digits : digits;
+  }
+
   @HostListener('keydown', ['$event']) onKeyDown(event: KeyboardEvent): void {
-    if (['-', '.', 'Backspace', 'Tab', 'Escape', 'Enter'].indexOf(event.key) !== -1 ||
+    if (event.key === '-') {
+      const el = this.inputElement;
+      if (el.selectionStart === 0 && !el.value.includes('-')) {
+        return;
+      }
+      event.preventDefault();
+      return;
+    }
+    if (['.', 'Backspace', 'Tab', 'Escape', 'Enter'].indexOf(event.key) !== -1 ||
       // Allow: Ctrl+A
       (event.key?.toUpperCase() === 'A' && (event.ctrlKey || event.metaKey)) ||
       // Allow: Ctrl+C
@@ -70,10 +82,8 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   @HostListener('paste', ['$event']) onPaste(event: ClipboardEvent): void {
     if (event?.clipboardData) {
       event.preventDefault();
-      const pastedInput: string = event.clipboardData
-        .getData('text/plain')
-        .replace(/[^0-9,.-]/g, '')
-        .replace(',', '.');
+      const pastedInput: string = this.normalizeCurrency(
+        event.clipboardData.getData('text/plain').replace(',', '.'));
       document.execCommand('insertText', false, pastedInput);
     }
   }
@@ -81,10 +91,8 @@ export class InputCurrencyDirective implements ControlValueAccessor {
   @HostListener('drop', ['$event']) onDrop(event: DragEvent): void {
     if (event?.dataTransfer) {
       event.preventDefault();
-      const textData = event.dataTransfer
-        .getData('text')
-        .replace(/[^0-9,.-]/g, '')
-        .replace(',', '.');
+      const textData = this.normalizeCurrency(
+        event.dataTransfer.getData('text').replace(',', '.'));
       this.inputElement.focus();
       document.execCommand('insertText', false, textData);
     }
