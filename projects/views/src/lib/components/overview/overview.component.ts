@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
-import { OverviewBill, OverviewBillsService } from 'projects/model/src/public-api';
+import { OverviewBill, OverviewBillsService, RealtimeService } from 'projects/model/src/public-api';
 import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { BillDueColorDirective } from 'projects/tools/src/lib/components/table/directives/bill-due-color.directive';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
@@ -56,9 +57,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private notification = inject(NotificationService);
   private OverviewBillsService = inject(OverviewBillsService);
+  private realtimeService = inject(RealtimeService);
+  #destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     this.subscribeToData();
+    this.subscribeToRealtimeChanges();
   }
 
   private subscribeToData(): void {
@@ -69,6 +73,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
         switchMap(() => this.OverviewBillsService.load().pipe(catchError(() => of([]))))
       )
       .subscribe(OverviewBills => this.OverviewBills.set(OverviewBills));
+  }
+
+  private subscribeToRealtimeChanges(): void {
+    this.realtimeService.billsChanges$
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(() => this.store.dispatch(BillsActions.loadBills()));
   }
 
   ngOnDestroy(): void {

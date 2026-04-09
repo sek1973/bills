@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
 import { Bill, Payment } from 'projects/model/src/lib/model';
+import { RealtimeService } from 'projects/model/src/public-api';
 import { AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'projects/store/src/lib/state';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
@@ -38,10 +39,25 @@ export class PaymentsComponent implements OnInit {
   #destroyRef = inject(DestroyRef);
   dialog = inject(MatDialog);
   private store = inject(Store<AppState>);
+  private realtimeService = inject(RealtimeService);
 
   ngOnInit(): void {
     this.subscribeToBill();
     this.subscribeToData();
+    this.subscribeToRealtimeChanges();
+  }
+
+  private subscribeToRealtimeChanges(): void {
+    this.realtimeService.paymentsChanges$
+      .pipe(
+        takeUntilDestroyed(this.#destroyRef),
+        filter(billId => billId === this.bill?.id)
+      )
+      .subscribe(() => {
+        if (this.bill) {
+          this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill.id }));
+        }
+      });
   }
 
   private subscribeToData(): void {

@@ -7,7 +7,9 @@ import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/r
 import { Store } from '@ngrx/store';
 
 import { Bill } from 'projects/model/src/lib/model';
+import { RealtimeService } from 'projects/model/src/public-api';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
+import { filter } from 'rxjs/operators';
 import { PaymentsComponent } from '../payments/payments.component';
 import { BillEditComponent } from './bill-edit/bill-edit.component';
 
@@ -24,6 +26,7 @@ export class BillComponent implements OnInit {
   #destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
   private store = inject(Store<AppState>);
+  private realtimeService = inject(RealtimeService);
 
   protected readonly editMode = signal(false);
   protected readonly newBill = signal(false);
@@ -54,6 +57,13 @@ export class BillComponent implements OnInit {
     if (!this.bills()?.length) {
       this.store.dispatch(BillsActions.loadBills());
     }
+
+    this.realtimeService.billsChanges$
+      .pipe(
+        takeUntilDestroyed(this.#destroyRef),
+        filter((billId: number) => !this.editMode() && this.bill()?.id === billId)
+      )
+      .subscribe(() => this.store.dispatch(BillsActions.loadBills()));
   }
 
   ngOnInit(): void {

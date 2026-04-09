@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { createClient, Session, SupabaseClient, User } from '@supabase/supabase-js';
+import { createClient, Provider, Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -44,8 +44,8 @@ export class SupabaseService {
     return this.supabase.auth.signInWithOtp({ email });
   }
 
-  async signInWithProvider(provider: string, options?: { redirectTo?: string }) {
-    return this.supabase.auth.signInWithOAuth({ provider: provider as any, options });
+  async signInWithProvider(provider: Provider, options?: { redirectTo?: string }) {
+    return this.supabase.auth.signInWithOAuth({ provider: provider, options });
   }
 
   async signOut() {
