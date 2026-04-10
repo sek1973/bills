@@ -127,7 +127,8 @@ export class PaymentEffects {
         mergeMap(action => this.confirmationService
           .confirm({
             dialogTitle: 'Importuj historyczne płatności',
-            message: 'Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.\nFormat (kolumny oddzielone tabulatorem, wiersze nową linią): termin | data płatności | kwota | uwagi',
+            message: `Wklej ze schowka lub wpisz dane w poniższe pole a następnie naciśnij importuj.
+            Format (kolumny oddzielone tabulatorem, wiersze nową linią): termin | data płatności | kwota | uwagi`,
             cancelButtonLabel: 'Anuluj',
             applyButtonLabel: 'Importuj',
             inputType: ConfirmDialogInputType.InputTypeTextArea,

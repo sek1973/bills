@@ -42,12 +42,27 @@ export function currencyToString(val: number, NaNvalue: unknown = 0): string | u
 }
 
 export function currencyToNumber(val: string): number | undefined {
-  if (val !== undefined && val !== null) {
-    const cleaned = val.replace(/[^0-9.,-]+/g, '').replace(',', '.');
-    const result = Number(cleaned);
-    return result;
+  if (val === undefined || val === null) return undefined;
+  const cleaned = val.replace(/[^0-9.,-]/g, '');
+  if (!cleaned || cleaned === '-') return undefined;
+  const lastComma = cleaned.lastIndexOf(',');
+  const lastDot = cleaned.lastIndexOf('.');
+  let normalized: string;
+  if (lastComma !== -1 && lastDot !== -1) {
+    // Both separators: the later one is the decimal separator
+    normalized = lastDot > lastComma
+      ? cleaned.replace(/,/g, '')                        // e.g. 2,849.89
+      : cleaned.replace(/\./g, '').replace(',', '.');    // e.g. 2.849,89
+  } else if (lastComma !== -1) {
+    // Only comma: thousands separator if exactly 3 digits follow, else decimal
+    normalized = cleaned.slice(lastComma + 1).length === 3
+      ? cleaned.replace(/,/g, '')
+      : cleaned.replace(',', '.');
+  } else {
+    normalized = cleaned;
   }
-  return undefined;
+  const result = Number(normalized);
+  return Number.isNaN(result) ? undefined : result;
 }
 
 export function percentToString(val: number, NaNvalue: unknown = 0): string | undefined {
