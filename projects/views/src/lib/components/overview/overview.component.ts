@@ -27,7 +27,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   data = signal<Bill[]>([]);
   OverviewBills = signal<OverviewBill[]>([]);
   filterInactive = signal(true);
-  filteredOverviewBills = computed(() =>
+  filtered = computed(() =>
     this.filterInactive() ? this.OverviewBills().filter(b => b.active) : this.OverviewBills()
   );
   menuItems = computed<TableMenuItem[]>(() => [

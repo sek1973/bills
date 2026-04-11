@@ -1,6 +1,6 @@
 <app-table #table
-           [tableTitle]="'Rachunki'"
-           [data]="filteredOverviewBills()"
+           [tableTitle]="'Rachunki (' + filtered().length + ')'"
+           [data]="filtered()"
            [columnsDefinition]="columns"
            [editable]="true"
            [canAdd]="true"
@@ -17,54 +17,54 @@
            (refreshButtonClicked)="refresh()"
            (rowDblClick)="editBill()">
 
-  <ng-template cellTemplateForColumn="name"
-               let-row="row">
-    <a [routerLink]="['/rachunek', row.id]"
-       routerLinkActive="active"
-       [style.color]="row.active ? null : 'grey'">{{row.name}}</a>
-  </ng-template>
+      <ng-template cellTemplateForColumn="name"
+                   let-row="row">
+            <a [routerLink]="['/rachunek', row.id]"
+               routerLinkActive="active"
+               [style.color]="row.active ? null : 'grey'">{{row.name}}</a>
+      </ng-template>
 
-  <ng-template cellTemplateForColumn="dueDate"
-               let-row="row">
-    <span [billDueColor]="row.dueDate"
-          [active]="row.active">
-      {{row.dueDate | timespanToString}}
-    </span>
-  </ng-template>
+      <ng-template cellTemplateForColumn="dueDate"
+                   let-row="row">
+            <span [billDueColor]="row.dueDate"
+                  [active]="row.active">
+                  {{row.dueDate | timespanToString}}
+            </span>
+      </ng-template>
 
-  <ng-template cellTemplateForColumn="sum"
-               let-row="row">
-    <span>{{row.sum | currencyToString}}</span>
-  </ng-template>
+      <ng-template cellTemplateForColumn="sum"
+                   let-row="row">
+            <span>{{row.sum | currencyToString}}</span>
+      </ng-template>
 
-  <ng-template #rightToolbarPanelTemplate>
-    <button mat-icon-button
-            matTooltip="Odśwież"
-            (click)="refresh()">
-      <span class="material-icons"
-            inline=true>refresh</span>
-    </button>
-    <button mat-icon-button
-            class="only-large-screen"
-            [color]="filterInactive() ? 'primary' : ''"
-            [matTooltip]="filterInactive() ? 'Pokaż nieaktywne' : 'Ukryj nieaktywne'"
-            (click)="toggleInactiveFilter()">
-      <span class="material-icons"
-            inline=true>filter_alt</span>
-    </button>
-    <button mat-icon-button
-            class="only-large-screen"
-            matTooltip="Wyloguj"
-            (click)="logout()">
-      <span class="material-icons"
-            inline=true>power_settings_new</span>
-    </button>
-    <button mat-icon-button
-            matTooltip="Zapłacony"
-            (click)="payBill()">
-      <span class="material-icons"
-            inline=true>check</span>
-    </button>
-  </ng-template>
+      <ng-template #rightToolbarPanelTemplate>
+            <button mat-icon-button
+                    matTooltip="Odśwież"
+                    (click)="refresh()">
+                  <span class="material-icons"
+                        inline=true>refresh</span>
+            </button>
+            <button mat-icon-button
+                    class="only-large-screen"
+                    [color]="filterInactive() ? 'primary' : ''"
+                    [matTooltip]="filterInactive() ? 'Pokaż nieaktywne' : 'Ukryj nieaktywne'"
+                    (click)="toggleInactiveFilter()">
+                  <span class="material-icons"
+                        inline=true>filter_alt</span>
+            </button>
+            <button mat-icon-button
+                    class="only-large-screen"
+                    matTooltip="Wyloguj"
+                    (click)="logout()">
+                  <span class="material-icons"
+                        inline=true>power_settings_new</span>
+            </button>
+            <button mat-icon-button
+                    matTooltip="Zapłacony"
+                    (click)="payBill()">
+                  <span class="material-icons"
+                        inline=true>check</span>
+            </button>
+      </ng-template>
 
 </app-table>

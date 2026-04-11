@@ -15,7 +15,7 @@
            (rowDblClick)="editPayment()"
            (pasteButtonClicked)="pasteData()">
   <ng-template #tableTitleTemplate>
-    <span class="table-title">Historia płatności</span>
+    <span class="table-title">Historia płatności ({{data().length}})</span>
   </ng-template>
   <ng-template cellTemplateForColumn="deadline"
                let-row="row">
