@@ -26,32 +26,48 @@ export abstract class PaymentsService {
   importPayments(data: string, billId: number): Observable<ImportReport[]> {
     const requests: Observable<ImportReport>[] = [];
     data.split(IMPORT_LINE_SEPARATOR).forEach((line, index) => {
-      const payment = this.parsePayment(line, billId);
-      if (payment) {
+      const rowNumber = index + 1;
+      const rawLabel = line.split(IMPORT_COLUMN_SEPARATOR)[0];
+      const result = this.parsePayment(line, billId);
+      if (result) {
+        const { payment, warnings } = result;
         const request: Observable<ImportReport> = this.add(payment).pipe(
-          map(id => ({ id })),
+          map(id => ({ id, row: rowNumber, label: rawLabel })),
           catchError(e => {
             return of({
               error: (payment.deadline ? moment(payment.deadline).format('YYYY.MM.DD') : '')
-                + ' - ' + (e.message ?? e.toString())
+                + ' - ' + (e.message ?? e.toString()),
+              row: rowNumber,
+              label: rawLabel
             })
           }));
         requests.push(request);
+        warnings.forEach(w => requests.push(of({ warning: `Wiersz (${index + 1}): ${w}`, row: rowNumber, label: rawLabel })));
       } else {
-        requests.push(of({ error: `Nie można zaimportować wiersza (${index + 1}): ${line}` }));
+        requests.push(of({ error: `Nie można zaimportować wiersza (${index + 1}): ${line}`, row: rowNumber, label: rawLabel }));
       }
     });
     return requests.length ? concat(...requests).pipe(bufferCount(requests.length)) : of([]);
   }
 
-  private parsePayment(text: string, billId: number): Payment | undefined {
+  private parsePayment(text: string, billId: number): { payment: Payment; warnings: string[] } | undefined {
     const cells = text.split(IMPORT_COLUMN_SEPARATOR);
+    const warnings: string[] = [];
     const deadline: Date | undefined = stringToDate(cells[0]);
-    const paiddate: Date | undefined = stringToDate(cells[1]);
-    const sum: number = currencyToNumber(cells[2]) ?? 0;
+    const rawPaiddate = cells[1];
+    const paiddate: Date | undefined = stringToDate(rawPaiddate);
+    if (rawPaiddate && !paiddate) {
+      warnings.push(`Nie można odczytać daty płatności: "${rawPaiddate}"`);
+    }
+    const rawSum = cells[2];
+    const parsedSum = currencyToNumber(rawSum);
+    if (parsedSum === undefined) {
+      warnings.push(`Nie można odczytać kwoty: "${rawSum ?? ''}"; przyjęto 0`);
+    }
+    const sum: number = parsedSum ?? 0;
     const remarks: string = cells[3];
-    if (deadline && sum !== undefined) {
-      return new Payment(deadline, sum, paiddate, remarks, undefined, billId);
+    if (deadline) {
+      return { payment: new Payment(deadline, sum, paiddate, remarks, undefined, billId), warnings };
     }
     return undefined;
   }

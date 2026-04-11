@@ -15,14 +15,18 @@ export class ImportReportDialogComponent {
   dialogRef = inject(MatDialogRef<ImportReportDialogComponent>);
   data = inject(MAT_DIALOG_DATA) as ImportReport[];
 
-  protected readonly displayedColumns = ['row', 'id', 'status', 'error'];
+  protected readonly displayedColumns = ['row', 'label', 'id', 'status', 'message'];
 
-  protected readonly dataSource = this.data.map((item, index) => ({
-    row: index + 1,
-    id: item.id ?? '—',
-    status: item.error ? 'Błąd' : 'OK',
-    error: item.error ?? ''
-  }));
+  protected readonly dataSource = this.data
+    .map((item, index) => ({
+      row: item.row ?? index + 1,
+      label: item.label ?? '',
+      id: item.id ?? '—',
+      status: item.error ? 'Błąd' : item.warning ? 'Ostrzeżenie' : 'OK',
+      statusColor: item.error ? '#c62828' : item.warning ? '#e68600' : '#2e7d32',
+      message: item.error ?? item.warning ?? ''
+    }))
+    .sort((a, b) => a.row - b.row);
 
   close(): void {
     this.dialogRef.close();

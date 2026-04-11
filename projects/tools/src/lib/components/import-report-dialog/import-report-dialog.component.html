@@ -12,6 +12,13 @@
           *matCellDef="let element">{{ element.row }}</td>
     </ng-container>
 
+    <ng-container matColumnDef="label">
+      <th mat-header-cell
+          *matHeaderCellDef>Data (raw)</th>
+      <td mat-cell
+          *matCellDef="let element">{{ element.label }}</td>
+    </ng-container>
+
     <ng-container matColumnDef="id">
       <th mat-header-cell
           *matHeaderCellDef>ID</th>
@@ -24,17 +31,17 @@
           *matHeaderCellDef>Status</th>
       <td mat-cell
           *matCellDef="let element"
-          [class.status-error]="element.error"
-          [class.status-ok]="!element.error">
+          [style.color]="element.statusColor"
+          style="font-weight: 500">
         {{ element.status }}
       </td>
     </ng-container>
 
-    <ng-container matColumnDef="error">
+    <ng-container matColumnDef="message">
       <th mat-header-cell
           *matHeaderCellDef>Komunikat</th>
       <td mat-cell
-          *matCellDef="let element">{{ element.error }}</td>
+          *matCellDef="let element">{{ element.message }}</td>
     </ng-container>
 
     <tr mat-header-row
