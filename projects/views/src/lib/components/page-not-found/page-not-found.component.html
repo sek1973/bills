@@ -1,16 +1,14 @@
 <div class="parent">
   <div class="container">
     <h2 class="message">Strona nie została znaleziona!</h2>
-    <a mat-raised-button
-       color="primary"
-       [routerLink]="['/zestawienie']"
-       routerLinkActive="active">
+    <a
+      mat-raised-button
+      color="primary"
+      [routerLink]="['/zestawienie']"
+      routerLinkActive="active"
+    >
       Zestawienie
     </a>
-    <button mat-raised-button
-            color="accent"
-            (click)="goBack()">
-      Powrót
-    </button>
+    <button mat-raised-button color="accent" (click)="goBack()">Powrót</button>
   </div>
 </div>

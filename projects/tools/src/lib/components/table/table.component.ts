@@ -23,7 +23,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule, SortDirection } from '@angular/material/sort';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { fromEvent, Subscription } from 'rxjs';
+import { dateToString } from 'projects/model/src/public-api';
+import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { PrintService } from '../../services';
 import { TableCellDirective } from './directives';
@@ -185,23 +186,29 @@ export class TableComponent<T> {
     if (pageable && paginator) { ds.paginator = paginator; }
     // workaround for mixed context (numbers & strings) sorting - see: https://github.com/angular/material2/issues/9966:
     ds.sortingDataAccessor = (d, header) => d[header as keyof T] as string | number;
+    ds.filterPredicate = (d: T, filter: string) => {
+      const str = Object.values(d as Record<string, unknown>)
+        .map(v => (v instanceof Date ? (dateToString(v) ?? '') : v != null ? String(v) : ''))
+        .join(' ')
+        .toLowerCase();
+      return str.includes(filter);
+    };
 
     this.dataSource.set(ds);
     this.activeRow.set(undefined);
     this.rowActivated.emit(undefined);
   });
 
-  private filterSub?: Subscription;
   private filterEffect = effect((onCleanup) => {
     const el = this.filterInputRef()?.nativeElement;
     if (!el) return;
 
-    this.filterSub = fromEvent(el, 'keyup').pipe(
+    const sub = fromEvent(el, 'keyup').pipe(
       debounceTime(this.filterKeyDelayMs()),
       distinctUntilChanged()
     ).subscribe(() => this.applyFilter(el.value));
 
-    onCleanup(() => this.filterSub?.unsubscribe());
+    onCleanup(() => sub.unsubscribe());
   });
 
   getCellTemplate(column: string, defaultTemplate: TemplateRef<CellComponent<T>>): TemplateRef<CellComponent<T>> {

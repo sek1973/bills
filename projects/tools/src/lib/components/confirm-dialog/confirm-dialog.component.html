@@ -1,57 +1,70 @@
 <div class="dialog-container">
   <div class="text-panel">
     <div class="dialog-title">
-      {{dialogTitle}}
+      {{ dialogTitle }}
     </div>
 
     <div class="confirm-message">
-      {{message}}
+      {{ message }}
     </div>
   </div>
 
-
   @switch (inputType) {
-  @case (confirmDialogInputType.InputTypeText) {
-  <div>
-    <app-input-text [path]="['input']"
-                    [descriptionProvider]="descriptionProvider"
-                    [formGroup]="form">
-    </app-input-text>
-  </div>
-  }
-  @case (confirmDialogInputType.InputTypeCurrency) {
-  <div>
-    <app-input-currency [path]="['input']"
-                        [descriptionProvider]="descriptionProvider"
-                        [formGroup]="form">
-    </app-input-currency>
-  </div>
-  }
-  @case (confirmDialogInputType.InputTypeTextArea) {
-  <div class="input-container">
-    <app-input-textarea [path]="['input']"
-                        [descriptionProvider]="descriptionProvider"
-                        [inputMinRows]="10"
-                        [inputMaxRows]="10"
-                        [formGroup]="form">
-    </app-input-textarea>
-  </div>
-  }
+    @case (confirmDialogInputType.InputTypeText) {
+      <div>
+        <app-input-text
+          [path]="['input']"
+          [descriptionProvider]="descriptionProvider"
+          [formGroup]="form"
+        >
+        </app-input-text>
+      </div>
+    }
+    @case (confirmDialogInputType.InputTypeCurrency) {
+      <div>
+        <app-input-currency
+          [path]="['input']"
+          [descriptionProvider]="descriptionProvider"
+          [formGroup]="form"
+        >
+        </app-input-currency>
+      </div>
+    }
+    @case (confirmDialogInputType.InputTypeTextArea) {
+      <div class="input-container">
+        <app-input-textarea
+          [path]="['input']"
+          [descriptionProvider]="descriptionProvider"
+          [inputMinRows]="10"
+          [inputMaxRows]="10"
+          [formGroup]="form"
+        >
+        </app-input-textarea>
+      </div>
+    }
   }
 
   <div class="buttons-panel">
     @if (cancelButtonVisible) {
-    <button mat-raised-button
-            color="warn"
-            class="toolbar-button"
-            cdkFocusInitial
-            (click)="onCancel()">{{cancelButtonLabel}}</button>
+      <button
+        mat-raised-button
+        color="warn"
+        class="toolbar-button"
+        cdkFocusInitial
+        (click)="onCancel()"
+      >
+        {{ cancelButtonLabel }}
+      </button>
     }
-    <button mat-raised-button
-            color="primary"
-            class="toolbar-button"
-            [disabled]="!canApply()"
-            cdkFocusInitial
-            (click)="onApply()">{{applyButtonLabel}}</button>
+    <button
+      mat-raised-button
+      color="primary"
+      class="toolbar-button"
+      [disabled]="!canApply()"
+      cdkFocusInitial
+      (click)="onApply()"
+    >
+      {{ applyButtonLabel }}
+    </button>
   </div>
 </div>

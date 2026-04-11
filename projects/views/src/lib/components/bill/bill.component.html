@@ -1,106 +1,122 @@
 <div class="bill-view">
   <div class="bill-titlebar">
     <div class="bill-title">
-      <button mat-icon-button
-              matTooltip="Zestawienie"
-              [routerLink]="['/zestawienie']"
-              routerLinkActive="active">
-        <span class="material-icons"
-              inline=true>arrow_back
-        </span>
+      <button
+        mat-icon-button
+        matTooltip="Zestawienie"
+        [routerLink]="['/zestawienie']"
+        routerLinkActive="active"
+      >
+        <span class="material-icons" inline="true">arrow_back </span>
       </button>
       <span>
-        {{getTitle()}}
+        {{ getTitle() }}
       </span>
     </div>
     <div class="bill-toolbar">
       @if (editMode()) {
-      <button mat-raised-button
-              color="accent"
-              class="toolbar-button"
-              (click)="cancel()">
-        <span class="material-icons btn-icon">close</span>
-        <span class="btn-text">Anuluj</span>
-      </button>
+        <button
+          mat-raised-button
+          color="accent"
+          class="toolbar-button"
+          (click)="cancel()"
+        >
+          <span class="material-icons btn-icon">close</span>
+          <span class="btn-text">Anuluj</span>
+        </button>
       }
       @if (editMode()) {
-      <button mat-raised-button
-              color="warn"
-              class="toolbar-button"
-              (click)="deleteBill()">
-        <span class="material-icons btn-icon">delete</span>
-        <span class="btn-text">Usuń</span>
-      </button>
+        <button
+          mat-raised-button
+          color="warn"
+          class="toolbar-button"
+          (click)="deleteBill()"
+        >
+          <span class="material-icons btn-icon">delete</span>
+          <span class="btn-text">Usuń</span>
+        </button>
       }
       @if (editMode()) {
-      <button mat-raised-button
-              color="primary"
-              class="toolbar-button"
-              [disabled]="!billEdit()?.canSave()"
-              (click)="saveBill()">
-        <span class="material-icons btn-icon">save</span>
-        <span class="btn-text">Zapisz</span>
-      </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          [disabled]="!billEdit()?.canSave()"
+          (click)="saveBill()"
+        >
+          <span class="material-icons btn-icon">save</span>
+          <span class="btn-text">Zapisz</span>
+        </button>
       }
       @if (editMode() && billEdit()?.showSaveAndClose()) {
-      <button mat-raised-button
-              color="primary"
-              class="toolbar-button"
-              [disabled]="!billEdit()?.canSave()"
-              (click)="saveBillAndClose()">
-        <span class="material-icons btn-icon">done_all</span>
-        <span class="btn-text">Zapisz i zamknij</span>
-      </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          [disabled]="!billEdit()?.canSave()"
+          (click)="saveBillAndClose()"
+        >
+          <span class="material-icons btn-icon">done_all</span>
+          <span class="btn-text">Zapisz i zamknij</span>
+        </button>
       }
       @if (!editMode()) {
-      <button mat-icon-button
-              class="toolbar-button"
-              [class.toggled]="amountDetailsVisible()"
-              [attr.aria-pressed]="amountDetailsVisible()"
-              [matTooltip]="detailsTooltip()"
-              (click)="toggleAmountDetails()">
-        <mat-icon>more_horiz</mat-icon>
-      </button>
+        <button
+          mat-icon-button
+          class="toolbar-button"
+          [class.toggled]="amountDetailsVisible()"
+          [attr.aria-pressed]="amountDetailsVisible()"
+          [matTooltip]="detailsTooltip()"
+          (click)="toggleAmountDetails()"
+        >
+          <mat-icon>more_horiz</mat-icon>
+        </button>
       }
       @if (!editMode()) {
-      <button mat-raised-button
-              color="primary"
-              class="toolbar-button"
-              (click)="editBill()">
-        <span class="btn-text btn-text-always">Edytuj</span>
-      </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          (click)="editBill()"
+        >
+          <span class="btn-text btn-text-always">Edytuj</span>
+        </button>
       }
       @if (!editMode()) {
-      <button mat-raised-button
-              color="primary"
-              class="toolbar-button"
-              (click)="payBill()">
-        <span class="btn-text btn-text-always">Zapłacony</span>
-      </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="toolbar-button"
+          (click)="payBill()"
+        >
+          <span class="btn-text btn-text-always">Zapłacony</span>
+        </button>
       }
       @if (!editMode()) {
-      <button mat-raised-button
-              [color]="activeColor()"
-              class="toolbar-button"
-              [disabled]="newBill()"
-              (click)="toggleActive()">
-        <span class="btn-text btn-text-always">{{activeLabel()}}</span>
-      </button>
+        <button
+          mat-raised-button
+          [color]="activeColor()"
+          class="toolbar-button"
+          [disabled]="newBill()"
+          (click)="toggleActive()"
+        >
+          <span class="btn-text btn-text-always">{{ activeLabel() }}</span>
+        </button>
       }
     </div>
   </div>
 
-  <app-bill-edit class="bill-details"
-                 [bill]="bill()"
-                 [bills]="bills()"
-                 [editMode]="editMode()"
-                 [newBill]="newBill()"
-                 (editModeChange)="onEditModeChange($event)">
+  <app-bill-edit
+    class="bill-details"
+    [bill]="bill()"
+    [bills]="bills()"
+    [editMode]="editMode()"
+    [newBill]="newBill()"
+    (editModeChange)="onEditModeChange($event)"
+  >
   </app-bill-edit>
 
   @if (!newBill()) {
-  <app-payments class="bill-payments">
-  </app-payments>
+    <app-payments class="bill-payments"> </app-payments>
   }
-
 </div>

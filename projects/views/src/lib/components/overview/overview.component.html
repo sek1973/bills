@@ -16,25 +16,24 @@
            (addButtonClicked)="addBill()"
            (refreshButtonClicked)="refresh()"
            (rowDblClick)="editBill()">
-
       <ng-template cellTemplateForColumn="name"
                    let-row="row">
             <a [routerLink]="['/rachunek', row.id]"
                routerLinkActive="active"
-               [style.color]="row.active ? null : 'grey'">{{row.name}}</a>
+               [style.color]="row.active ? null : 'grey'">{{ row.name }}</a>
       </ng-template>
 
       <ng-template cellTemplateForColumn="dueDate"
                    let-row="row">
             <span [billDueColor]="row.dueDate"
                   [active]="row.active">
-                  {{row.dueDate | timespanToString}}
+                  {{ row.dueDate | timespanToString }}
             </span>
       </ng-template>
 
       <ng-template cellTemplateForColumn="sum"
                    let-row="row">
-            <span>{{row.sum | currencyToString}}</span>
+            <span>{{ row.sum | currencyToString }}</span>
       </ng-template>
 
       <ng-template #rightToolbarPanelTemplate>
@@ -42,7 +41,7 @@
                     matTooltip="Odśwież"
                     (click)="refresh()">
                   <span class="material-icons"
-                        inline=true>refresh</span>
+                        inline="true">refresh</span>
             </button>
             <button mat-icon-button
                     class="only-large-screen"
@@ -50,21 +49,20 @@
                     [matTooltip]="filterInactive() ? 'Pokaż nieaktywne' : 'Ukryj nieaktywne'"
                     (click)="toggleInactiveFilter()">
                   <span class="material-icons"
-                        inline=true>filter_alt</span>
+                        inline="true">filter_alt</span>
             </button>
             <button mat-icon-button
                     class="only-large-screen"
                     matTooltip="Wyloguj"
                     (click)="logout()">
                   <span class="material-icons"
-                        inline=true>power_settings_new</span>
+                        inline="true">power_settings_new</span>
             </button>
             <button mat-icon-button
                     matTooltip="Zapłacony"
                     (click)="payBill()">
                   <span class="material-icons"
-                        inline=true>check</span>
+                        inline="true">check</span>
             </button>
       </ng-template>
-
 </app-table>

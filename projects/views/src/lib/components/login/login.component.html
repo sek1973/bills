@@ -1,32 +1,39 @@
 <div class="parent">
   <div class="container">
-    <form [formGroup]="loginForm"
-          class="container-form"
-          (ngSubmit)="onLogIn()">
+    <form [formGroup]="loginForm" class="container-form" (ngSubmit)="onLogIn()">
       <h2 class="message">Witamy w aplikacji Rachunki!</h2>
 
-      <app-input-text [formGroup]="loginForm"
-                      [path]="['user']"
-                      [type]="'text'"
-                      [descriptionProvider]="getDescriptionProvider()"
-                      class="full-width">
+      <app-input-text
+        [formGroup]="loginForm"
+        [path]="['user']"
+        [type]="'text'"
+        [descriptionProvider]="getDescriptionProvider()"
+        class="full-width"
+      >
       </app-input-text>
 
-      <app-input-password [formGroup]="loginForm"
-                          [path]="['password']"
-                          [descriptionProvider]="getDescriptionProvider()"
-                          class="full-width">
+      <app-input-password
+        [formGroup]="loginForm"
+        [path]="['password']"
+        [descriptionProvider]="getDescriptionProvider()"
+        class="full-width"
+      >
       </app-input-password>
 
-      <button mat-raised-button
-              type="submit"
-              color="primary"
-              [disabled]="!loginForm.valid">Zaloguj</button>
+      <button
+        mat-raised-button
+        type="submit"
+        color="primary"
+        [disabled]="!loginForm.valid"
+      >
+        Zaloguj
+      </button>
       @if (error) {
-      <span class="error">{{error}}</span>
+        <span class="error">{{ error }}</span>
       }
-      <a routerLink="/resetuj-haslo"
-         class="forgot-password-link">Nie pamiętam hasła</a>
+      <a routerLink="/resetuj-haslo" class="forgot-password-link"
+        >Nie pamiętam hasła</a
+      >
     </form>
   </div>
 </div>

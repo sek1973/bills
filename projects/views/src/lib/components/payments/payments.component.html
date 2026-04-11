@@ -7,6 +7,7 @@
            [editable]="true"
            [canAdd]="true"
            [canPaste]="true"
+           [showFilter]="true"
            (rowActivated)="onRowActivated($event)"
            (refreshButtonClicked)="refresh()"
            (addButtonClicked)="addPayment()"
@@ -15,22 +16,22 @@
            (rowDblClick)="editPayment()"
            (pasteButtonClicked)="pasteData()">
   <ng-template #tableTitleTemplate>
-    <span class="table-title">Historia płatności ({{data().length}})</span>
+    <span class="table-title">Historia płatności ({{ data().length }})</span>
   </ng-template>
   <ng-template cellTemplateForColumn="deadline"
                let-row="row">
-    {{row.deadline | timespanToString}}
+    {{ row.deadline | timespanToString }}
   </ng-template>
   <ng-template cellTemplateForColumn="paiddate"
                let-row="row">
-    {{row.paiddate | timespanToString}}
+    {{ row.paiddate | timespanToString }}
   </ng-template>
   <ng-template cellTemplateForColumn="sum"
                let-row="row">
-    {{row.sum | currencyToString }}
+    {{ row.sum | currencyToString }}
   </ng-template>
   <ng-template cellTemplateForColumn="reminder"
                let-row="row">
-    {{row.reminder | timespanToString }}
+    {{ row.reminder | timespanToString }}
   </ng-template>
 </app-table>
