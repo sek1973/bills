@@ -26,6 +26,8 @@ table.mat-mdc-table {
 .filter-field {
   flex-grow: 1;
   max-width: 40%;
+  transform: scale(0.8);
+  transform-origin: center left;
   color: darkgray;
 }
 
