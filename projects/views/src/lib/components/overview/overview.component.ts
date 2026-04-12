@@ -32,6 +32,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
   );
   menuItems = computed<TableMenuItem[]>(() => [
     {
+      label: 'Odśwież',
+      icon: 'refresh',
+      action: () => this.refresh()
+    },
+    {
+      label: 'Zapłacony',
+      icon: 'check',
+      action: () => this.payBill()
+    },
+    {
       label: this.filterInactive() ? 'Pokaż nieaktywne' : 'Ukryj nieaktywne',
       icon: 'filter_alt',
       action: () => this.toggleInactiveFilter()

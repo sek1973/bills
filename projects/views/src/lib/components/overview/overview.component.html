@@ -40,6 +40,7 @@
 
   <ng-template #rightToolbarPanelTemplate>
     <button mat-icon-button
+            class="only-large-screen"
             matTooltip="Odśwież"
             (click)="refresh()">
       <span class="material-icons"
@@ -61,6 +62,7 @@
             inline="true">power_settings_new</span>
     </button>
     <button mat-icon-button
+            class="only-large-screen"
             matTooltip="Zapłacony"
             (click)="payBill()">
       <span class="material-icons"
