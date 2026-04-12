@@ -125,23 +125,14 @@ create or replace view public.bill_payments as  WITH due_candidates AS (
    FROM ranked
   WHERE rn = 1;;
 
-create or replace view public.bills_overview as
-select
-  b.id,
-  b."position",
-  b.name,
-  b.description,
-  b.active,
-  b.url,
-  b.login,
+CREATE OR REPLACE VIEW public.bills_overview AS
+SELECT
+  b.*,
   s.due_date,
-  s.sum,
-  b.account,
-  b.repeat,
-  b.unit
-from
-  bills b
-  left join bill_payments s on b.id = s.bill_id
+  s.sum
+FROM bills AS b
+LEFT JOIN bill_payments AS s
+  ON b.id = s.bill_id
 order by
 s.due_date,
 b.position;

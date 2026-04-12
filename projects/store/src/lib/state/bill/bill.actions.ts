@@ -3,10 +3,6 @@ import { Bill } from 'projects/model/src/lib/model';
 
 export const BillsActions = {
 
-  loadBills: createAction(
-    '[Bills] Load'
-  ),
-
   updateBill: createAction(
     '[Bills] Update Bill',
     props<{ bill: Bill, redirect: boolean }>()

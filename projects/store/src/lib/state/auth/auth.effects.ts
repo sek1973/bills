@@ -44,7 +44,7 @@ export class AuthEffects {
     return this.actions$
       .pipe(
         ofType(AuthActions.loginSuccess),
-        switchMap(() => of(BillsActions.loadBills())));
+        switchMap(() => of(BillsActions.loadOverviewBills())));
   });
 
   logout$ = createEffect(() => {

@@ -1,5 +1,5 @@
 import { createReducer, on } from "@ngrx/store";
-import { Bill, Payment } from "projects/model/src/lib/model";
+import { Bill, OverviewBill, Payment } from "projects/model/src/lib/model";
 import { AuthActions } from "../auth";
 import { BillApiActions, BillsActions } from "../bill";
 import { PaymentApiActions, PaymentsActions } from "../payment";
@@ -24,24 +24,12 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loggedIn: false, loading: false };
   }),
 
-  on(BillsActions.loadBills, (data: AppData) => {
-    return { ...data, loading: true };
-  }),
-
   on(BillsActions.loadOverviewBills, (data: AppData) => {
     return { ...data, loading: true };
   }),
 
-  on(BillApiActions.loadOverviewBillsSuccess, (data: AppData) => {
-    return { ...data, loading: false };
-  }),
-
-  on(BillApiActions.loadBillsSuccess, (data: AppData, action: { bills: Bill[] }) => {
+  on(BillApiActions.loadOverviewBillsSuccess, (data: AppData, action: { bills: OverviewBill[] }) => {
     return { ...data, bills: action.bills, loading: false };
-  }),
-
-  on(BillApiActions.loadBillsFailure, (data: AppData) => {
-    return { ...data, loading: false };
   }),
 
   on(BillsActions.setCurrentBill, (data: AppData, action: { bill?: Bill }) => {

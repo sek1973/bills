@@ -15,17 +15,21 @@ export class OverviewBillsServiceImpl extends OverviewBillsService {
     return from(this.serverService.client.from('bills_overview').select<'*', OverviewBillRow>('*')).pipe(
       map(({ data, error }) => {
         if (error) throw error;
-        return data.map(r => ({
-          id: r.id,
-          position: r.position ?? undefined,
-          name: r.name,
-          description: r.description ?? undefined,
-          active: r.active,
-          url: r.url ?? undefined,
-          login: r.login ?? undefined,
-          dueDate: r.due_date ? new Date(r.due_date) : undefined,
-          sum: r.sum ?? 0,
-        }));
+        return data.map(r => new OverviewBill(
+          r.position ?? undefined,
+          r.name,
+          r.description ?? undefined,
+          r.active,
+          r.url ?? undefined,
+          r.login ?? undefined,
+          r.account ?? undefined,
+          r.default_sum,
+          r.repeat,
+          r.unit,
+          r.id ?? -1,
+          r.due_date ? new Date(r.due_date) : undefined,
+          r.sum ?? 0,
+        ));
       })
     );
   }

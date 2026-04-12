@@ -55,7 +55,7 @@ export class BillComponent implements OnInit {
       });
 
     if (!this.bills()?.length) {
-      this.store.dispatch(BillsActions.loadBills());
+      this.store.dispatch(BillsActions.loadOverviewBills());
     }
 
     this.realtimeService.billsChanges$
@@ -63,7 +63,7 @@ export class BillComponent implements OnInit {
         takeUntilDestroyed(this.#destroyRef),
         filter((billId: number) => !this.editMode() && this.bill()?.id === billId)
       )
-      .subscribe(() => this.store.dispatch(BillsActions.loadBills()));
+      .subscribe(() => this.store.dispatch(BillsActions.loadOverviewBills()));
   }
 
   ngOnInit(): void {

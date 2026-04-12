@@ -1,15 +1,15 @@
 import { createAction, props } from '@ngrx/store';
 import { PostgrestError } from '@supabase/supabase-js';
-import { Bill } from 'projects/model/src/lib/model';
+import { Bill, OverviewBill } from 'projects/model/src/lib/model';
 
 export const BillApiActions = {
-  loadBillsSuccess: createAction(
-    '[Bill API] Load Success',
-    props<{ bills: Bill[] }>()
+  loadOverviewBillsSuccess: createAction(
+    '[Bill API] Load Overview Success',
+    props<{ bills: OverviewBill[] }>()
   ),
 
-  loadBillsFailure: createAction(
-    '[Bill API] Load Failure',
+  loadOverviewBillsFailure: createAction(
+    '[Bill API] Load Overview Failure',
     props<{ error: PostgrestError }>()
   ),
 
@@ -46,14 +46,6 @@ export const BillApiActions = {
   payBillSuccess: createAction(
     '[Bill API] Pay Bill Success',
     props<{ billId: number }>()
-  ),
-
-  loadOverviewBillsSuccess: createAction(
-    '[Bill API] Load Overview Success'
-  ),
-
-  loadOverviewBillsFailure: createAction(
-    '[Bill API] Load Overview Failure'
   ),
 
   payBillFailure: createAction(

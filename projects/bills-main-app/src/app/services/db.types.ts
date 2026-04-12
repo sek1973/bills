@@ -22,14 +22,7 @@ export interface PaymentRow {
   reminder: string | null;
 }
 
-export interface OverviewBillRow {
-  id: number;
-  position: number | null;
-  name: string;
-  description: string | null;
-  active: boolean;
-  url: string | null;
-  login: string | null;
+export interface OverviewBillRow extends BillRow {
   due_date: string | null;
   sum: number | null;
 }

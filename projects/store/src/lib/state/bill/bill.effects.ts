@@ -2,45 +2,48 @@ import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import moment from 'moment';
-import { BillsService, calculateNextDeadline, Payment, PaymentsService } from 'projects/model/src/public-api';
+import { BillsService, calculateNextDeadline, OverviewBillsService, Payment, PaymentsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService, validateBillName } from 'projects/tools/src/public-api';
 import { Observable, of } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, switchMap, timeout } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, switchMap, timeout, withLatestFrom } from 'rxjs/operators';
+import { AppState } from '../app/app.state';
 import { BillApiActions } from './bill-api.actions';
 import { BillsActions } from './bill.actions';
+import { BillsSelectors } from './bill.selectors';
 
 @Injectable()
 export class BillEffects {
 
   private actions$ = inject(Actions);
+  private store = inject(Store<AppState>);
   private billsService = inject(BillsService);
+  private overviewBillsService = inject(OverviewBillsService);
   private paymentsService = inject(PaymentsService);
   private confirmationService = inject(ConfirmationService);
   private notification = inject(NotificationService);
   private router = inject(Router);
 
-  loadBills$ = createEffect(() => {
-    return this.actions$
-      .pipe(
-        ofType(BillsActions.loadBills),
-        mergeMap(() =>
-          this.billsService.load()
-            .pipe(
-              timeout(15000),
-              map(bills => BillApiActions.loadBillsSuccess({ bills })),
-              catchError(error => of(BillApiActions.loadBillsFailure({ error })))
-            )
+  loadOverviewBills$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(BillsActions.loadOverviewBills),
+      mergeMap(() =>
+        this.overviewBillsService.load().pipe(
+          timeout(15000),
+          map(bills => BillApiActions.loadOverviewBillsSuccess({ bills })),
+          catchError(error => of(BillApiActions.loadOverviewBillsFailure({ error })))
         )
-      );
+      )
+    );
   });
 
   updateBill$ = createEffect(() => {
     return this.actions$
       .pipe(
         ofType(BillsActions.updateBill),
-        concatMap(action => {
-          const bills = this.billsService.getBills();
+        withLatestFrom(this.store.select(BillsSelectors.selectAll)),
+        concatMap(([action, bills]) => {
           const currentBill = bills.find(b => b.id === action.bill.id);
           const positionChanged = currentBill && currentBill.position !== action.bill.position;
           const n: number | null = action.bill.position === null ? null : Number(action.bill.position);
@@ -69,8 +72,8 @@ export class BillEffects {
     return this.actions$
       .pipe(
         ofType(BillsActions.updateBillConfirmed),
-        concatMap(action => {
-          const bills = this.billsService.getBills();
+        withLatestFrom(this.store.select(BillsSelectors.selectAll)),
+        concatMap(([action, bills]) => {
           const currentBill = bills.find(b => b.id === action.bill.id);
           const positionChanged = currentBill && currentBill.position !== action.bill.position;
           const n: number | null = action.bill.position === null ? null : Number(action.bill.position);
@@ -105,7 +108,7 @@ export class BillEffects {
           this.notification.success('Zapisano zmiany dla rachunku');
           if (action.redirect) { this.router.navigate(['/zestawienie']); }
         }),
-        switchMap(() => of(BillsActions.loadBills())));
+        switchMap(() => of(BillsActions.loadOverviewBills())));
   });
 
   createBill$ = createEffect(() => {
@@ -134,7 +137,7 @@ export class BillEffects {
             this.router.navigate([`/rachunek/${action.bill.id}`]);
           }
         }),
-        switchMap(() => of(BillsActions.loadBills())));
+        switchMap(() => of(BillsActions.loadOverviewBills())));
   });
 
   deleteBill$ = createEffect(() => {
@@ -176,7 +179,7 @@ export class BillEffects {
         ofType(BillApiActions.deleteBillSuccess),
         map(() => this.notification.success('Usunięto rachunek')),
         map(() => this.router.navigate(['/zestawienie'])),
-        switchMap(() => of(BillsActions.loadBills())));
+        switchMap(() => of(BillsActions.loadOverviewBills())));
   });
 
   payBill$ = createEffect(() => {
@@ -255,14 +258,14 @@ export class BillEffects {
       .pipe(
         ofType(BillApiActions.payBillSuccess),
         map(() => this.notification.success('Opłacono rachunek')),
-        switchMap(() => of(BillsActions.loadBills())));
+        switchMap(() => of(BillsActions.loadOverviewBills())));
   });
 
   showBillError$ = createEffect(() => {
     return this.actions$
       .pipe(
         ofType(
-          BillApiActions.loadBillsFailure,
+          BillApiActions.loadOverviewBillsFailure,
           BillApiActions.updateBillFailure,
           BillApiActions.createBillFailure,
           BillApiActions.deleteBillFailure,

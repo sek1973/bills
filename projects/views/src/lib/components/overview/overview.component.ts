@@ -1,19 +1,17 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Bill } from 'projects/model/src/lib/model';
-import { OverviewBill, OverviewBillsService, RealtimeService } from 'projects/model/src/public-api';
-import { AppState, AuthActions, BillApiActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
+import { OverviewBill, RealtimeService } from 'projects/model/src/public-api';
+import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { BillDueColorDirective } from 'projects/tools/src/lib/components/table/directives/bill-due-color.directive';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
 import { TableMenuItem } from 'projects/tools/src/lib/components/table/table-column.model';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { NotificationService, TableComponent } from 'projects/tools/src/public-api';
-import { catchError, EMPTY, Subscription, switchMap, tap, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-overview',
@@ -22,13 +20,12 @@ import { catchError, EMPTY, Subscription, switchMap, tap, timeout } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, BillDueColorDirective, DateToStringPipe, CurrencyToStringPipe]
 })
-export class OverviewComponent implements OnInit, OnDestroy {
+export class OverviewComponent implements OnInit {
   editMode = signal(false);
-  data = signal<Bill[]>([]);
-  OverviewBills = signal<OverviewBill[]>([]);
+  overviewBills = signal<OverviewBill[]>([]);
   filterInactive = signal(true);
   filtered = computed(() =>
-    this.filterInactive() ? this.OverviewBills().filter(b => b.active) : this.OverviewBills()
+    this.filterInactive() ? this.overviewBills().filter(b => b.active) : this.overviewBills()
   );
   menuItems = computed<TableMenuItem[]>(() => [
     {
@@ -58,7 +55,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     { name: 'sum', header: 'Kwota' }
   ];
   inactiveRowStyle = (row: OverviewBill): Record<string, string> => row.active ? {} : { color: 'grey' };
-  private dataSubscription = Subscription.EMPTY;
 
   @ViewChild('table')
   table!: TableComponent<OverviewBill>;
@@ -66,46 +62,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private store = inject(Store<AppState>);
   private router = inject(Router);
   private notification = inject(NotificationService);
-  private OverviewBillsService = inject(OverviewBillsService);
   private realtimeService = inject(RealtimeService);
   #destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.store.dispatch(BillsActions.loadBills());
-    this.subscribeToData();
-    this.subscribeToRealtimeChanges();
-  }
-
-  private subscribeToData(): void {
-    this.dataSubscription = this.store
-      .select(BillsSelectors.selectAll)
-      .pipe(
-        tap(bills => {
-          this.data.set(bills || []);
-          this.store.dispatch(BillsActions.loadOverviewBills());
-        }),
-        switchMap(() => this.OverviewBillsService.load().pipe(
-          timeout(15000),
-          catchError(() => {
-            this.store.dispatch(BillApiActions.loadOverviewBillsFailure());
-            return EMPTY;
-          })
-        ))
-      )
-      .subscribe(overviewBills => {
-        this.OverviewBills.set(overviewBills);
-        this.store.dispatch(BillApiActions.loadOverviewBillsSuccess());
-      });
-  }
-
-  private subscribeToRealtimeChanges(): void {
+    this.store.dispatch(BillsActions.loadOverviewBills());
+    this.store.select(BillsSelectors.selectOverviewBills)
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(bills => this.overviewBills.set(bills));
     this.realtimeService.billsChanges$
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => this.store.dispatch(BillsActions.loadBills()));
-  }
-
-  ngOnDestroy(): void {
-    this.dataSubscription.unsubscribe();
+      .subscribe(() => this.store.dispatch(BillsActions.loadOverviewBills()));
   }
 
   onRowClicked(row: OverviewBill | undefined): void {
@@ -115,16 +82,9 @@ export class OverviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  getBillById(id: number): Bill | undefined {
-    return this.data().find(b => b.id === id);
-  }
-
   deleteBill(): void {
-    const OverviewBill = this.table.activeRow();
-    if (OverviewBill) {
-      const bill = this.getBillById(OverviewBill.id);
-      if (bill) { this.store.dispatch(BillsActions.deleteBill({ bill })); }
-    }
+    const bill = this.table.activeRow();
+    if (bill) { this.store.dispatch(BillsActions.deleteBill({ bill })); }
   }
 
   editBill(): void {
@@ -148,15 +108,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   refresh(): void {
-    this.store.dispatch(BillsActions.loadBills());
+    this.store.dispatch(BillsActions.loadOverviewBills());
   }
 
   payBill(): void {
-    const OverviewBill = this.table.activeRow();
-    if (OverviewBill) {
-      const bill = this.getBillById(OverviewBill.id);
-      if (bill) { this.store.dispatch(BillsActions.payBill({ bill })); }
-    }
+    const bill = this.table.activeRow();
+    if (bill) { this.store.dispatch(BillsActions.payBill({ bill })); }
   }
 
   toggleInactiveFilter(): void {
@@ -164,3 +121,4 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
 }
+
