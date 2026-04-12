@@ -7,7 +7,7 @@ export interface BillRow {
   url: string | null;
   login: string | null;
   account: string | null;
-  sum: number;
+  default_sum: number;
   repeat: number;
   unit: number;
 }

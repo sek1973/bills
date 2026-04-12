@@ -11,7 +11,7 @@ export class Bill {
     public url?: string,
     public login?: string,
     public account?: string,
-    public sum: number = 0,
+    public defaultSum: number = 0,
     public repeat: number = 1,
     public unit: Unit = Unit.Month,
     public id: number = -1) { }
@@ -25,7 +25,7 @@ export class Bill {
       this.url,
       this.login,
       this.account,
-      this.sum,
+      this.defaultSum,
       this.repeat,
       this.unit,
       id);
@@ -58,7 +58,7 @@ export const BillDescription = new Map<string, FieldDescription>([
     placeholderText: 'Jednostka okresu rozliczania np. miesiąc',
     labelText: 'Jednostka'
   }],
-  ['sum', {
+  ['defaultSum', {
     tooltipText: 'Podaj kwotę do zapłacenia',
     placeholderText: 'Kwota do zapłacenia',
     labelText: 'Kwota'

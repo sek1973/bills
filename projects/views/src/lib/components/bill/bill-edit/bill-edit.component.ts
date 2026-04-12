@@ -53,7 +53,7 @@ export class BillEditComponent {
     url: new FormControl<string | undefined>(undefined),
     login: new FormControl<string | undefined>(undefined),
     account: new FormControl<string | undefined>(undefined),
-    sum: new FormControl<number>(0),
+    defaultSum: new FormControl<number>(0),
     repeat: new FormControl<number>(1),
     unit: new FormControl<Unit>(Unit.Month),
     id: new FormControl<number>(-1),
@@ -81,7 +81,7 @@ export class BillEditComponent {
       active: bill.active,
       repeat: bill.repeat,
       unit: bill.unit,
-      sum: bill.sum,
+      defaultSum: bill.defaultSum,
       url: bill.url,
       login: bill.login,
       account: bill.account,
@@ -97,7 +97,7 @@ export class BillEditComponent {
       value.url,
       value.login,
       value.account,
-      value.sum,
+      value.defaultSum,
       value.repeat,
       value.unit,
       value.id
@@ -155,7 +155,7 @@ export class BillEditComponent {
     if (bill) {
       const updated = new Bill(
         bill.position, bill.name, bill.description, !bill.active,
-        bill.url, bill.login, bill.account, bill.sum, bill.repeat, bill.unit, bill.id
+        bill.url, bill.login, bill.account, bill.defaultSum, bill.repeat, bill.unit, bill.id
       );
       this.store.dispatch(BillsActions.updateBill({ bill: updated, redirect: false }));
     }

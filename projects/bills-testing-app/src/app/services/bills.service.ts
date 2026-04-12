@@ -11,7 +11,7 @@ function createBill(
   description: string,
   url: string,
   login: string,
-  sum: number,
+  defaultSum: number,
   repeat: number = 1,
   unit: Unit = Unit.Month): Bill {
   const result = new Bill();
@@ -21,7 +21,7 @@ function createBill(
   result.description = description;
   result.url = url;
   result.login = login;
-  result.sum = sum;
+  result.defaultSum = defaultSum;
   result.repeat = repeat;
   result.unit = unit;
   return result;

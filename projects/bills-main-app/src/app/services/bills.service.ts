@@ -45,7 +45,7 @@ export class BillsServiceImpl extends BillsService {
       r.url ?? undefined,
       r.login ?? undefined,
       r.account ?? undefined,
-      r.sum,
+      r.default_sum,
       r.repeat,
       r.unit,
       r.id ?? -1,
@@ -61,7 +61,7 @@ export class BillsServiceImpl extends BillsService {
       url: bill.url ?? null,
       login: bill.login ?? null,
       account: bill.account ?? null,
-      sum: bill.sum,
+      default_sum: bill.defaultSum,
       repeat: bill.repeat,
       unit: bill.unit,
     };

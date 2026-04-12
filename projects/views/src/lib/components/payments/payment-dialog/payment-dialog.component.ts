@@ -81,7 +81,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
       value = {
         deadline: this.data?.prefillDeadline ?? calculated,
         paiddate: this.data?.prefillPaidDate ?? undefined,
-        sum: this.bill?.sum ?? 0,
+        sum: this.bill?.defaultSum ?? 0,
       };
     }
     this.form.patchValue(value);

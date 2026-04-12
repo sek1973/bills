@@ -125,18 +125,26 @@ create or replace view public.bill_payments as  WITH due_candidates AS (
    FROM ranked
   WHERE rn = 1;;
 
-create or replace view public.bills_overview as  SELECT b.id,
-    b."position",
-    b.name,
-    b.description,
-    b.active,
-    b.url,
-    b.login,
-    s.due_date,
-    s.sum
-   FROM bills b
-     LEFT JOIN bill_payments s ON b.id = s.bill_id
-  ORDER BY s.due_date, b."position";;
+create or replace view public.bills_overview as
+select
+  b.id,
+  b."position",
+  b.name,
+  b.description,
+  b.active,
+  b.url,
+  b.login,
+  s.due_date,
+  s.sum,
+  b.account,
+  b.repeat,
+  b.unit
+from
+  bills b
+  left join bill_payments s on b.id = s.bill_id
+order by
+s.due_date,
+b.position;
 
 create or replace view public.due_bill_payments as  WITH due_candidates AS (
          SELECT p.bill_id,
@@ -265,7 +273,7 @@ create table public.bills (
   active boolean null default true,
   url text null,
   login text null,
-  sum numeric(10, 2) null default 0,
+  default_sum numeric(10, 2) null default 0,
   repeat integer null default 1,
   unit smallint null default 1,
   owner_id uuid null,
@@ -292,7 +300,7 @@ create table public.bills (
   active boolean null default true,
   url text null,
   login text null,
-  sum numeric(10, 2) null default 0,
+  default_sum numeric(10, 2) null default 0,
   repeat integer null default 1,
   unit smallint null default 1,
   owner_id uuid null,

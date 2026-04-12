@@ -198,7 +198,7 @@ export class BillEffects {
                 cancelButtonLabel: 'Anuluj',
                 applyButtonLabel: 'OK',
                 inputType: ConfirmDialogInputType.InputTypeCurrency,
-                inputValue: closest?.sum ?? action.bill.sum,
+                inputValue: closest?.sum ?? action.bill.defaultSum,
                 inputValidators: [Validators.required],
                 inputLabelText: 'Kwota',
                 inputPlaceholderText: 'Kwota'
@@ -226,7 +226,7 @@ export class BillEffects {
                       }
                       const base = closest?.deadline ?? today;
                       const nextDeadline = calculateNextDeadline(base, action.bill.unit, action.bill.repeat);
-                      const nextPayment = new Payment(nextDeadline, action.bill.sum, undefined, undefined, undefined, action.bill.id);
+                      const nextPayment = new Payment(nextDeadline, action.bill.defaultSum, undefined, undefined, undefined, action.bill.id);
                       return this.paymentsService.add(nextPayment).pipe(
                         switchMap(() => this.confirmationService.confirm({
                           dialogTitle: 'Następna płatność',
