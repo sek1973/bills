@@ -48,6 +48,14 @@ export const BillApiActions = {
     props<{ billId: number }>()
   ),
 
+  loadOverviewBillsSuccess: createAction(
+    '[Bill API] Load Overview Success'
+  ),
+
+  loadOverviewBillsFailure: createAction(
+    '[Bill API] Load Overview Failure'
+  ),
+
   payBillFailure: createAction(
     '[Bill API] Pay Bill Failure',
     props<{ error: PostgrestError }>()

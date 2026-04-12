@@ -16,10 +16,6 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loggedIn: true, loading: false };
   }),
 
-  on(AuthActions.loginFailure, (data: AppData) => {
-    return { ...data, loading: false };
-  }),
-
   on(AuthActions.logout, (data: AppData) => {
     return { ...data, loading: true };
   }),
@@ -28,12 +24,16 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loggedIn: false, loading: false };
   }),
 
-  on(AuthActions.logoutFailure, (data: AppData) => {
-    return { ...data, loading: false };
-  }),
-
   on(BillsActions.loadBills, (data: AppData) => {
     return { ...data, loading: true };
+  }),
+
+  on(BillsActions.loadOverviewBills, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(BillApiActions.loadOverviewBillsSuccess, (data: AppData) => {
+    return { ...data, loading: false };
   }),
 
   on(BillApiActions.loadBillsSuccess, (data: AppData, action: { bills: Bill[] }) => {
@@ -105,10 +105,13 @@ export const appReducer = createReducer<AppData>(
   }),
 
   on(
+    AuthActions.loginFailure,
+    AuthActions.logoutFailure,
     BillApiActions.updateBillFailure,
     BillApiActions.createBillFailure,
     BillApiActions.deleteBillFailure,
     BillApiActions.payBillFailure,
+    BillApiActions.loadOverviewBillsFailure,
     PaymentApiActions.loadPaymentsFailure,
     PaymentApiActions.updatePaymentFailure,
     PaymentApiActions.createPaymentFailure,

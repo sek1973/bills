@@ -6,14 +6,14 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill } from 'projects/model/src/lib/model';
 import { OverviewBill, OverviewBillsService, RealtimeService } from 'projects/model/src/public-api';
-import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
+import { AppState, AuthActions, BillApiActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { BillDueColorDirective } from 'projects/tools/src/lib/components/table/directives/bill-due-color.directive';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
 import { TableMenuItem } from 'projects/tools/src/lib/components/table/table-column.model';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { NotificationService, TableComponent } from 'projects/tools/src/public-api';
-import { catchError, of, Subscription, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, Subscription, switchMap, tap, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-overview',
@@ -71,6 +71,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   #destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
+    this.store.dispatch(BillsActions.loadBills());
     this.subscribeToData();
     this.subscribeToRealtimeChanges();
   }
@@ -79,10 +80,22 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dataSubscription = this.store
       .select(BillsSelectors.selectAll)
       .pipe(
-        tap(bills => this.data.set(bills || [])),
-        switchMap(() => this.OverviewBillsService.load().pipe(catchError(() => of([]))))
+        tap(bills => {
+          this.data.set(bills || []);
+          this.store.dispatch(BillsActions.loadOverviewBills());
+        }),
+        switchMap(() => this.OverviewBillsService.load().pipe(
+          timeout(15000),
+          catchError(() => {
+            this.store.dispatch(BillApiActions.loadOverviewBillsFailure());
+            return EMPTY;
+          })
+        ))
       )
-      .subscribe(OverviewBills => this.OverviewBills.set(OverviewBills));
+      .subscribe(overviewBills => {
+        this.OverviewBills.set(overviewBills);
+        this.store.dispatch(BillApiActions.loadOverviewBillsSuccess());
+      });
   }
 
   private subscribeToRealtimeChanges(): void {

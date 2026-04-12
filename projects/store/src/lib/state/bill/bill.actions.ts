@@ -42,4 +42,8 @@ export const BillsActions = {
     props<{ bill?: Bill }>()
   ),
 
+  loadOverviewBills: createAction(
+    '[Bills] Load Overview'
+  ),
+
 };
