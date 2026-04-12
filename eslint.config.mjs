@@ -25,7 +25,7 @@ export default [
     rules: {
       ...tsPlugin.configs.recommended.rules,
       'indent': ['error', 2, { SwitchCase: 1 }],
-      'linebreak-style': ['error', 'windows'],
+      'linebreak-style': ['error', 'linux'],
       'quotes': ['error', 'single'],
       'semi': ['error', 'always'],
       '@typescript-eslint/no-inferrable-types': [
