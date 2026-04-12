@@ -31,12 +31,22 @@
 }
 
 /* Visual indication for the details toggle button */
-.toolbar-button.toggled {
-  background-color: rgba(103, 58, 183, 0.75);
+.toolbar-button-toggle {
   border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  max-width: 36px;
+  max-height: 36px;
 }
-.toolbar-button.toggled mat-icon,
-.toolbar-button.toggled .mat-icon {
+
+.toolbar-button-toggle.toggled {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.toolbar-button-toggle.toggled mat-icon,
+.toolbar-button-toggle.toggled .mat-icon {
   color: white;
 }
 
