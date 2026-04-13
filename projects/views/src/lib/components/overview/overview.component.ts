@@ -8,7 +8,7 @@ import { OverviewBill, RealtimeService } from 'projects/model/src/public-api';
 import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { BillDueColorDirective } from 'projects/tools/src/lib/components/table/directives/bill-due-color.directive';
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
-import { TableMenuItem } from 'projects/tools/src/lib/components/table/table-column.model';
+import { TableColumn, TableMenuItem } from 'projects/tools/src/lib/components/table/table-column.model';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { NotificationService, TableComponent } from 'projects/tools/src/public-api';
@@ -49,10 +49,10 @@ export class OverviewComponent implements OnInit {
       action: () => this.logout()
     }
   ]);
-  columns = [
-    { name: 'name', header: 'Nazwa' },
-    { name: 'dueDate', header: 'Termin' },
-    { name: 'sum', header: 'Kwota' }
+  columns: TableColumn[] = [
+    { name: 'name', header: 'Nazwa', sort: true, filter: true },
+    { name: 'dueDate', header: 'Termin', sort: true, filter: true },
+    { name: 'sum', header: 'Kwota', sort: true, filter: true }
   ];
   inactiveRowStyle = (row: OverviewBill): Record<string, string> => row.active ? {} : { color: 'grey' };
 

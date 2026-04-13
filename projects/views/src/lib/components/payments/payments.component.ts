@@ -9,7 +9,7 @@ import { AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelect
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
-import { TableComponent } from 'projects/tools/src/public-api';
+import { TableColumn, TableComponent } from 'projects/tools/src/public-api';
 import { filter } from 'rxjs/operators';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
@@ -27,12 +27,12 @@ export class PaymentsComponent implements OnInit {
   activeRow?: Payment;
   data = signal<Payment[]>([]);
   closestUpcoming = signal<Payment | undefined>(undefined);
-  columns = [
-    { name: 'deadline', header: 'Termin' },
-    { name: 'paiddate', header: 'Zapłacono' },
-    { name: 'sum', header: 'Kwota' },
-    { name: 'reminder', header: 'Przypomnienie' },
-    { name: 'remarks', header: 'Uwagi' }
+  columns: TableColumn[] = [
+    { name: 'deadline', header: 'Termin', sort: true, filter: true },
+    { name: 'paiddate', header: 'Zapłacono', sort: true, filter: true },
+    { name: 'sum', header: 'Kwota', sort: true, filter: true },
+    { name: 'reminder', header: 'Przypomnienie', sort: true, filter: true },
+    { name: 'remarks', header: 'Uwagi', sort: true, filter: true }
   ];
   bill?: Bill;
 
