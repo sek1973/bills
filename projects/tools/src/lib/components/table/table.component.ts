@@ -69,6 +69,7 @@ export class TableComponent<T> {
 
   // --- State signals ---
   readonly dataReady = signal(false);
+  readonly filterValue = signal('');
   readonly expandedRow = signal<T | undefined>(undefined);
   readonly collapsingRow = signal<T | undefined>(undefined);
   readonly activeRow = signal<T | undefined>(undefined);
@@ -224,6 +225,15 @@ export class TableComponent<T> {
     if (ds) {
       ds.filter = filterValue.trim().toLowerCase();
     }
+    this.filterValue.set(filterValue);
+  }
+
+  clearFilter(): void {
+    const el = this.filterInputRef()?.nativeElement;
+    if (el) {
+      el.value = '';
+    }
+    this.applyFilter('');
   }
 
   onRowClick(row: T): void {

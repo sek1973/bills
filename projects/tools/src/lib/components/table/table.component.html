@@ -121,6 +121,13 @@
              #filterInput
              (click)="$event.stopPropagation()"
              placeholder="Filtruj">
+      @if (filterValue()) {
+      <button mat-icon-button
+              matSuffix
+              (click)="clearFilter()">
+        <span class="material-icons">close</span>
+      </button>
+      }
     </mat-form-field>
     }
 
