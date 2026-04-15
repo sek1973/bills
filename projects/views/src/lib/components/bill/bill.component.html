@@ -98,6 +98,13 @@
   </app-bill-edit>
 
   @if (!newBill()) {
+  <app-payments-chart class="bill-payments-chart"
+                      [payments]="payments()"
+                      [billName]="bill()?.name ?? ''">
+  </app-payments-chart>
+  }
+
+  @if (!newBill()) {
   <app-payments class="bill-payments"> </app-payments>
   }
 </div>

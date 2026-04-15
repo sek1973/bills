@@ -1,0 +1,16 @@
+<div class="payments-chart">
+  @if (paidPayments.length) {
+  <div class="chart-header">
+    <div class="chart-title">Kwoty zapłacone wg terminu</div>
+    <div class="chart-meta">{{ paidPayments.length }} płatności</div>
+  </div>
+  <div class="chart-frame">
+    <div #chart
+         class="chart-canvas"></div>
+  </div>
+  } @else {
+  <div class="chart-empty">
+    Brak opłaconych płatności do wyświetlenia.
+  </div>
+  }
+</div>

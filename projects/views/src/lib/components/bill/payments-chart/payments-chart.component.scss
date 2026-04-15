@@ -1,0 +1,43 @@
+.payments-chart {
+  width: 100%;
+  margin: 16px 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fff;
+  padding: 16px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 16px;
+}
+
+.chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.chart-meta {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.9rem;
+}
+
+.chart-frame {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.chart-canvas {
+  min-height: 280px;
+}
+
+.chart-empty {
+  padding: 36px 0;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.95rem;
+}

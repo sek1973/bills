@@ -6,19 +6,20 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { Bill } from 'projects/model/src/lib/model';
+import { Bill, Payment } from 'projects/model/src/lib/model';
 import { RealtimeService } from 'projects/model/src/public-api';
-import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
+import { AppState, BillsActions, BillsSelectors, PaymentsSelectors } from 'projects/store/src/lib/state';
 import { filter } from 'rxjs/operators';
 import { PaymentsComponent } from '../payments/payments.component';
 import { BillEditComponent } from './bill-edit/bill-edit.component';
+import { PaymentsChartComponent } from './payments-chart/payments-chart.component';
 
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatTooltipModule, BillEditComponent, PaymentsComponent]
+  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatTooltipModule, BillEditComponent, PaymentsComponent, PaymentsChartComponent]
 })
 export class BillComponent implements OnInit {
   billEdit = viewChild(BillEditComponent);
@@ -32,6 +33,7 @@ export class BillComponent implements OnInit {
   protected readonly newBill = signal(false);
   protected readonly bill = signal<Bill | undefined>(undefined);
   protected readonly bills = signal<Bill[] | undefined>(undefined);
+  protected readonly payments = signal<Payment[]>([]);
   protected routeParamId: number = -1;
 
   protected readonly activeColor = computed(() => this.bill()?.active ? 'primary' : 'basic');
@@ -53,6 +55,10 @@ export class BillComponent implements OnInit {
         const val = this.route.snapshot.params['id' as keyof Params];
         this.dispatchSelectedBill(val);
       });
+
+    this.store.select(PaymentsSelectors.selectAll)
+      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .subscribe(payments => this.payments.set(payments || []));
 
     if (!this.bills()?.length) {
       this.store.dispatch(BillsActions.loadOverviewBills());
