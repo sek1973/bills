@@ -77,7 +77,7 @@ export class BillsServiceImpl extends BillsService {
   }
 
   update(bill: Bill): Observable<boolean> {
-    return from(this.serverService.client.from('bills').update(bill).eq('id', bill.id)).pipe(
+    return from(this.serverService.client.from('bills').update(this.toRow(bill)).eq('id', bill.id)).pipe(
       map(({ error }) => {
         if (error) throw error;
         return true;
