@@ -97,7 +97,7 @@
                  (editModeChange)="onEditModeChange($event)">
   </app-bill-edit>
 
-  @if (!newBill()) {
+  @if (!newBill() && amountDetailsVisible()) {
   <app-payments-chart class="bill-payments-chart"
                       [payments]="payments()"
                       [billName]="bill()?.name ?? ''">
