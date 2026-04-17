@@ -1,8 +1,8 @@
 <div class="payments-chart">
-  @if (paidPayments.length) {
+  @if (paidPayments().length) {
   <div class="chart-header">
     <div class="chart-title">Kwoty zapłacone wg terminu</div>
-    <div class="chart-meta">{{ paidPayments.length }} płatności</div>
+    <div class="chart-meta">{{ paidPayments().length }} płatności</div>
   </div>
   <div class="chart-frame">
     <div #chart

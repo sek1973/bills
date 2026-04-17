@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, effect, input, viewChild } from '@angular/core';
 import { axisBottom, axisLeft, max, scaleBand, scaleLinear, select, timeFormat } from 'd3';
 import { Payment } from 'projects/model/src/lib/model';
 
@@ -11,24 +11,28 @@ import { Payment } from 'projects/model/src/lib/model';
 })
 export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
 
-  private _payments: Payment[] = [];
+  payments = input<Payment[]>([]);
+  billName = input('');
+  chartContainer = viewChild<ElementRef<HTMLDivElement>>('chart');
 
-  @Input() set payments(value: Payment[]) {
-    this._payments = value || [];
-    this.drawChart();
-  }
-
-  get payments(): Payment[] {
-    return this._payments;
-  }
-
-  @Input() billName = '';
-  @ViewChild('chart', { static: false }) chartContainer?: ElementRef<HTMLDivElement>;
+  readonly paidPayments = computed(() =>
+    this.payments()
+      .filter(payment => payment.paiddate && payment.deadline)
+      .slice()
+      .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
+  );
 
   private resizeObserver?: ResizeObserver;
 
+  constructor() {
+    effect(() => {
+      this.chartContainer(); // track so effect re-runs once the view is ready
+      this.payments();
+      this.drawChart();
+    });
+  }
+
   ngAfterViewInit(): void {
-    this.drawChart();
     this.setupResizeObserver();
   }
 
@@ -36,20 +40,13 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     this.disconnectObserver();
   }
 
-  get paidPayments(): Payment[] {
-    return (this.payments || [])
-      .filter(payment => payment.paiddate && payment.deadline)
-      .slice()
-      .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime());
-  }
-
   private drawChart(): void {
-    const container = this.chartContainer?.nativeElement;
+    const container = this.chartContainer()?.nativeElement;
     if (!container) {
       return;
     }
 
-    const data = this.paidPayments;
+    const data = this.paidPayments();
     container.innerHTML = '';
 
     if (!data.length) {
@@ -197,11 +194,11 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
   }
 
   private setupResizeObserver(): void {
-    if (typeof ResizeObserver === 'undefined' || !this.chartContainer) {
+    if (typeof ResizeObserver === 'undefined' || !this.chartContainer()) {
       return;
     }
     this.resizeObserver = new ResizeObserver(() => this.drawChart());
-    this.resizeObserver.observe(this.chartContainer.nativeElement);
+    this.resizeObserver.observe(this.chartContainer()!.nativeElement);
   }
 
   private disconnectObserver(): void {
