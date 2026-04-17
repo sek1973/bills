@@ -32,7 +32,7 @@ export class BillsDateAdapter extends NativeDateAdapter {
   }
 
   parse(value: any): Date | null {
-    if (value === undefined || value === null) {
+    if (value === undefined || value === null || value === '') {
       return null;
     }
     const dateTime = value.split('.');
