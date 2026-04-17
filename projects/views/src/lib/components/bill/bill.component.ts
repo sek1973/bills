@@ -7,7 +7,7 @@ import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/r
 import { Store } from '@ngrx/store';
 
 import { Bill, Payment } from 'projects/model/src/lib/model';
-import { RealtimeService } from 'projects/model/src/public-api';
+import { RealtimeService, UserSettingsService } from 'projects/model/src/public-api';
 import { AppState, BillsActions, BillsSelectors, PaymentsSelectors } from 'projects/store/src/lib/state';
 import { filter } from 'rxjs/operators';
 import { PaymentsComponent } from '../payments/payments.component';
@@ -28,6 +28,7 @@ export class BillComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private store = inject(Store<AppState>);
   private realtimeService = inject(RealtimeService);
+  private userSettings = inject(UserSettingsService);
 
   protected readonly editMode = signal(false);
   protected readonly newBill = signal(false);
@@ -37,8 +38,8 @@ export class BillComponent implements OnInit {
   protected routeParamId: number = -1;
 
   protected readonly activeColor = computed(() => this.bill()?.active ? 'primary' : 'basic');
-  protected readonly amountDetailsVisible = computed(() => this.billEdit()?.showAmountDetails() ?? false);
-  protected readonly detailsTooltip = computed(() => this.billEdit()?.showAmountDetails() ? 'Ukryj szczegóły' : 'Pokaż szczegóły');
+  protected readonly amountDetailsVisible = computed(() => this.userSettings.showAmountDetails());
+  protected readonly detailsTooltip = computed(() => this.userSettings.showAmountDetails() ? 'Ukryj szczegóły' : 'Pokaż szczegóły');
   protected readonly activeLabel = computed(() => this.bill()?.active ? 'Aktywny' : 'Nieaktywny');
 
   constructor() {
@@ -122,8 +123,7 @@ export class BillComponent implements OnInit {
   cancel(): void { this.billEdit()?.cancel(); }
   toggleActive(): void { this.billEdit()?.toggleActive(); }
   toggleAmountDetails(): void {
-    const edit = this.billEdit();
-    if (edit) edit.showAmountDetails.set(!edit.showAmountDetails());
+    this.userSettings.showAmountDetails.update(v => !v);
   }
 
 }

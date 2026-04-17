@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, WritableSignal, effect, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
+import { UserSettingsService } from 'projects/model/src/public-api';
 import { AppState, BillsActions } from 'projects/store/src/lib/state';
 import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
 import {
@@ -37,12 +38,13 @@ export class BillEditComponent {
 
   editModeChange = output<boolean>();
 
-  showAmountDetails = signal(false);
+  readonly showAmountDetails: WritableSignal<boolean>;
 
   unitEnumItems: SelectItem<Unit>[] = unitsToSelectItems();
 
   private store = inject(Store<AppState>);
   private router = inject(Router);
+  private userSettings = inject(UserSettingsService);
   private loadingFormValue = false;
 
   form: FormGroup = new FormGroup({
@@ -69,6 +71,7 @@ export class BillEditComponent {
   };
 
   constructor() {
+    this.showAmountDetails = this.userSettings.showAmountDetails;
     effect(() => this.loadBill());
   }
 
