@@ -1,6 +1,7 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, effect, input, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, effect, inject, input, viewChild } from '@angular/core';
 import { axisBottom, axisLeft, max, scaleBand, scaleLinear, select, timeFormat } from 'd3';
 import { Payment } from 'projects/model/src/lib/model';
+import { ThemeService } from 'projects/tools/src/public-api';
 
 @Component({
   selector: 'app-payments-chart',
@@ -15,6 +16,8 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
   billName = input('');
   chartContainer = viewChild<ElementRef<HTMLDivElement>>('chart');
 
+  private themeService = inject(ThemeService);
+
   readonly paidPayments = computed(() =>
     this.payments()
       .filter(payment => payment.paiddate && payment.deadline)
@@ -28,6 +31,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     effect(() => {
       this.chartContainer(); // track so effect re-runs once the view is ready
       this.payments();
+      this.themeService.darkMode(); // redraw on theme change
       this.drawChart();
     });
   }
@@ -53,6 +57,14 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
+    const isDark = this.themeService.darkMode();
+    const textColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
+    const axisTickColor = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
+    const separatorColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)';
+    const tooltipBg = isDark ? 'rgba(40,35,60,0.97)' : 'rgba(255,252,220,0.95)';
+    const tooltipColor = isDark ? 'rgba(255,255,255,0.87)' : '#1a1a1a';
+    const tooltipBorder = isDark ? '1px solid rgba(180,130,255,0.3)' : '1px solid rgba(103,58,183,0.25)';
+
     const margin = { top: 20, right: 12, bottom: 30, left: 48 };
     const width = Math.max(container.clientWidth - margin.left - margin.right, 0);
     const height = 260 - margin.top - margin.bottom;
@@ -71,9 +83,9 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       .style('position', 'absolute')
       .style('pointer-events', 'none')
       .style('padding', '8px 12px')
-      .style('background', 'rgba(255, 252, 220, 0.95)')
-      .style('color', '#1a1a1a')
-      .style('border', '1px solid rgba(103, 58, 183, 0.25)')
+      .style('background', tooltipBg)
+      .style('color', tooltipColor)
+      .style('border', tooltipBorder)
       .style('border-radius', '8px')
       .style('font-size', '0.85rem')
       .style('font-weight', '600')
@@ -100,11 +112,14 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     const yAxisGroup = chart.append('g');
     yAxis(yAxisGroup as any);
     yAxisGroup.select('.domain').remove();
+    yAxisGroup.selectAll('.tick text').style('fill', axisTickColor);
+    yAxisGroup.selectAll('.tick line').style('stroke', separatorColor);
 
     const xAxis = axisBottom(xScale).tickSize(0).tickFormat(() => '');
     const xAxisGroup = chart.append('g')
       .attr('transform', `translate(0,${height})`);
     xAxis(xAxisGroup as any);
+    xAxisGroup.select('.domain').style('stroke', separatorColor);
 
     // Year annotation row below primary tick labels.
     // Track first/last index per year so x-positions use the unique index-based scale.
@@ -131,7 +146,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
         .attr('y', yearLabelY)
         .attr('text-anchor', 'middle')
         .style('font-size', '0.75rem')
-        .style('fill', 'rgba(0,0,0,0.5)')
+        .style('fill', textColor)
         .text(year)
         .node() as SVGTextElement;
       yearLabelNodes.push(node);
@@ -160,7 +175,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       chart.append('line')
         .attr('x1', xSep).attr('x2', xSep)
         .attr('y1', height + 2).attr('y2', yearLabelY + 8)
-        .style('stroke', 'rgba(0,0,0,0.2)')
+        .style('stroke', separatorColor)
         .style('stroke-width', '1');
     }
 

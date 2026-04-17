@@ -20,6 +20,12 @@ html.dark-mode {
     background-color: #212121;
     color: rgba(255, 255, 255, 0.87);
   }
+
+  .mat-mdc-input-element:disabled,
+  .mat-mdc-select-disabled .mat-mdc-select-value {
+    color: rgba(255, 255, 255, 0.6);
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.6);
+  }
 }
 
 html,

@@ -305,3 +305,40 @@ tr.row-row {
     display: none;
   }
 }
+
+// ── Dark mode overrides ──────────────────────────────────────────────────────
+:host-context(html.dark-mode) {
+  th.mat-mdc-header-cell {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  tr.row-row>td.mat-mdc-cell {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .table-header {
+    background-color: #1e1e1e;
+  }
+
+  .buttons-panel {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .active-row-detail,
+  .expand-row-detail {
+    color: rgba(255, 255, 255, 0.87);
+  }
+
+  .even-row {
+    background-color: rgba(255, 255, 255, 0.04);
+  }
+
+  .odd-row {
+    background-color: #1e1e1e;
+  }
+
+  tr.row-row:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(100, 160, 200, 0.5);
+  }
+}

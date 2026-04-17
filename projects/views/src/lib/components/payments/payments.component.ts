@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
@@ -9,7 +9,7 @@ import { AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelect
 import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
-import { TableColumn, TableComponent } from 'projects/tools/src/public-api';
+import { TableColumn, TableComponent, ThemeService } from 'projects/tools/src/public-api';
 import { filter } from 'rxjs/operators';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
@@ -40,6 +40,7 @@ export class PaymentsComponent implements OnInit {
   dialog = inject(MatDialog);
   private store = inject(Store<AppState>);
   private realtimeService = inject(RealtimeService);
+  private themeService = inject(ThemeService);
 
   ngOnInit(): void {
     this.subscribeToBill();
@@ -107,27 +108,35 @@ export class PaymentsComponent implements OnInit {
     this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill?.id || -1 }));
   }
 
-  paymentRowStyle = (row: Payment, index: number): Record<string, string> => {
-    const style: Record<string, string> = {};
-    const even = index % 2 === 0;
-    if (row.paiddate) {
-      style['background-color'] = even ? '#c8e6c9' : '#e8f5e9';
-    } else {
-      const now = moment();
-      const deadline = moment(row.deadline);
-      if (deadline.diff(now, 'days') < 1) {
-        style['background-color'] = even ? '#ffcdd2' : '#ffebee';
-      } else if (deadline.isBetween(moment().add(1, 'days'), moment().add(7, 'days'))) {
-        style['background-color'] = even ? '#fcf7cb' : '#fbf9e6';
+  paymentRowStyle = computed(() => {
+    const isDark = this.themeService.darkMode();
+    const closestId = this.closestUpcoming()?.id;
+    return (row: Payment, index: number): Record<string, string> => {
+      const style: Record<string, string> = {};
+      const even = index % 2 === 0;
+      if (row.paiddate) {
+        style['background-color'] = even
+          ? (isDark ? 'rgba(76,175,80,0.22)' : '#c8e6c9')
+          : (isDark ? 'rgba(76,175,80,0.11)' : '#e8f5e9');
+      } else {
+        const now = moment();
+        const deadline = moment(row.deadline);
+        if (deadline.diff(now, 'days') < 1) {
+          style['background-color'] = even
+            ? (isDark ? 'rgba(244,67,54,0.25)' : '#ffcdd2')
+            : (isDark ? 'rgba(244,67,54,0.12)' : '#ffebee');
+        } else if (deadline.isBetween(moment().add(1, 'days'), moment().add(7, 'days'))) {
+          style['background-color'] = even
+            ? (isDark ? 'rgba(255,235,59,0.2)' : '#fcf7cb')
+            : (isDark ? 'rgba(255,235,59,0.1)' : '#fbf9e6');
+        }
       }
-    }
-
-    if (row?.id && row.id === this.closestUpcoming()?.id) {
-      style['font-weight'] = 'bold';
-    }
-
-    return style;
-  };
+      if (row?.id && row.id === closestId) {
+        style['font-weight'] = 'bold';
+      }
+      return style;
+    };
+  });
 
   payClosest(): void {
     if (this.bill) { this.store.dispatch(BillsActions.payBill({ bill: this.bill })); }

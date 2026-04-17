@@ -42,3 +42,17 @@
   color: rgba(0, 0, 0, 0.6);
   font-size: 0.95rem;
 }
+
+// ── Dark mode ────────────────────────────────────────────────────────────────
+:host-context(html.dark-mode) {
+  .payments-chart {
+    background: #1e1e1e;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: none;
+  }
+
+  .chart-meta,
+  .chart-empty {
+    color: rgba(255, 255, 255, 0.5);
+  }
+}
