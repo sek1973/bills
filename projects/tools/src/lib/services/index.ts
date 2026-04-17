@@ -5,4 +5,5 @@ export * from './navigation.service';
 export * from './notification.service';
 export * from './previous-url.service';
 export * from './print.service';
+export * from './theme.service';
 

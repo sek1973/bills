@@ -56,6 +56,13 @@
     </button>
     <button mat-icon-button
             class="only-large-screen"
+            [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"
+            (click)="themeService.toggle()">
+      <span class="material-icons"
+            inline="true">{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</span>
+    </button>
+    <button mat-icon-button
+            class="only-large-screen"
             matTooltip="Wyloguj"
             (click)="logout()">
       <span class="material-icons"

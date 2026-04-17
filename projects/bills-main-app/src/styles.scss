@@ -5,6 +5,23 @@
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import 'material-icons/iconfont/material-icons.css';
 
+$dark-theme: mat.define-theme((color: (theme-type: dark,
+        primary: mat.$violet-palette,
+        tertiary: mat.$orange-palette,
+      )));
+
+html.dark-mode {
+  @include mat.all-component-colors($dark-theme);
+  color-scheme: dark;
+  background-color: #212121;
+  color: rgba(255, 255, 255, 0.87);
+
+  body {
+    background-color: #212121;
+    color: rgba(255, 255, 255, 0.87);
+  }
+}
+
 html,
 body {
   height: 100%;

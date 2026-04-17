@@ -11,7 +11,7 @@ import { TableCellDirective } from 'projects/tools/src/lib/components/table/dire
 import { TableColumn, TableMenuItem } from 'projects/tools/src/lib/components/table/table-column.model';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
-import { NotificationService, TableComponent } from 'projects/tools/src/public-api';
+import { NotificationService, TableComponent, ThemeService } from 'projects/tools/src/public-api';
 
 @Component({
   selector: 'app-overview',
@@ -44,6 +44,11 @@ export class OverviewComponent implements OnInit {
       action: () => this.toggleInactiveFilter()
     },
     {
+      label: this.themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny',
+      icon: this.themeService.darkMode() ? 'light_mode' : 'dark_mode',
+      action: () => this.themeService.toggle()
+    },
+    {
       label: 'Wyloguj',
       icon: 'power_settings_new',
       action: () => this.logout()
@@ -63,6 +68,7 @@ export class OverviewComponent implements OnInit {
   private router = inject(Router);
   private notification = inject(NotificationService);
   private realtimeService = inject(RealtimeService);
+  themeService = inject(ThemeService);
   #destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
