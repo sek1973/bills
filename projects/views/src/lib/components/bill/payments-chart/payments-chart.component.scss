@@ -43,6 +43,42 @@
   font-size: 0.95rem;
 }
 
+.chart-modes {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.mode-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(103, 58, 183, 0.3);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.55);
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+  user-select: none;
+
+  input[type='radio'] {
+    display: none;
+  }
+
+  &.active {
+    background: #673ab7;
+    color: #fff;
+    border-color: #673ab7;
+  }
+
+  &:not(.active):hover {
+    border-color: #673ab7;
+    color: #673ab7;
+  }
+}
+
 // ── Dark mode ────────────────────────────────────────────────────────────────
 :host-context(html.dark-mode) {
   .payments-chart {
@@ -54,5 +90,21 @@
   .chart-meta,
   .chart-empty {
     color: rgba(255, 255, 255, 0.5);
+  }
+
+  .mode-pill {
+    color: rgba(255, 255, 255, 0.5);
+    border-color: rgba(180, 130, 255, 0.25);
+
+    &.active {
+      background: #7c4dcc;
+      color: #fff;
+      border-color: #7c4dcc;
+    }
+
+    &:not(.active):hover {
+      border-color: rgba(180, 130, 255, 0.6);
+      color: rgba(180, 130, 255, 0.8);
+    }
   }
 }

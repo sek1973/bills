@@ -2,7 +2,20 @@
   @if (paidPayments().length) {
   <div class="chart-header">
     <div class="chart-title">Kwoty zapłacone wg terminu</div>
-    <div class="chart-meta">{{ paidPayments().length }} płatności</div>
+    <div class="chart-meta">{{ metaLabel() }}</div>
+  </div>
+  <div class="chart-modes">
+    @for (option of modeOptions; track option.value) {
+    <label class="mode-pill"
+           [class.active]="chartMode() === option.value">
+      <input type="radio"
+             name="chartMode"
+             [value]="option.value"
+             [checked]="chartMode() === option.value"
+             (change)="chartMode.set(option.value)">
+      {{ option.label }}
+    </label>
+    }
   </div>
   <div class="chart-frame">
     <div #chart

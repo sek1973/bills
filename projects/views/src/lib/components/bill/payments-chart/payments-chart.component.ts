@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, effect, inject, input, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, effect, inject, input, signal, viewChild } from '@angular/core';
 import { ScaleBand, ScaleLinear, Selection, axisBottom, axisLeft, max, scaleBand, scaleLinear, select, timeFormat } from 'd3';
 import { Payment } from 'projects/model/src/lib/model';
 import { ThemeService } from 'projects/tools/src/public-api';
@@ -14,6 +14,14 @@ interface ChartColors {
 
 type ChartGroup = Selection<SVGGElement, unknown, null, undefined>;
 type TooltipDiv = Selection<HTMLDivElement, unknown, null, undefined>;
+type ChartMode = 'real' | 'monthly' | 'yearly';
+
+interface ChartDataPoint {
+  deadline: Date;
+  sum: number;
+  label: string;
+  paiddate?: Date;
+}
 
 @Component({
   selector: 'app-payments-chart',
@@ -37,12 +45,67 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
   );
 
+  readonly chartMode = signal<ChartMode>('real');
+
+  readonly metaLabel = computed(() => {
+    const mode = this.chartMode();
+    if (mode === 'monthly') return `${this.displayData().length} miesięcy`;
+    if (mode === 'yearly') {
+      const n = this.displayData().length;
+      const suffix = n === 1 ? 'rok' : n < 5 ? 'lata' : 'lat';
+      return `${n} ${suffix}`;
+    }
+    return `${this.paidPayments().length} płatności`;
+  });
+
+  readonly modeOptions: { value: ChartMode; label: string }[] = [
+    { value: 'real', label: 'Rzeczywiste' },
+    { value: 'monthly', label: 'Miesięcznie' },
+    { value: 'yearly', label: 'Rocznie' },
+  ];
+
+  readonly displayData = computed((): ChartDataPoint[] => {
+    const mode = this.chartMode();
+    const payments = this.paidPayments();
+
+    if (mode === 'real') {
+      return payments.map(p => {
+        const d = p.deadline instanceof Date ? p.deadline : new Date(p.deadline as any);
+        return { deadline: d, sum: p.sum, label: timeFormat('%d %b')(d), paiddate: p.paiddate };
+      });
+    }
+
+    const groups = new Map<string, { sum: number; deadline: Date }>();
+    payments.forEach(p => {
+      const d = p.deadline instanceof Date ? p.deadline : new Date(p.deadline as any);
+      const key = mode === 'monthly'
+        ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+        : String(d.getFullYear());
+      if (!groups.has(key)) {
+        groups.set(key, {
+          sum: 0,
+          deadline: mode === 'monthly' ? new Date(d.getFullYear(), d.getMonth(), 1) : new Date(d.getFullYear(), 0, 1),
+        });
+      }
+      groups.get(key)!.sum += p.sum;
+    });
+
+    return Array.from(groups.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, { sum, deadline }]) => ({
+        deadline,
+        sum,
+        label: mode === 'monthly' ? timeFormat('%b %Y')(deadline) : key,
+      }));
+  });
+
   private resizeObserver?: ResizeObserver;
 
   constructor() {
     effect(() => {
       this.chartContainer(); // track so effect re-runs once the view is ready
       this.payments();
+      this.chartMode(); // redraw on mode change
       this.themeService.darkMode(); // redraw on theme change
       this.drawChart();
     });
@@ -60,10 +123,11 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     const container = this.chartContainer()?.nativeElement;
     if (!container) return;
 
-    const data = this.paidPayments();
+    const data = this.displayData();
     container.innerHTML = '';
     if (!data.length) return;
 
+    const mode = this.chartMode();
     const colors = this.buildThemeColors(this.themeService.darkMode());
     const margin = { top: 20, right: 12, bottom: 30, left: 48 };
     const width = Math.max(container.clientWidth - margin.left - margin.right, 0);
@@ -74,7 +138,11 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     const { xScale, yScale } = this.createScales(data, width, height);
 
     this.renderAxes(chart, xScale, yScale, height, colors);
-    this.renderYearLabels(chart, data, xScale, height, colors);
+    if (mode === 'real') {
+      this.renderYearLabels(chart, data, xScale, height, colors);
+    } else {
+      this.renderBarLabels(chart, data, xScale, height, colors);
+    }
     this.renderBars(chart, data, xScale, yScale, height, container, tooltip);
   }
 
@@ -125,19 +193,17 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
   }
 
   private createScales(
-    data: Payment[],
+    data: ChartDataPoint[],
     width: number,
     height: number
   ): { xScale: ScaleBand<string>; yScale: ScaleLinear<number, number> } {
-    // Use per-payment index as scale key to avoid collisions when the same
-    // "day month" label appears in multiple years (e.g. "15 sty" in 2024 and 2025).
     const xScale = scaleBand<string>()
       .domain(data.map((_, i) => String(i)))
       .range([0, width])
       .padding(0.2);
 
     const yScale = scaleLinear()
-      .domain([0, max(data, (p: Payment) => p.sum) ?? 0])
+      .domain([0, max(data, (p: ChartDataPoint) => p.sum) ?? 0])
       .nice()
       .range([height, 0]);
 
@@ -164,7 +230,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
 
   private renderYearLabels(
     chart: ChartGroup,
-    data: Payment[],
+    data: ChartDataPoint[],
     xScale: ScaleBand<string>,
     height: number,
     colors: ChartColors
@@ -172,7 +238,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     const yearFormat = timeFormat('%Y');
     const yearBounds = new Map<string, { first: number; last: number }>();
     data.forEach((p, i) => {
-      const year = yearFormat(p.deadline instanceof Date ? p.deadline : new Date(p.deadline as any));
+      const year = yearFormat(p.deadline);
       if (!yearBounds.has(year)) yearBounds.set(year, { first: i, last: i });
       else yearBounds.get(year)!.last = i;
     });
@@ -222,9 +288,45 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  private renderBarLabels(
+    chart: ChartGroup,
+    data: ChartDataPoint[],
+    xScale: ScaleBand<string>,
+    height: number,
+    colors: ChartColors
+  ): void {
+    const labelY = height + 18;
+    const nodes: SVGTextElement[] = [];
+    const centers: number[] = [];
+
+    data.forEach((d, i) => {
+      const cx = (xScale(String(i)) ?? 0) + xScale.bandwidth() / 2;
+      const node = chart.append('text')
+        .attr('x', cx).attr('y', labelY)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '0.75rem')
+        .style('fill', colors.textColor)
+        .text(d.label)
+        .node() as SVGTextElement;
+      nodes.push(node);
+      centers.push(cx);
+    });
+
+    let lastVisibleRight = -Infinity;
+    nodes.forEach((node, i) => {
+      const halfW = (node.getComputedTextLength() / 2) + 4;
+      const left = centers[i] - halfW;
+      if (left < lastVisibleRight) {
+        select(node).style('visibility', 'hidden');
+      } else {
+        lastVisibleRight = centers[i] + halfW;
+      }
+    });
+  }
+
   private renderBars(
     chart: ChartGroup,
-    data: Payment[],
+    data: ChartDataPoint[],
     xScale: ScaleBand<string>,
     yScale: ScaleLinear<number, number>,
     height: number,
@@ -235,16 +337,16 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       .data(data)
       .join('rect')
       .attr('fill', '#673ab7')
-      .attr('x', (_: Payment, i: number) => xScale(String(i)) ?? 0)
-      .attr('y', (p: Payment) => yScale(p.sum))
+      .attr('x', (_: ChartDataPoint, i: number) => xScale(String(i)) ?? 0)
+      .attr('y', (p: ChartDataPoint) => yScale(p.sum))
       .attr('width', xScale.bandwidth())
-      .attr('height', (p: Payment) => Math.max(height - yScale(p.sum), 0))
-      .on('mouseenter', (event: MouseEvent, p: Payment) => {
+      .attr('height', (p: ChartDataPoint) => Math.max(height - yScale(p.sum), 0))
+      .on('mouseenter', (event: MouseEvent, p: ChartDataPoint) => {
         select(event.target as Element).attr('fill', '#9c6fe4').attr('filter', 'brightness(1.15)');
         const rect = container.getBoundingClientRect();
         const sumText = `${p.sum.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
-        const dateText = p.paiddate ? timeFormat('%d.%m.%Y')(p.paiddate) : '';
-        tooltip.html(`<div>${sumText}</div>${dateText ? `<div style="font-size:0.75rem;font-weight:400;margin-top:2px">${dateText}</div>` : ''}`);
+        const detailText = p.paiddate ? timeFormat('%d.%m.%Y')(p.paiddate) : p.label;
+        tooltip.html(`<div>${sumText}</div>${detailText ? `<div style="font-size:0.75rem;font-weight:400;margin-top:2px">${detailText}</div>` : ''}`);
         tooltip
           .style('left', `${this.tooltipLeft(event, container, tooltip)}px`)
           .style('top', `${event.clientY - rect.top - 28}px`)
