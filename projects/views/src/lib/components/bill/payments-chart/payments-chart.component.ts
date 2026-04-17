@@ -1,7 +1,19 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, effect, inject, input, viewChild } from '@angular/core';
-import { axisBottom, axisLeft, max, scaleBand, scaleLinear, select, timeFormat } from 'd3';
+import { ScaleBand, ScaleLinear, Selection, axisBottom, axisLeft, max, scaleBand, scaleLinear, select, timeFormat } from 'd3';
 import { Payment } from 'projects/model/src/lib/model';
 import { ThemeService } from 'projects/tools/src/public-api';
+
+interface ChartColors {
+  textColor: string;
+  axisTickColor: string;
+  separatorColor: string;
+  tooltipBg: string;
+  tooltipColor: string;
+  tooltipBorder: string;
+}
+
+type ChartGroup = Selection<SVGGElement, unknown, null, undefined>;
+type TooltipDiv = Selection<HTMLDivElement, unknown, null, undefined>;
 
 @Component({
   selector: 'app-payments-chart',
@@ -46,46 +58,63 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
 
   private drawChart(): void {
     const container = this.chartContainer()?.nativeElement;
-    if (!container) {
-      return;
-    }
+    if (!container) return;
 
     const data = this.paidPayments();
     container.innerHTML = '';
+    if (!data.length) return;
 
-    if (!data.length) {
-      return;
-    }
-
-    const isDark = this.themeService.darkMode();
-    const textColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)';
-    const axisTickColor = isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)';
-    const separatorColor = isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)';
-    const tooltipBg = isDark ? 'rgba(40,35,60,0.97)' : 'rgba(255,252,220,0.95)';
-    const tooltipColor = isDark ? 'rgba(255,255,255,0.87)' : '#1a1a1a';
-    const tooltipBorder = isDark ? '1px solid rgba(180,130,255,0.3)' : '1px solid rgba(103,58,183,0.25)';
-
+    const colors = this.buildThemeColors(this.themeService.darkMode());
     const margin = { top: 20, right: 12, bottom: 30, left: 48 };
     const width = Math.max(container.clientWidth - margin.left - margin.right, 0);
     const height = 260 - margin.top - margin.bottom;
 
+    const { chart } = this.createSvgChart(container, width, height, margin);
+    const tooltip = this.createTooltip(container, colors);
+    const { xScale, yScale } = this.createScales(data, width, height);
+
+    this.renderAxes(chart, xScale, yScale, height, colors);
+    this.renderYearLabels(chart, data, xScale, height, colors);
+    this.renderBars(chart, data, xScale, yScale, height, container, tooltip);
+  }
+
+  private buildThemeColors(isDark: boolean): ChartColors {
+    return {
+      textColor: isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)',
+      axisTickColor: isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
+      separatorColor: isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
+      tooltipBg: isDark ? 'rgba(40,35,60,0.97)' : 'rgba(255,252,220,0.95)',
+      tooltipColor: isDark ? 'rgba(255,255,255,0.87)' : '#1a1a1a',
+      tooltipBorder: isDark ? '1px solid rgba(180,130,255,0.3)' : '1px solid rgba(103,58,183,0.25)',
+    };
+  }
+
+  private createSvgChart(
+    container: HTMLDivElement,
+    width: number,
+    height: number,
+    margin: { top: number; right: number; bottom: number; left: number }
+  ): { chart: ChartGroup } {
     const svg = select(container)
       .append('svg')
       .attr('width', width + margin.left + margin.right)
       .attr('height', height + margin.top + margin.bottom);
 
     const chart = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    return { chart };
+  }
 
-    const tooltip = select(container)
+  private createTooltip(container: HTMLDivElement, colors: ChartColors): TooltipDiv {
+    return select(container)
       .append('div')
       .attr('class', 'chart-tooltip')
       .style('opacity', '0')
       .style('position', 'absolute')
       .style('pointer-events', 'none')
       .style('padding', '8px 12px')
-      .style('background', tooltipBg)
-      .style('color', tooltipColor)
-      .style('border', tooltipBorder)
+      .style('background', colors.tooltipBg)
+      .style('color', colors.tooltipColor)
+      .style('border', colors.tooltipBorder)
       .style('border-radius', '8px')
       .style('font-size', '0.85rem')
       .style('font-weight', '600')
@@ -93,36 +122,53 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       .style('white-space', 'nowrap')
       .style('z-index', '1000')
       .style('transition', 'opacity 150ms ease');
+  }
 
+  private createScales(
+    data: Payment[],
+    width: number,
+    height: number
+  ): { xScale: ScaleBand<string>; yScale: ScaleLinear<number, number> } {
     // Use per-payment index as scale key to avoid collisions when the same
     // "day month" label appears in multiple years (e.g. "15 sty" in 2024 and 2025).
-    const xDomain = data.map((_, i) => String(i));
     const xScale = scaleBand<string>()
-      .domain(xDomain)
+      .domain(data.map((_, i) => String(i)))
       .range([0, width])
       .padding(0.2);
 
-    const maxValue = max(data, (payment: Payment) => payment.sum) ?? 0;
     const yScale = scaleLinear()
-      .domain([0, maxValue])
+      .domain([0, max(data, (p: Payment) => p.sum) ?? 0])
       .nice()
       .range([height, 0]);
 
-    const yAxis = axisLeft(yScale).ticks(4).tickFormat((value: any) => `${value}`);
+    return { xScale, yScale };
+  }
+
+  private renderAxes(
+    chart: ChartGroup,
+    xScale: ScaleBand<string>,
+    yScale: ScaleLinear<number, number>,
+    height: number,
+    colors: ChartColors
+  ): void {
     const yAxisGroup = chart.append('g');
-    yAxis(yAxisGroup as any);
+    axisLeft(yScale).ticks(4).tickFormat((v: any) => `${v}`)(yAxisGroup as any);
     yAxisGroup.select('.domain').remove();
-    yAxisGroup.selectAll('.tick text').style('fill', axisTickColor);
-    yAxisGroup.selectAll('.tick line').style('stroke', separatorColor);
+    yAxisGroup.selectAll('.tick text').style('fill', colors.axisTickColor);
+    yAxisGroup.selectAll('.tick line').style('stroke', colors.separatorColor);
 
-    const xAxis = axisBottom(xScale).tickSize(0).tickFormat(() => '');
-    const xAxisGroup = chart.append('g')
-      .attr('transform', `translate(0,${height})`);
-    xAxis(xAxisGroup as any);
-    xAxisGroup.select('.domain').style('stroke', separatorColor);
+    const xAxisGroup = chart.append('g').attr('transform', `translate(0,${height})`);
+    axisBottom(xScale).tickSize(0).tickFormat(() => '')(xAxisGroup as any);
+    xAxisGroup.select('.domain').style('stroke', colors.separatorColor);
+  }
 
-    // Year annotation row below primary tick labels.
-    // Track first/last index per year so x-positions use the unique index-based scale.
+  private renderYearLabels(
+    chart: ChartGroup,
+    data: Payment[],
+    xScale: ScaleBand<string>,
+    height: number,
+    colors: ChartColors
+  ): void {
     const yearFormat = timeFormat('%Y');
     const yearBounds = new Map<string, { first: number; last: number }>();
     data.forEach((p, i) => {
@@ -142,11 +188,10 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       const xEnd = (xScale(String(bounds.last)) ?? 0) + xScale.bandwidth();
       const cx = (xStart + xEnd) / 2;
       const node = chart.append('text')
-        .attr('x', cx)
-        .attr('y', yearLabelY)
+        .attr('x', cx).attr('y', yearLabelY)
         .attr('text-anchor', 'middle')
         .style('font-size', '0.75rem')
-        .style('fill', textColor)
+        .style('fill', colors.textColor)
         .text(year)
         .node() as SVGTextElement;
       yearLabelNodes.push(node);
@@ -154,10 +199,9 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     });
 
     // Greedy left-to-right: hide label if it overlaps the previous visible one
-    const padding = 6;
     let lastVisibleRight = -Infinity;
     yearLabelNodes.forEach((node, i) => {
-      const halfW = (node.getComputedTextLength() / 2) + padding;
+      const halfW = (node.getComputedTextLength() / 2) + 6;
       const left = yearLabelCenters[i] - halfW;
       if (left < lastVisibleRight) {
         select(node).style('visibility', 'hidden');
@@ -169,56 +213,62 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     for (let i = 1; i < yearKeys.length; i++) {
       const prevBounds = yearBounds.get(yearKeys[i - 1])!;
       const currBounds = yearBounds.get(yearKeys[i])!;
-      const xPrevEnd = (xScale(String(prevBounds.last)) ?? 0) + xScale.bandwidth();
-      const xCurrStart = xScale(String(currBounds.first)) ?? 0;
-      const xSep = (xPrevEnd + xCurrStart) / 2;
+      const xSep = ((xScale(String(prevBounds.last)) ?? 0) + xScale.bandwidth() + (xScale(String(currBounds.first)) ?? 0)) / 2;
       chart.append('line')
         .attr('x1', xSep).attr('x2', xSep)
         .attr('y1', height + 2).attr('y2', yearLabelY + 8)
-        .style('stroke', separatorColor)
+        .style('stroke', colors.separatorColor)
         .style('stroke-width', '1');
     }
+  }
 
+  private renderBars(
+    chart: ChartGroup,
+    data: Payment[],
+    xScale: ScaleBand<string>,
+    yScale: ScaleLinear<number, number>,
+    height: number,
+    container: HTMLDivElement,
+    tooltip: TooltipDiv
+  ): void {
     chart.selectAll('.bar')
       .data(data)
       .join('rect')
       .attr('fill', '#673ab7')
       .attr('x', (_: Payment, i: number) => xScale(String(i)) ?? 0)
-      .attr('y', (payment: Payment) => yScale(payment.sum))
+      .attr('y', (p: Payment) => yScale(p.sum))
       .attr('width', xScale.bandwidth())
-      .attr('height', (payment: Payment) => Math.max(height - yScale(payment.sum), 0))
-      .on('mouseenter', (event: MouseEvent, payment: Payment) => {
-        select(event.target as Element)
-          .attr('fill', '#9c6fe4')
-          .attr('filter', 'brightness(1.15)');
+      .attr('height', (p: Payment) => Math.max(height - yScale(p.sum), 0))
+      .on('mouseenter', (event: MouseEvent, p: Payment) => {
+        select(event.target as Element).attr('fill', '#9c6fe4').attr('filter', 'brightness(1.15)');
         const rect = container.getBoundingClientRect();
-        const sumText = `${payment.sum.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
-        const dateText = payment.paiddate ? timeFormat('%d.%m.%Y')(payment.paiddate) : '';
+        const sumText = `${p.sum.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
+        const dateText = p.paiddate ? timeFormat('%d.%m.%Y')(p.paiddate) : '';
+        tooltip.html(`<div>${sumText}</div>${dateText ? `<div style="font-size:0.75rem;font-weight:400;margin-top:2px">${dateText}</div>` : ''}`);
         tooltip
-          .html(`<div>${sumText}</div>${dateText ? `<div style="font-size:0.75rem;font-weight:400;margin-top:2px">${dateText}</div>` : ''}`);
-        const tooltipWidth = (tooltip.node() as HTMLElement).offsetWidth;
-        const rawLeft = event.clientX - rect.left + 12;
-        const left = rawLeft + tooltipWidth > container.clientWidth ? event.clientX - rect.left - tooltipWidth - 12 : rawLeft;
-        tooltip
-          .style('left', `${left}px`)
+          .style('left', `${this.tooltipLeft(event, container, tooltip)}px`)
           .style('top', `${event.clientY - rect.top - 28}px`)
           .style('opacity', '1');
       })
       .on('mousemove', (event: MouseEvent) => {
         const rect = container.getBoundingClientRect();
-        const tooltipWidth = (tooltip.node() as HTMLElement).offsetWidth;
-        const rawLeft = event.clientX - rect.left + 12;
-        const left = rawLeft + tooltipWidth > container.clientWidth ? event.clientX - rect.left - tooltipWidth - 12 : rawLeft;
         tooltip
-          .style('left', `${left}px`)
+          .style('left', `${this.tooltipLeft(event, container, tooltip)}px`)
           .style('top', `${event.clientY - rect.top - 28}px`);
       })
       .on('mouseleave', (event: MouseEvent) => {
-        select(event.target as Element)
-          .attr('fill', '#673ab7')
-          .attr('filter', null);
+        select(event.target as Element).attr('fill', '#673ab7').attr('filter', null);
         tooltip.style('opacity', '0');
       });
+  }
+
+  private tooltipLeft(event: MouseEvent, container: HTMLDivElement, tooltip: TooltipDiv): number {
+    const rect = container.getBoundingClientRect();
+    const tooltipWidth = (tooltip.node() as HTMLElement).offsetWidth;
+    const rawLeft = event.clientX - rect.left + 12;
+    return rawLeft + tooltipWidth > container.clientWidth
+      ? event.clientX - rect.left - tooltipWidth - 12
+      : rawLeft;
   }
 
   private setupResizeObserver(): void {
