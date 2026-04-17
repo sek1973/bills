@@ -57,7 +57,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const margin = { top: 20, right: 12, bottom: 50, left: 48 };
+    const margin = { top: 20, right: 12, bottom: 68, left: 48 };
     const width = Math.max(container.clientWidth - margin.left - margin.right, 0);
     const height = 260 - margin.top - margin.bottom;
 
@@ -86,7 +86,9 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       .style('z-index', '1000')
       .style('transition', 'opacity 150ms ease');
 
-    const xDomain = data.map(payment => this.formatLabel(payment.deadline));
+    // Use per-payment index as scale key to avoid collisions when the same
+    // "day month" label appears in multiple years (e.g. "15 sty" in 2024 and 2025).
+    const xDomain = data.map((_, i) => String(i));
     const xScale = scaleBand<string>()
       .domain(xDomain)
       .range([0, width])
@@ -103,7 +105,8 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     yAxis(yAxisGroup as any);
     yAxisGroup.select('.domain').remove();
 
-    const xAxis = axisBottom(xScale).tickSizeOuter(0);
+    const xAxis = axisBottom(xScale).tickSizeOuter(0)
+      .tickFormat(v => this.formatLabel(data[parseInt(v)].deadline));
     const xAxisGroup = chart.append('g')
       .attr('transform', `translate(0,${height})`);
     xAxis(xAxisGroup as any);
@@ -113,18 +116,78 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       .attr('dx', '-0.6em')
       .attr('dy', '0.25em');
 
+    // Year annotation row below primary tick labels.
+    // Track first/last index per year so x-positions use the unique index-based scale.
+    const yearFormat = timeFormat('%Y');
+    const yearBounds = new Map<string, { first: number; last: number }>();
+    data.forEach((p, i) => {
+      const year = yearFormat(p.deadline instanceof Date ? p.deadline : new Date(p.deadline as any));
+      if (!yearBounds.has(year)) yearBounds.set(year, { first: i, last: i });
+      else yearBounds.get(year)!.last = i;
+    });
+
+    const yearLabelY = height + 54;
+    const yearKeys = Array.from(yearBounds.keys());
+
+    // Append all year labels, then do a greedy overlap pass using getComputedTextLength()
+    const yearLabelNodes: SVGTextElement[] = [];
+    const yearLabelCenters: number[] = [];
+    yearBounds.forEach((bounds, year) => {
+      const xStart = xScale(String(bounds.first)) ?? 0;
+      const xEnd = (xScale(String(bounds.last)) ?? 0) + xScale.bandwidth();
+      const cx = (xStart + xEnd) / 2;
+      const node = chart.append('text')
+        .attr('x', cx)
+        .attr('y', yearLabelY)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '0.75rem')
+        .style('fill', 'rgba(0,0,0,0.5)')
+        .text(year)
+        .node() as SVGTextElement;
+      yearLabelNodes.push(node);
+      yearLabelCenters.push(cx);
+    });
+
+    // Greedy left-to-right: hide label if it overlaps the previous visible one
+    const padding = 6;
+    let lastVisibleRight = -Infinity;
+    yearLabelNodes.forEach((node, i) => {
+      const halfW = (node.getComputedTextLength() / 2) + padding;
+      const left = yearLabelCenters[i] - halfW;
+      if (left < lastVisibleRight) {
+        select(node).style('visibility', 'hidden');
+      } else {
+        lastVisibleRight = yearLabelCenters[i] + halfW;
+      }
+    });
+
+    for (let i = 1; i < yearKeys.length; i++) {
+      const prevBounds = yearBounds.get(yearKeys[i - 1])!;
+      const currBounds = yearBounds.get(yearKeys[i])!;
+      const xPrevEnd = (xScale(String(prevBounds.last)) ?? 0) + xScale.bandwidth();
+      const xCurrStart = xScale(String(currBounds.first)) ?? 0;
+      const xSep = (xPrevEnd + xCurrStart) / 2;
+      chart.append('line')
+        .attr('x1', xSep).attr('x2', xSep)
+        .attr('y1', height + 2).attr('y2', yearLabelY + 6)
+        .style('stroke', 'rgba(0,0,0,0.2)')
+        .style('stroke-width', '1');
+    }
+
     chart.selectAll('.bar')
       .data(data)
       .join('rect')
       .attr('fill', '#673ab7')
-      .attr('x', (payment: Payment) => xScale(this.formatLabel(payment.deadline)) ?? 0)
+      .attr('x', (_: Payment, i: number) => xScale(String(i)) ?? 0)
       .attr('y', (payment: Payment) => yScale(payment.sum))
       .attr('width', xScale.bandwidth())
       .attr('height', (payment: Payment) => Math.max(height - yScale(payment.sum), 0))
       .on('mouseenter', (event: MouseEvent, payment: Payment) => {
         const rect = container.getBoundingClientRect();
+        const sumText = `${payment.sum.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
+        const dateText = payment.paiddate ? timeFormat('%d.%m.%Y')(payment.paiddate) : '';
         tooltip
-          .text(`${payment.sum.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`)
+          .html(`<div>${sumText}</div>${dateText ? `<div style="font-size:0.75rem;font-weight:400;margin-top:2px">${dateText}</div>` : ''}`)
           .style('left', `${event.clientX - rect.left + 12}px`)
           .style('top', `${event.clientY - rect.top - 28}px`)
           .style('opacity', '1');
