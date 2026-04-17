@@ -26,7 +26,6 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
   @ViewChild('chart', { static: false }) chartContainer?: ElementRef<HTMLDivElement>;
 
   private resizeObserver?: ResizeObserver;
-  private readonly formatLabel = timeFormat('%-d %b');
 
   ngAfterViewInit(): void {
     this.drawChart();
@@ -57,7 +56,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const margin = { top: 20, right: 12, bottom: 68, left: 48 };
+    const margin = { top: 20, right: 12, bottom: 30, left: 48 };
     const width = Math.max(container.clientWidth - margin.left - margin.right, 0);
     const height = 260 - margin.top - margin.bottom;
 
@@ -105,16 +104,10 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
     yAxis(yAxisGroup as any);
     yAxisGroup.select('.domain').remove();
 
-    const xAxis = axisBottom(xScale).tickSizeOuter(0)
-      .tickFormat(v => this.formatLabel(data[parseInt(v)].deadline));
+    const xAxis = axisBottom(xScale).tickSize(0).tickFormat(() => '');
     const xAxisGroup = chart.append('g')
       .attr('transform', `translate(0,${height})`);
     xAxis(xAxisGroup as any);
-    xAxisGroup.selectAll('text')
-      .attr('transform', 'rotate(-45)')
-      .style('text-anchor', 'end')
-      .attr('dx', '-0.6em')
-      .attr('dy', '0.25em');
 
     // Year annotation row below primary tick labels.
     // Track first/last index per year so x-positions use the unique index-based scale.
@@ -126,7 +119,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       else yearBounds.get(year)!.last = i;
     });
 
-    const yearLabelY = height + 54;
+    const yearLabelY = height + 18;
     const yearKeys = Array.from(yearBounds.keys());
 
     // Append all year labels, then do a greedy overlap pass using getComputedTextLength()
@@ -169,7 +162,7 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       const xSep = (xPrevEnd + xCurrStart) / 2;
       chart.append('line')
         .attr('x1', xSep).attr('x2', xSep)
-        .attr('y1', height + 2).attr('y2', yearLabelY + 6)
+        .attr('y1', height + 2).attr('y2', yearLabelY + 8)
         .style('stroke', 'rgba(0,0,0,0.2)')
         .style('stroke-width', '1');
     }
