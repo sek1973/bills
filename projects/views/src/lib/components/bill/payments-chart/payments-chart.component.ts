@@ -188,6 +188,9 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       .attr('width', xScale.bandwidth())
       .attr('height', (payment: Payment) => Math.max(height - yScale(payment.sum), 0))
       .on('mouseenter', (event: MouseEvent, payment: Payment) => {
+        select(event.target as Element)
+          .attr('fill', '#9c6fe4')
+          .attr('filter', 'brightness(1.15)');
         const rect = container.getBoundingClientRect();
         const sumText = `${payment.sum.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
         const dateText = payment.paiddate ? timeFormat('%d.%m.%Y')(payment.paiddate) : '';
@@ -210,7 +213,10 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
           .style('left', `${left}px`)
           .style('top', `${event.clientY - rect.top - 28}px`);
       })
-      .on('mouseleave', () => {
+      .on('mouseleave', (event: MouseEvent) => {
+        select(event.target as Element)
+          .attr('fill', '#673ab7')
+          .attr('filter', null);
         tooltip.style('opacity', '0');
       });
   }
