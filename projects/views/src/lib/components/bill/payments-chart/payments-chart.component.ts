@@ -75,28 +75,62 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       });
     }
 
-    const groups = new Map<string, { sum: number; deadline: Date }>();
-    payments.forEach(p => {
-      const d = p.deadline instanceof Date ? p.deadline : new Date(p.deadline as any);
-      const key = mode === 'monthly'
-        ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-        : String(d.getFullYear());
-      if (!groups.has(key)) {
-        groups.set(key, {
-          sum: 0,
-          deadline: mode === 'monthly' ? new Date(d.getFullYear(), d.getMonth(), 1) : new Date(d.getFullYear(), 0, 1),
-        });
-      }
-      groups.get(key)!.sum += p.sum;
+    if (!payments.length) return [];
+
+    const allDates = payments.map(p =>
+      p.deadline instanceof Date ? p.deadline : new Date(p.deadline as any)
+    );
+    const first = allDates[0];
+    const last = allDates[allDates.length - 1];
+
+    // Each payment owns a time window from the midpoint to its predecessor to the midpoint
+    // to its successor. Edge payments are extended symmetrically by the same half-distance.
+    const windows = allDates.map((d, i) => {
+      const t = d.getTime();
+      const winStart = i === 0
+        ? t - (allDates.length > 1 ? (allDates[1].getTime() - t) / 2 : 43200000)
+        : (t + allDates[i - 1].getTime()) / 2;
+      const winEnd = i === allDates.length - 1
+        ? t + (allDates.length > 1 ? (t - allDates[i - 1].getTime()) / 2 : 43200000)
+        : (t + allDates[i + 1].getTime()) / 2;
+      const days = Math.max(1, (winEnd - winStart) / 86400000);
+      return { dailyRate: payments[i].sum / days, start: winStart, end: winEnd };
     });
 
-    return Array.from(groups.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, { sum, deadline }]) => ({
+    // Generate every calendar bucket in the range
+    const intervals: { key: string; deadline: Date; start: number; end: number }[] = [];
+    if (mode === 'monthly') {
+      const cur = new Date(first.getFullYear(), first.getMonth(), 1);
+      const rangeEnd = new Date(last.getFullYear(), last.getMonth() + 1, 1);
+      while (cur < rangeEnd) {
+        const key = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}`;
+        const nextMonth = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+        intervals.push({ key, deadline: new Date(cur), start: cur.getTime(), end: nextMonth.getTime() });
+        cur.setMonth(cur.getMonth() + 1);
+      }
+    } else {
+      for (let y = first.getFullYear(); y <= last.getFullYear(); y++) {
+        intervals.push({
+          key: String(y),
+          deadline: new Date(y, 0, 1),
+          start: new Date(y, 0, 1).getTime(),
+          end: new Date(y + 1, 0, 1).getTime(),
+        });
+      }
+    }
+
+    // For each bucket, accumulate daily rates from all overlapping windows
+    return intervals.map(({ key, deadline, start, end }) => {
+      const sum = windows.reduce((acc, w) => {
+        const overlapDays = Math.max(0, (Math.min(w.end, end) - Math.max(w.start, start)) / 86400000);
+        return acc + w.dailyRate * overlapDays;
+      }, 0);
+      return {
         deadline,
-        sum,
+        sum: Math.round(sum * 100) / 100,
         label: mode === 'monthly' ? timeFormat('%b %Y')(deadline) : key,
-      }));
+      };
+    });
   });
 
   private resizeObserver?: ResizeObserver;
