@@ -68,6 +68,24 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
 
     const chart = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
+    const tooltip = select(container)
+      .append('div')
+      .attr('class', 'chart-tooltip')
+      .style('opacity', '0')
+      .style('position', 'absolute')
+      .style('pointer-events', 'none')
+      .style('padding', '8px 12px')
+      .style('background', 'rgba(255, 252, 220, 0.95)')
+      .style('color', '#1a1a1a')
+      .style('border', '1px solid rgba(103, 58, 183, 0.25)')
+      .style('border-radius', '8px')
+      .style('font-size', '0.85rem')
+      .style('font-weight', '600')
+      .style('box-shadow', '0 4px 16px rgba(0, 0, 0, 0.18)')
+      .style('white-space', 'nowrap')
+      .style('z-index', '1000')
+      .style('transition', 'opacity 150ms ease');
+
     const xDomain = data.map(payment => this.formatLabel(payment.deadline));
     const xScale = scaleBand<string>()
       .domain(xDomain)
@@ -102,7 +120,24 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
       .attr('x', (payment: Payment) => xScale(this.formatLabel(payment.deadline)) ?? 0)
       .attr('y', (payment: Payment) => yScale(payment.sum))
       .attr('width', xScale.bandwidth())
-      .attr('height', (payment: Payment) => Math.max(height - yScale(payment.sum), 0));
+      .attr('height', (payment: Payment) => Math.max(height - yScale(payment.sum), 0))
+      .on('mouseenter', (event: MouseEvent, payment: Payment) => {
+        const rect = container.getBoundingClientRect();
+        tooltip
+          .text(`${payment.sum.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`)
+          .style('left', `${event.clientX - rect.left + 12}px`)
+          .style('top', `${event.clientY - rect.top - 28}px`)
+          .style('opacity', '1');
+      })
+      .on('mousemove', (event: MouseEvent) => {
+        const rect = container.getBoundingClientRect();
+        tooltip
+          .style('left', `${event.clientX - rect.left + 12}px`)
+          .style('top', `${event.clientY - rect.top - 28}px`);
+      })
+      .on('mouseleave', () => {
+        tooltip.style('opacity', '0');
+      });
   }
 
   private setupResizeObserver(): void {
