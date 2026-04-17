@@ -58,9 +58,9 @@ export class InputBaseComponent {
       const fg = this.fieldFormGroup();
       if (fg) {
         if (this.editMode()) {
-          fg.enable({ emitEvent: false, onlySelf: true });
+          fg.enable({ onlySelf: true });
         } else {
-          fg.disable({ emitEvent: false, onlySelf: true });
+          fg.disable({ onlySelf: true });
         }
       }
     });
