@@ -192,15 +192,22 @@ export class PaymentsChartComponent implements AfterViewInit, OnDestroy {
         const sumText = `${payment.sum.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} zł`;
         const dateText = payment.paiddate ? timeFormat('%d.%m.%Y')(payment.paiddate) : '';
         tooltip
-          .html(`<div>${sumText}</div>${dateText ? `<div style="font-size:0.75rem;font-weight:400;margin-top:2px">${dateText}</div>` : ''}`)
-          .style('left', `${event.clientX - rect.left + 12}px`)
+          .html(`<div>${sumText}</div>${dateText ? `<div style="font-size:0.75rem;font-weight:400;margin-top:2px">${dateText}</div>` : ''}`);
+        const tooltipWidth = (tooltip.node() as HTMLElement).offsetWidth;
+        const rawLeft = event.clientX - rect.left + 12;
+        const left = rawLeft + tooltipWidth > container.clientWidth ? event.clientX - rect.left - tooltipWidth - 12 : rawLeft;
+        tooltip
+          .style('left', `${left}px`)
           .style('top', `${event.clientY - rect.top - 28}px`)
           .style('opacity', '1');
       })
       .on('mousemove', (event: MouseEvent) => {
         const rect = container.getBoundingClientRect();
+        const tooltipWidth = (tooltip.node() as HTMLElement).offsetWidth;
+        const rawLeft = event.clientX - rect.left + 12;
+        const left = rawLeft + tooltipWidth > container.clientWidth ? event.clientX - rect.left - tooltipWidth - 12 : rawLeft;
         tooltip
-          .style('left', `${event.clientX - rect.left + 12}px`)
+          .style('left', `${left}px`)
           .style('top', `${event.clientY - rect.top - 28}px`);
       })
       .on('mouseleave', () => {
