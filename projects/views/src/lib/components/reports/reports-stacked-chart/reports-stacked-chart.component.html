@@ -1,0 +1,15 @@
+<div class="stacked-chart-wrap">
+  <div #chart
+       class="chart-canvas"></div>
+  @if (legend().length) {
+  <div class="chart-legend">
+    @for (item of legend(); track item.name) {
+    <div class="legend-item">
+      <span class="legend-dot"
+            [style.background]="item.color"></span>
+      <span class="legend-label">{{ item.name }}</span>
+    </div>
+    }
+  </div>
+  }
+</div>

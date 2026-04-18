@@ -44,6 +44,11 @@ export class OverviewComponent implements OnInit {
       action: () => this.toggleInactiveFilter()
     },
     {
+      label: 'Raporty',
+      icon: 'analytics',
+      action: () => this.router.navigate(['/raporty'])
+    },
+    {
       label: this.themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny',
       icon: this.themeService.darkMode() ? 'light_mode' : 'dark_mode',
       action: () => this.themeService.toggle()

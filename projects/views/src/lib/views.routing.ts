@@ -1,6 +1,6 @@
 import { Routes, mapToCanActivate } from '@angular/router';
 import { AuthGuard } from 'projects/tools/src/public-api';
-import { BillComponent, ChangePasswordComponent, LoginComponent, OverviewComponent, PageNotFoundComponent, ResetPasswordComponent, UpdatePasswordComponent } from './components';
+import { BillComponent, ChangePasswordComponent, LoginComponent, OverviewComponent, PageNotFoundComponent, ReportsComponent, ResetPasswordComponent, UpdatePasswordComponent } from './components';
 import { RootComponent } from './components/root/root.component';
 
 export const appRoutes: Routes = [
@@ -25,6 +25,11 @@ export const appRoutes: Routes = [
         component: BillComponent,
         pathMatch: 'full',
         data: { title: 'Rachunek' },
+        canActivate: mapToCanActivate([AuthGuard])
+      },
+      {
+        path: 'raporty',
+        component: ReportsComponent,
         canActivate: mapToCanActivate([AuthGuard])
       },
       {

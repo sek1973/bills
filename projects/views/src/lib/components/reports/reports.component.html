@@ -1,0 +1,113 @@
+<div class="reports-page">
+
+  <div class="reports-header">
+    <a mat-icon-button
+       routerLink="/zestawienie"
+       matTooltip="Powrót do zestawienia">
+      <span class="material-icons">arrow_back</span>
+    </a>
+    <h1 class="reports-title">Raporty</h1>
+    <div class="chart-modes">
+      @for (option of modeOptions; track option.value) {
+      <label class="mode-pill"
+             [class.active]="chartMode() === option.value">
+        <input type="radio"
+               name="chartMode"
+               [value]="option.value"
+               [checked]="chartMode() === option.value"
+               (change)="setChartMode(option.value)">
+        {{ option.label }}
+      </label>
+      }
+    </div>
+    <span class="spacer"></span>
+    <button mat-icon-button
+            [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"
+            (click)="themeService.toggle()">
+      <span class="material-icons">{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</span>
+    </button>
+  </div>
+
+  <div class="reports-content">
+
+    <div class="top-row">
+
+      <!-- Left: bills multi-select list -->
+      <div class="bills-panel">
+        <div class="panel-title">Rachunki</div>
+        <div class="bills-list">
+          @for (bill of bills(); track bill.id) {
+          <div class="bill-item"
+               [class.selected]="isSelected(bill)"
+               (click)="toggleBill(bill)">
+            <span class="color-swatch"
+                  [style.background]="isSelected(bill) ? getBillColor(bill) : 'transparent'"
+                  [class.empty]="!isSelected(bill)"></span>
+            <span class="bill-name">{{ bill.name }}</span>
+            @if (isLoading(bill)) {
+            <span class="material-icons spin">hourglass_empty</span>
+            } @else if (isSelected(bill)) {
+            <span class="material-icons check-icon">check</span>
+            }
+          </div>
+          }
+          @if (!bills().length) {
+          <div class="list-empty">Brak rachunków</div>
+          }
+        </div>
+      </div>
+
+      <!-- Right: pie chart -->
+      <div class="pie-panel">
+        @if (pieSegments().length) {
+        <div class="panel-title">{{ pieLabel() }}</div>
+        <div class="pie-wrap">
+          <app-reports-pie-chart [segments]="pieSegments()"
+                                 [label]="pieLabel()" />
+        </div>
+        <div class="pie-legend">
+          @for (seg of pieSegments(); track seg.name) {
+          <div class="pie-legend-item">
+            <span class="legend-dot"
+                  [style.background]="seg.color"></span>
+            <span class="legend-name">{{ seg.name }}</span>
+            <span class="legend-value">
+              {{ seg.value.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} zł
+            </span>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="pie-empty">
+          @if (series().length) {
+          <span class="material-icons hint-icon">touch_app</span>
+          <span>Kliknij słupek, aby zobaczyć podział</span>
+          } @else {
+          <span class="material-icons hint-icon">bar_chart</span>
+          <span>Wybierz rachunki z listy</span>
+          }
+        </div>
+        }
+      </div>
+
+    </div>
+
+    <!-- Bottom: stacked bar chart -->
+    <div class="bar-panel">
+      @if (series().length) {
+      <div class="panel-title">Wydatki w czasie</div>
+      <app-reports-stacked-chart [series]="series()"
+                                 [chartMode]="chartMode()"
+                                 [selectedBarIndex]="selectedBarIndex()"
+                                 (barSelected)="onBarSelected($event)" />
+      } @else {
+      <div class="chart-empty">
+        <span class="material-icons hint-icon">analytics</span>
+        <span>Wybierz co najmniej jeden rachunek, aby wyświetlić wykres</span>
+      </div>
+      }
+    </div>
+
+  </div>
+
+</div>
