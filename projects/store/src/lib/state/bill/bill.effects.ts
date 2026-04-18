@@ -28,7 +28,7 @@ export class BillEffects {
   loadOverviewBills$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(BillsActions.loadOverviewBills),
-      mergeMap(() =>
+      switchMap(() =>
         this.overviewBillsService.load().pipe(
           timeout(15000),
           map(bills => BillApiActions.loadOverviewBillsSuccess({ bills })),

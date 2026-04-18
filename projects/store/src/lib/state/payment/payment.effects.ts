@@ -4,7 +4,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PaymentsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NotificationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, switchMap, timeout } from 'rxjs/operators';
 import { PaymentApiActions } from './payment-api.actions';
 import { PaymentsActions } from './payment.actions';
 
@@ -21,8 +21,9 @@ export class PaymentEffects {
     return this.actions$
       .pipe(
         ofType(PaymentsActions.loadPayments),
-        mergeMap(action => this.paymentsService.load(action.billId)
+        switchMap(action => this.paymentsService.load(action.billId)
           .pipe(
+            timeout(15000),
             map(payments => PaymentApiActions.loadPaymentsSuccess({ payments })),
             catchError(error => of(PaymentApiActions.loadPaymentsFailure({ error })))
           )

@@ -10,7 +10,7 @@ import { TableCellDirective } from 'projects/tools/src/lib/components/table/dire
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
 import { TableColumn, TableComponent, ThemeService } from 'projects/tools/src/public-api';
-import { filter } from 'rxjs/operators';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 @Component({
@@ -85,7 +85,10 @@ export class PaymentsComponent implements OnInit {
   private subscribeToBill(): void {
     this.store
       .select(BillsSelectors.selectBill)
-      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.#destroyRef),
+        distinctUntilChanged((a, b) => a?.id === b?.id)
+      )
       .subscribe({
         next: bill => {
           this.bill = bill;
