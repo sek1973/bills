@@ -61,21 +61,23 @@
       <div class="pie-panel">
         @if (pieSegments().length) {
         <div class="panel-title">{{ pieLabel() }}</div>
-        <div class="pie-wrap">
-          <app-reports-pie-chart [segments]="pieSegments()"
-                                 [label]="pieLabel()" />
-        </div>
-        <div class="pie-legend">
-          @for (seg of pieSegments(); track seg.name) {
-          <div class="pie-legend-item">
-            <span class="legend-dot"
-                  [style.background]="seg.color"></span>
-            <span class="legend-name">{{ seg.name }}</span>
-            <span class="legend-value">
-              {{ seg.value.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} zł
-            </span>
+        <div class="pie-body">
+          <div class="pie-legend">
+            @for (seg of pieSegments(); track seg.name) {
+            <div class="pie-legend-item">
+              <span class="legend-dot"
+                    [style.background]="seg.color"></span>
+              <span class="legend-name">{{ seg.name }}</span>
+              <span class="legend-value">
+                {{ seg.value.toLocaleString('pl-PL', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }} zł
+              </span>
+            </div>
+            }
           </div>
-          }
+          <div class="pie-wrap">
+            <app-reports-pie-chart [segments]="pieSegments()"
+                                   [label]="pieLabel()" />
+          </div>
         </div>
         } @else {
         <div class="pie-empty">

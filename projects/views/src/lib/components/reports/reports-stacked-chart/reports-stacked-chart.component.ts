@@ -218,7 +218,8 @@ export class ReportsStackedChartComponent implements AfterViewInit, OnDestroy {
     const colors = this.buildThemeColors(this.themeService.darkMode());
     const margin = { top: 20, right: 12, bottom: 36, left: 55 };
     const width = Math.max(container.clientWidth - margin.left - margin.right, 0);
-    const height = 300 - margin.top - margin.bottom;
+    const rawHeight = container.clientHeight > 80 ? container.clientHeight : 280;
+    const height = Math.max(rawHeight - margin.top - margin.bottom, 120);
 
     const svg = select(container)
       .append('svg')

@@ -56,6 +56,13 @@
     </button>
     <button mat-icon-button
             class="only-large-screen"
+            matTooltip="Raporty"
+            routerLink="/raporty">
+      <span class="material-icons"
+            inline="true">analytics</span>
+    </button>
+    <button mat-icon-button
+            class="only-large-screen"
             [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"
             (click)="themeService.toggle()">
       <span class="material-icons"

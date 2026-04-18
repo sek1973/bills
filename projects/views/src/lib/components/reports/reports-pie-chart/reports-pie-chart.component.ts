@@ -60,7 +60,10 @@ export class ReportsPieChartComponent implements AfterViewInit, OnDestroy {
     const tooltipBorder = isDark ? '1px solid rgba(180,130,255,0.3)' : '1px solid rgba(103,58,183,0.25)';
     const strokeColor = isDark ? '#1e1e1e' : '#fff';
 
-    const size = Math.min(container.clientWidth || 240, 240);
+    const maxSize = 220;
+    const availW = container.clientWidth || maxSize;
+    const availH = container.clientHeight || maxSize;
+    const size = Math.min(availW, availH, maxSize);
     const radius = size / 2;
     const innerRadius = radius * 0.52;
 
