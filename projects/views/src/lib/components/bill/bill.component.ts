@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { Bill, Payment } from 'projects/model/src/lib/model';
 import { RealtimeService, UserSettingsService } from 'projects/model/src/public-api';
 import { AppState, BillsActions, BillsSelectors, PaymentsSelectors } from 'projects/store/src/lib/state';
+import { ThemeService } from 'projects/tools/src/public-api';
 import { filter } from 'rxjs/operators';
 import { PaymentsComponent } from '../payments/payments.component';
 import { BillEditComponent } from './bill-edit/bill-edit.component';
@@ -29,6 +30,7 @@ export class BillComponent implements OnInit {
   private store = inject(Store<AppState>);
   private realtimeService = inject(RealtimeService);
   private userSettings = inject(UserSettingsService);
+  readonly themeService = inject(ThemeService);
 
   protected readonly editMode = signal(false);
   protected readonly newBill = signal(false);

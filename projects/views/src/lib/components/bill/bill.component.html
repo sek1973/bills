@@ -86,6 +86,14 @@
         <span class="btn-text btn-text-always">{{ activeLabel() }}</span>
       </button>
       }
+      @if (!editMode()) {
+      <button mat-icon-button
+              [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"
+              (click)="themeService.toggle()">
+        <span class="material-icons"
+              inline="true">{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</span>
+      </button>
+      }
     </div>
   </div>
 
