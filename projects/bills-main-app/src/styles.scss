@@ -28,6 +28,14 @@ html.dark-mode {
   }
 }
 
+:root {
+  --app-toolbar-bg: white;
+}
+
+html.dark-mode {
+  --app-toolbar-bg: #212121;
+}
+
 html,
 body {
   height: 100%;
