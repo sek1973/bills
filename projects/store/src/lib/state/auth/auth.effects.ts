@@ -58,7 +58,10 @@ export class AuthEffects {
               this.notification.success('Wylogowano z aplikacji!');
             }),
             map(() => AuthActions.logoutSuccess()),
-            catchError(error => of(AuthActions.logoutFailure({ error })))
+            catchError(error => {
+              this.navigationService.goToPage('/login');
+              return of(AuthActions.logoutFailure({ error }));
+            })
           )
         )
       );

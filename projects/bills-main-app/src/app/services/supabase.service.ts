@@ -24,6 +24,9 @@ export class SupabaseService {
     this.supabase.auth.getSession().then(({ data }) => {
       this._session.set(data.session ?? null);
       this._user.set(data.session?.user ?? null);
+    }).catch(() => {
+      this._session.set(null);
+      this._user.set(null);
     });
 
     this.supabase.auth.onAuthStateChange((_, session) => {

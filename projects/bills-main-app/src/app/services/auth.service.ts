@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { AuthService } from 'projects/model/src/public-api';
 import { from, Observable, of, ReplaySubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
@@ -18,6 +18,8 @@ export class AuthServiceImpl extends AuthService {
     // from seeing the false initial value on a direct URL / page refresh.
     this.service.client.auth.getSession().then(({ data }) => {
       this.authStateSubject.next(data.session !== null);
+    }).catch(() => {
+      this.authStateSubject.next(false);
     });
 
     // Keep in sync with subsequent Supabase auth events (login, logout, token refresh).
@@ -45,14 +47,17 @@ export class AuthServiceImpl extends AuthService {
     return from(this.service.signOut()).pipe(
       map(result => {
         if (result.error) {
-          this.authStateSubject.next(false);
           console.error('Logout error:', result.error.message);
-          return false;
-        } else {
-          this.authStateSubject.next(false);
-          return true;
         }
-      }));
+        this.authStateSubject.next(false);
+        return true;
+      }),
+      catchError(error => {
+        console.error('Logout network error:', error);
+        this.authStateSubject.next(false);
+        return of(true);
+      })
+    );
   }
 
   getUserName(): Observable<string> {
