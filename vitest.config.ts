@@ -1,8 +1,17 @@
-import { defineConfig } from 'vitest/config';
 import angular from '@analogjs/vite-plugin-angular';
+import path from 'path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [angular({ tsconfig: './tsconfig.vitest.json' })],
+  resolve: {
+    alias: {
+      'projects/model/src/public-api': path.resolve(__dirname, 'projects/model/src/public-api.ts'),
+      'projects/store/src/public-api': path.resolve(__dirname, 'projects/store/src/public-api.ts'),
+      'projects/tools/src/public-api': path.resolve(__dirname, 'projects/tools/src/public-api.ts'),
+      'projects/views/src/public-api': path.resolve(__dirname, 'projects/views/src/public-api.ts'),
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
