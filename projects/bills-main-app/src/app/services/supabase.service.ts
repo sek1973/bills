@@ -1,15 +1,24 @@
 import { Injectable, signal } from '@angular/core';
-import { createClient, Provider, Session, SupabaseClient, User } from '@supabase/supabase-js';
+import { AuthChangeEvent, createClient, Provider, Session, SupabaseClient, User } from '@supabase/supabase-js';
+import { Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
+  // Sequential in-memory lock — prevents concurrent token refresh races in a
+  // single-tab zoneless environment (replaces the noop that allowed races).
+  private _refreshLock: Promise<void> = Promise.resolve();
+
   private readonly supabase: SupabaseClient = createClient(
     environment.supabaseUrl,
     environment.supabaseKey,
     {
       auth: {
-        lock: <R>(_name: string, _acquireTimeout: number, fn: () => Promise<R>) => fn(),
+        lock: <R>(_name: string, _acquireTimeout: number, fn: () => Promise<R>): Promise<R> => {
+          const next = this._refreshLock.then(() => fn());
+          this._refreshLock = next.then(() => { }, () => { });
+          return next;
+        },
       },
     }
   );
@@ -20,6 +29,10 @@ export class SupabaseService {
   readonly session = this._session.asReadonly();
   readonly user = this._user.asReadonly();
 
+  private readonly _authEvents = new Subject<{ event: AuthChangeEvent; session: Session | null }>();
+  /** Emits every Supabase auth event (SIGNED_IN, TOKEN_REFRESHED, SIGNED_OUT, …). */
+  readonly authEvents$ = this._authEvents.asObservable();
+
   constructor() {
     this.supabase.auth.getSession().then(({ data }) => {
       this._session.set(data.session ?? null);
@@ -29,9 +42,10 @@ export class SupabaseService {
       this._user.set(null);
     });
 
-    this.supabase.auth.onAuthStateChange((_, session) => {
+    this.supabase.auth.onAuthStateChange((event, session) => {
       this._session.set(session ?? null);
       this._user.set(session?.user ?? null);
+      this._authEvents.next({ event, session });
     });
   }
 

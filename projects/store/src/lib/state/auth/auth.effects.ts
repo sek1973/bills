@@ -1,17 +1,23 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { SupabaseService } from 'projects/bills-main-app/src/app/services/supabase.service';
 import { AuthService } from 'projects/model/src/public-api';
 import { NavigationService, NotificationService } from 'projects/tools/src/public-api';
 import { of } from 'rxjs';
-import { catchError, concatMap, map, switchMap } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import { AppState } from '../app/app.state';
 import { AuthActions } from '../auth';
-import { BillsActions } from '../bill';
+import { BillsActions, BillsSelectors } from '../bill';
+import { PaymentsActions } from '../payment';
 
 @Injectable()
 export class AuthEffects {
 
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
+  private supabaseService = inject(SupabaseService);
+  private store = inject(Store<AppState>);
   private notification = inject(NotificationService);
   private navigationService = inject(NavigationService);
 
@@ -46,6 +52,22 @@ export class AuthEffects {
         ofType(AuthActions.loginSuccess),
         switchMap(() => of(BillsActions.loadOverviewBills())));
   });
+
+  // Reload data when Supabase auto-refreshes the token (e.g. after a network
+  // blip). Without this, data stays stale because loginSuccess$ never fires.
+  tokenRefreshed$ = createEffect(() =>
+    this.supabaseService.authEvents$.pipe(
+      filter(({ event }) => event === 'TOKEN_REFRESHED'),
+      withLatestFrom(this.store.select(BillsSelectors.selectBill)),
+      mergeMap(([, currentBill]) => {
+        const actions = [BillsActions.loadOverviewBills()];
+        if (currentBill?.id != null) {
+          actions.push(PaymentsActions.loadPayments({ billId: currentBill.id }) as any);
+        }
+        return actions;
+      })
+    )
+  );
 
   logout$ = createEffect(() => {
     return this.actions$

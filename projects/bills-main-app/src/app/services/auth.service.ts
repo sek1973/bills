@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { AuthService } from 'projects/model/src/public-api';
 import { from, Observable, of, ReplaySubject } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, filter, map } from 'rxjs/operators';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
@@ -10,6 +10,11 @@ export class AuthServiceImpl extends AuthService {
   public authState$: Observable<boolean> = this.authStateSubject.asObservable();
 
   private service = inject(SupabaseService);
+
+  public sessionRestored$: Observable<void> = this.service.authEvents$.pipe(
+    filter(({ event }) => event === 'TOKEN_REFRESHED'),
+    map(() => undefined)
+  );
 
   constructor() {
     super();

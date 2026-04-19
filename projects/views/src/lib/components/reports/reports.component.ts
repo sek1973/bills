@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Bill, Payment, PaymentsService } from 'projects/model/src/public-api';
+import { AuthService, Bill, Payment, PaymentsService } from 'projects/model/src/public-api';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
 import { PullToRefreshDirective, ThemeService } from 'projects/tools/src/public-api';
 import { PieSegment, ReportsPieChartComponent } from './reports-pie-chart/reports-pie-chart.component';
@@ -29,6 +29,7 @@ export class ReportsComponent implements OnInit {
 
   private store = inject(Store<AppState>);
   private paymentsService = inject(PaymentsService);
+  private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   themeService = inject(ThemeService);
 
@@ -81,6 +82,11 @@ export class ReportsComponent implements OnInit {
     this.store.select(BillsSelectors.selectAll)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(bills => this.bills.set(bills));
+
+    // Reload payment data when the token is silently refreshed after a network blip.
+    this.authService.sessionRestored$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.refresh());
   }
 
   toggleBill(bill: Bill): void {
