@@ -172,7 +172,7 @@ describe('InputBaseComponent', () => {
     it('disables the fieldFormGroup when editMode is false', () => {
       const fg = new UntypedFormGroup({ name: new UntypedFormControl('') });
       createComponent({ formGroup: fg, editMode: false });
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(fg.disabled).toBe(true);
     });
 
@@ -180,18 +180,18 @@ describe('InputBaseComponent', () => {
       const fg = new UntypedFormGroup({ name: new UntypedFormControl('') });
       fg.disable();
       createComponent({ formGroup: fg, editMode: true });
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(fg.enabled).toBe(true);
     });
 
     it('re-enables fieldFormGroup when editMode changes from false to true', () => {
       const fg = new UntypedFormGroup({ name: new UntypedFormControl('') });
       const { fixture } = createComponent({ formGroup: fg, editMode: false });
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(fg.disabled).toBe(true);
 
       fixture.componentRef.setInput('editMode', true);
-      TestBed.flushEffects();
+      TestBed.tick();
       expect(fg.enabled).toBe(true);
     });
   });
