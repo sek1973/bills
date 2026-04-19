@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import { REALTIME_CHANNEL_STATES, RealtimeChannel } from '@supabase/supabase-js';
 import { RealtimeService } from 'projects/model/src/public-api';
 import { Subject } from 'rxjs';
 import { SupabaseService } from './supabase.service';
@@ -29,20 +29,19 @@ export class RealtimeServiceImpl extends RealtimeService {
       }
     });
 
+    // On every auth event: skip teardown when channels are already healthy
+    // (routine TOKEN_REFRESHED), but rebuild after an outage where refs are
+    // non-null yet the state is 'errored' or 'closed'.
     this.supabase.authEvents$.subscribe(async ({ session }) => {
-      if (session) {
+      const healthy =
+        this.billsChannel?.state === REALTIME_CHANNEL_STATES.joined &&
+        this.paymentsChannel?.state === REALTIME_CHANNEL_STATES.joined;
+      if (!healthy) this.removeChannels();
+      if (session && !healthy) {
         await client.realtime.setAuth();
         this.initChannels();
-      } else {
-        this.removeChannels();
       }
-    });
-
-    // After a network outage the existing WebSocket channels are dead.
-    // Tear them down and rebuild so realtime events flow again.
-    this.supabase.connectivityRestored$.subscribe(() => {
-      this.removeChannels();
-      client.realtime.setAuth().then(() => this.initChannels());
+      if (!session) this.removeChannels();
     });
   }
 

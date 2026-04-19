@@ -46,13 +46,6 @@ export class SupabaseService {
   /** Emits every Supabase auth event (SIGNED_IN, TOKEN_REFRESHED, SIGNED_OUT, …). */
   readonly authEvents$ = this._authEvents.asObservable();
 
-  private readonly _connectivityRestored = new Subject<void>();
-  /** Emits after the session is successfully refreshed following a network recovery. */
-  readonly connectivityRestored$ = this._connectivityRestored.asObservable();
-
-  private _lastRestoreAttempt = 0;
-  private static readonly RESTORE_COOLDOWN_MS = 15_000;
-
   constructor() {
     this.supabase.auth.getSession().then(({ data }) => {
       this._session.set(data.session ?? null);
@@ -66,47 +59,6 @@ export class SupabaseService {
       this._session.set(session ?? null);
       this._user.set(session?.user ?? null);
       this._authEvents.next({ event, session });
-    });
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('online', () => this.refreshOnReconnect());
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden) this.refreshOnReconnect();
-      });
-    }
-  }
-
-  /**
-   * Force a session refresh after a potential network outage.
-   * Retries with exponential backoff because the `online` event often fires
-   * before DNS is ready (ERR_NAME_NOT_RESOLVED).
-   */
-  private refreshOnReconnect(): void {
-    if (!this._session()) return;
-
-    const now = Date.now();
-    if (now - this._lastRestoreAttempt < SupabaseService.RESTORE_COOLDOWN_MS) return;
-    this._lastRestoreAttempt = now;
-
-    this.refreshWithRetry(0);
-  }
-
-  private static readonly MAX_RETRIES = 5;
-  private static readonly RETRY_DELAYS = [2_000, 4_000, 8_000, 15_000, 30_000];
-
-  private refreshWithRetry(attempt: number): void {
-    this.supabase.auth.refreshSession().then(({ data, error }) => {
-      if (!error && data.session) {
-        // Delay so the auth lock fully drains before PostgREST requests
-        // call getSession() internally (which also acquires the lock).
-        setTimeout(() => this._connectivityRestored.next(), 2_000);
-      } else if (attempt < SupabaseService.MAX_RETRIES) {
-        setTimeout(() => this.refreshWithRetry(attempt + 1), SupabaseService.RETRY_DELAYS[attempt]);
-      }
-    }).catch(() => {
-      if (attempt < SupabaseService.MAX_RETRIES) {
-        setTimeout(() => this.refreshWithRetry(attempt + 1), SupabaseService.RETRY_DELAYS[attempt]);
-      }
     });
   }
 
