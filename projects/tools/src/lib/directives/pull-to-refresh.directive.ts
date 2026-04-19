@@ -1,5 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Directive, ElementRef, OnDestroy, OnInit, PLATFORM_ID, inject, output } from '@angular/core';
+import { ApplicationRef, ComponentRef, Directive, ElementRef, EnvironmentInjector, OnDestroy, OnInit, PLATFORM_ID, createComponent, inject, output } from '@angular/core';
+import { AppSpinnerComponent } from '../components/app-spinner/app-spinner.component';
 
 const THRESHOLD = 80;
 const MAX_PULL = 120;
@@ -14,29 +15,40 @@ export class PullToRefreshDirective implements OnInit, OnDestroy {
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly doc = inject(DOCUMENT);
+  private readonly appRef = inject(ApplicationRef);
+  private readonly envInjector = inject(EnvironmentInjector);
 
-  private indicator!: HTMLElement;
+  private spinnerRef!: ComponentRef<AppSpinnerComponent>;
   private startY = 0;
   private pulling = false;
   private cleanup: Array<() => void> = [];
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.indicator = this.createIndicator();
+    this.createSpinner();
     this.attachListeners();
   }
 
   ngOnDestroy(): void {
     this.cleanup.forEach(fn => fn());
-    this.indicator?.remove();
+    if (this.spinnerRef) {
+      (this.spinnerRef.location.nativeElement as HTMLElement).remove();
+      this.spinnerRef.destroy();
+    }
   }
 
-  private createIndicator(): HTMLElement {
-    const div = this.doc.createElement('div');
-    div.className = 'ptr-indicator';
-    div.innerHTML = `<span class="material-icons ptr-icon">refresh</span>`;
-    this.doc.body.appendChild(div);
-    return div;
+  private createSpinner(): void {
+    const hostEl = this.doc.createElement('div');
+    this.doc.body.appendChild(hostEl);
+
+    this.spinnerRef = createComponent(AppSpinnerComponent, {
+      environmentInjector: this.envInjector,
+      hostElement: hostEl,
+    });
+    this.spinnerRef.setInput('backdropEnabled', false);
+    this.spinnerRef.setInput('positionGloballyCenter', true);
+    this.spinnerRef.setInput('displayProgressSpinner', false);
+    this.appRef.attachView(this.spinnerRef.hostView);
   }
 
   private attachListeners(): void {
@@ -82,41 +94,16 @@ export class PullToRefreshDirective implements OnInit, OnDestroy {
 
     e.preventDefault();
     const pull = Math.min(dy, MAX_PULL);
-    const progress = Math.min(pull / THRESHOLD, 1);
-
-    // translateY starts at -60px (hidden above), reaches +20px at threshold
-    this.indicator.style.transform = `translateY(${pull - 60}px)`;
-    this.indicator.style.opacity = String(progress);
-
-    const icon = this.indicator.querySelector<HTMLElement>('.ptr-icon');
-    if (icon) {
-      icon.style.transform = `rotate(${progress * 360}deg)`;
-      icon.style.color = pull >= THRESHOLD ? 'var(--mat-sys-primary, #6200ee)' : '';
-    }
+    this.spinnerRef.setInput('displayProgressSpinner', pull >= THRESHOLD);
   }
 
   private onEnd(): void {
     if (!this.pulling) return;
     this.pulling = false;
 
-    const match = this.indicator.style.transform.match(/translateY\((.+?)px\)/);
-    const ty = parseFloat(match?.[1] ?? '-60');
-    const pull = ty + 60; // reverse of `pull - 60`
-    const triggered = pull >= THRESHOLD;
-
-    this.indicator.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-    this.indicator.style.transform = 'translateY(-60px)';
-    this.indicator.style.opacity = '0';
+    const triggered = this.spinnerRef.instance.displayProgressSpinner();
+    this.spinnerRef.setInput('displayProgressSpinner', false);
 
     if (triggered) this.pullToRefresh.emit();
-
-    setTimeout(() => {
-      this.indicator.style.transition = '';
-      const icon = this.indicator.querySelector<HTMLElement>('.ptr-icon');
-      if (icon) {
-        icon.style.transform = '';
-        icon.style.color = '';
-      }
-    }, 300);
   }
 }
