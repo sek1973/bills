@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Bill, Payment, PaymentsService } from 'projects/model/src/public-api';
 import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
-import { ThemeService } from 'projects/tools/src/public-api';
+import { PullToRefreshDirective, ThemeService } from 'projects/tools/src/public-api';
 import { PieSegment, ReportsPieChartComponent } from './reports-pie-chart/reports-pie-chart.component';
 import { BillSeries, ChartMode, ReportsStackedChartComponent, StackedBarPoint } from './reports-stacked-chart/reports-stacked-chart.component';
 
@@ -23,7 +23,7 @@ const CHART_COLORS = [
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatTooltipModule, ReportsStackedChartComponent, ReportsPieChartComponent]
+  imports: [RouterLink, MatButtonModule, MatIconModule, MatTooltipModule, ReportsStackedChartComponent, ReportsPieChartComponent, PullToRefreshDirective]
 })
 export class ReportsComponent implements OnInit {
 
@@ -123,6 +123,14 @@ export class ReportsComponent implements OnInit {
   onBarSelected(event: { index: number; point: StackedBarPoint }): void {
     this.selectedBarIndex.set(event.index);
     this.selectedBarPoint.set(event.point);
+  }
+
+  refresh(): void {
+    this.store.dispatch(BillsActions.loadOverviewBills());
+    const ids = [...this.selectedBillIds()];
+    this.paymentsCache.set(new Map());
+    this.loadingIds.set(new Set());
+    ids.forEach(id => this.loadPayments(id));
   }
 
   private loadPayments(billId: number): void {
