@@ -25,6 +25,7 @@ import { PaymentsChartComponent } from './payments-chart/payments-chart.componen
 })
 export class BillComponent implements OnInit {
   billEdit = viewChild(BillEditComponent);
+  paymentsComponent = viewChild(PaymentsComponent);
 
   #destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
@@ -124,7 +125,10 @@ export class BillComponent implements OnInit {
   saveBillAndClose(): void { this.billEdit()?.saveBillAndClose(); }
   deleteBill(): void { this.billEdit()?.deleteBill(); }
   cancel(): void { this.billEdit()?.cancel(); }
-  refresh(): void { this.store.dispatch(BillsActions.loadOverviewBills()); }
+  refresh(): void {
+    this.store.dispatch(BillsActions.loadOverviewBills());
+    this.paymentsComponent()?.refresh();
+  }
   toggleActive(): void { this.billEdit()?.toggleActive(); }
   toggleAmountDetails(): void {
     this.userSettings.showAmountDetails.update(v => !v);
