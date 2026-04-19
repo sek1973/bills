@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, injec
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -20,7 +21,7 @@ import { PaymentsChartComponent } from './payments-chart/payments-chart.componen
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatTooltipModule, BillEditComponent, PaymentsComponent, PaymentsChartComponent, PullToRefreshDirective]
+  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule, BillEditComponent, PaymentsComponent, PaymentsChartComponent, PullToRefreshDirective]
 })
 export class BillComponent implements OnInit {
   billEdit = viewChild(BillEditComponent);

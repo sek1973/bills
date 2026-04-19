@@ -71,6 +71,20 @@
   display: none;
 }
 
+.bill-full-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.bill-compact-menu {
+  display: none;
+}
+
+.menu-icon {
+  padding-right: 5px;
+  vertical-align: middle;
+}
+
 @media (max-width: 600px) {
   .bill-view {
     padding-bottom: 72px;
@@ -111,5 +125,14 @@
     display: inline;
     font-size: 20px;
     vertical-align: middle;
+  }
+
+  .bill-full-buttons {
+    display: none;
+  }
+
+  .bill-compact-menu {
+    display: flex;
+    align-items: center;
   }
 }

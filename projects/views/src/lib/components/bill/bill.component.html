@@ -1,3 +1,21 @@
+<mat-menu #billMenu="matMenu"
+          xPosition="before"
+          yPosition="below">
+  <button mat-menu-item
+          (click)="refresh()">
+    <span class="material-icons menu-icon">refresh</span> Odśwież
+  </button>
+  <button mat-menu-item
+          (click)="toggleAmountDetails()">
+    <span class="material-icons menu-icon">more_horiz</span> {{ detailsTooltip() }}
+  </button>
+  <button mat-menu-item
+          (click)="themeService.toggle()">
+    <span class="material-icons menu-icon">{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</span>
+    {{ themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny' }}
+  </button>
+</mat-menu>
+
 <div class="bill-view"
      pullToRefresh
      (pullToRefresh)="refresh()">
@@ -23,8 +41,6 @@
         <span class="material-icons btn-icon">close</span>
         <span class="btn-text">Anuluj</span>
       </button>
-      }
-      @if (editMode()) {
       <button mat-raised-button
               color="warn"
               class="toolbar-button"
@@ -32,8 +48,6 @@
         <span class="material-icons btn-icon">delete</span>
         <span class="btn-text">Usuń</span>
       </button>
-      }
-      @if (editMode()) {
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
@@ -42,8 +56,7 @@
         <span class="material-icons btn-icon">save</span>
         <span class="btn-text">Zapisz</span>
       </button>
-      }
-      @if (editMode() && billEdit()?.showSaveAndClose()) {
+      @if (billEdit()?.showSaveAndClose()) {
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
@@ -53,47 +66,55 @@
         <span class="btn-text">Zapisz i zamknij</span>
       </button>
       }
-      @if (!editMode()) {
-      <button mat-icon-button
-              class="toolbar-button-toggle"
-              [class.toggled]="amountDetailsVisible()"
-              [attr.aria-pressed]="amountDetailsVisible()"
-              [matTooltip]="detailsTooltip()"
-              (click)="toggleAmountDetails()">
-        <mat-icon>more_horiz</mat-icon>
-      </button>
       }
       @if (!editMode()) {
+      <div class="bill-full-buttons">
+        <button mat-icon-button
+                matTooltip="Odśwież"
+                (click)="refresh()">
+          <span class="material-icons"
+                inline="true">refresh</span>
+        </button>
+        <button mat-icon-button
+                class="toolbar-button-toggle"
+                [class.toggled]="amountDetailsVisible()"
+                [attr.aria-pressed]="amountDetailsVisible()"
+                [matTooltip]="detailsTooltip()"
+                (click)="toggleAmountDetails()">
+          <mat-icon>more_horiz</mat-icon>
+        </button>
+        <button mat-icon-button
+                [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"
+                (click)="themeService.toggle()">
+          <span class="material-icons"
+                inline="true">{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</span>
+        </button>
+      </div>
+      <div class="bill-compact-menu">
+        <button mat-icon-button
+                matTooltip="Menu"
+                [matMenuTriggerFor]="billMenu">
+          <span class="material-icons">menu</span>
+        </button>
+      </div>
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
               (click)="editBill()">
         <span class="btn-text btn-text-always">Edytuj</span>
       </button>
-      }
-      @if (!editMode()) {
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
               (click)="payBill()">
         <span class="btn-text btn-text-always">Zapłacony</span>
       </button>
-      }
-      @if (!editMode()) {
       <button mat-raised-button
               [color]="activeColor()"
               class="toolbar-button"
               [disabled]="newBill()"
               (click)="toggleActive()">
         <span class="btn-text btn-text-always">{{ activeLabel() }}</span>
-      </button>
-      }
-      @if (!editMode()) {
-      <button mat-icon-button
-              [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"
-              (click)="themeService.toggle()">
-        <span class="material-icons"
-              inline="true">{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</span>
       </button>
       }
     </div>
