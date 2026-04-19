@@ -29,7 +29,7 @@ export class RealtimeServiceImpl extends RealtimeService {
       }
     });
 
-    client.auth.onAuthStateChange(async (event, session) => {
+    this.supabase.authEvents$.subscribe(async ({ session }) => {
       if (session) {
         await client.realtime.setAuth();
         this.initChannels();

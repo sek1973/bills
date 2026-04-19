@@ -28,7 +28,7 @@ export class AuthServiceImpl extends AuthService {
     });
 
     // Keep in sync with subsequent Supabase auth events (login, logout, token refresh).
-    this.service.client.auth.onAuthStateChange((_, session) => {
+    this.service.authEvents$.subscribe(({ session }) => {
       this.authStateSubject.next(session !== null);
     });
   }

@@ -7,7 +7,7 @@ import moment from 'moment';
 import { BillsService, calculateNextDeadline, OverviewBillsService, Payment, PaymentsService } from 'projects/model/src/public-api';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService, validateBillName } from 'projects/tools/src/public-api';
 import { Observable, of } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, switchMap, timeout, withLatestFrom } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, timeout, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app/app.state';
 import { BillApiActions } from './bill-api.actions';
 import { BillsActions } from './bill.actions';
@@ -31,6 +31,7 @@ export class BillEffects {
       switchMap(() =>
         this.overviewBillsService.load().pipe(
           timeout(15000),
+          retry({ count: 2, delay: 3_000 }),
           map(bills => BillApiActions.loadOverviewBillsSuccess({ bills })),
           catchError(error => of(BillApiActions.loadOverviewBillsFailure({ error })))
         )

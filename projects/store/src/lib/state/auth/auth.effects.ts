@@ -4,8 +4,8 @@ import { Store } from '@ngrx/store';
 import { SupabaseService } from 'projects/bills-main-app/src/app/services/supabase.service';
 import { AuthService } from 'projects/model/src/public-api';
 import { NavigationService, NotificationService } from 'projects/tools/src/public-api';
-import { of } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
+import { merge, of } from 'rxjs';
+import { catchError, concatMap, debounceTime, filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app/app.state';
 import { AuthActions } from '../auth';
 import { BillsActions, BillsSelectors } from '../bill';
@@ -53,11 +53,17 @@ export class AuthEffects {
         switchMap(() => of(BillsActions.loadOverviewBills())));
   });
 
-  // Reload data when Supabase auto-refreshes the token (e.g. after a network
-  // blip). Without this, data stays stale because loginSuccess$ never fires.
+  // Reload data when the token is refreshed (normal expiry) or when connectivity
+  // is explicitly restored after an outage.  The debounce prevents double-loading
+  // if both sources fire on the same refresh.
   tokenRefreshed$ = createEffect(() =>
-    this.supabaseService.authEvents$.pipe(
-      filter(({ event }) => event === 'TOKEN_REFRESHED'),
+    merge(
+      this.supabaseService.authEvents$.pipe(
+        filter(({ event }) => event === 'TOKEN_REFRESHED')
+      ),
+      this.supabaseService.connectivityRestored$
+    ).pipe(
+      debounceTime(500),
       withLatestFrom(this.store.select(BillsSelectors.selectBill)),
       mergeMap(([, currentBill]) => {
         const actions = [BillsActions.loadOverviewBills()];
