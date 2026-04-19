@@ -37,6 +37,13 @@ export class RealtimeServiceImpl extends RealtimeService {
         this.removeChannels();
       }
     });
+
+    // After a network outage the existing WebSocket channels are dead.
+    // Tear them down and rebuild so realtime events flow again.
+    this.supabase.connectivityRestored$.subscribe(() => {
+      this.removeChannels();
+      client.realtime.setAuth().then(() => this.initChannels());
+    });
   }
 
   private initChannels(): void {

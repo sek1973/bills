@@ -33,6 +33,13 @@ export class SupabaseService {
   /** Emits every Supabase auth event (SIGNED_IN, TOKEN_REFRESHED, SIGNED_OUT, …). */
   readonly authEvents$ = this._authEvents.asObservable();
 
+  private readonly _connectivityRestored = new Subject<void>();
+  /** Emits after the session is successfully refreshed following a network recovery. */
+  readonly connectivityRestored$ = this._connectivityRestored.asObservable();
+
+  private _lastRestoreAttempt = 0;
+  private static readonly RESTORE_COOLDOWN_MS = 15_000;
+
   constructor() {
     this.supabase.auth.getSession().then(({ data }) => {
       this._session.set(data.session ?? null);
@@ -47,6 +54,32 @@ export class SupabaseService {
       this._user.set(session?.user ?? null);
       this._authEvents.next({ event, session });
     });
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('online', () => this.refreshOnReconnect());
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) this.refreshOnReconnect();
+      });
+    }
+  }
+
+  /**
+   * Force a session refresh after a potential network outage.
+   * Triggers TOKEN_REFRESHED (which reloads data via existing effects)
+   * and emits connectivityRestored$ (so realtime channels can reconnect).
+   */
+  private refreshOnReconnect(): void {
+    if (!this._session()) return;
+
+    const now = Date.now();
+    if (now - this._lastRestoreAttempt < SupabaseService.RESTORE_COOLDOWN_MS) return;
+    this._lastRestoreAttempt = now;
+
+    this.supabase.auth.refreshSession().then(({ data, error }) => {
+      if (!error && data.session) {
+        this._connectivityRestored.next();
+      }
+    }).catch(() => { /* still offline or session invalid */ });
   }
 
   async signUpWithEmail(email: string, password: string) {
