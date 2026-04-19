@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { Bill, Payment } from 'projects/model/src/lib/model';
 import { RealtimeService, UserSettingsService } from 'projects/model/src/public-api';
 import { AppState, BillsActions, BillsSelectors, PaymentsSelectors } from 'projects/store/src/lib/state';
-import { ThemeService } from 'projects/tools/src/public-api';
+import { PullToRefreshDirective, ThemeService } from 'projects/tools/src/public-api';
 import { filter } from 'rxjs/operators';
 import { PaymentsComponent } from '../payments/payments.component';
 import { BillEditComponent } from './bill-edit/bill-edit.component';
@@ -20,7 +20,7 @@ import { PaymentsChartComponent } from './payments-chart/payments-chart.componen
   templateUrl: './bill.component.html',
   styleUrls: ['./bill.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatTooltipModule, BillEditComponent, PaymentsComponent, PaymentsChartComponent]
+  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, MatTooltipModule, BillEditComponent, PaymentsComponent, PaymentsChartComponent, PullToRefreshDirective]
 })
 export class BillComponent implements OnInit {
   billEdit = viewChild(BillEditComponent);
@@ -123,6 +123,7 @@ export class BillComponent implements OnInit {
   saveBillAndClose(): void { this.billEdit()?.saveBillAndClose(); }
   deleteBill(): void { this.billEdit()?.deleteBill(); }
   cancel(): void { this.billEdit()?.cancel(); }
+  refresh(): void { this.store.dispatch(BillsActions.loadOverviewBills()); }
   toggleActive(): void { this.billEdit()?.toggleActive(); }
   toggleAmountDetails(): void {
     this.userSettings.showAmountDetails.update(v => !v);
