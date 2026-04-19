@@ -34,7 +34,6 @@ export class BillEditComponent {
   bills = input<Bill[]>();
   newBill = input<boolean>(false);
   editMode = input<boolean>(false);
-  showSaveAndClose = input<boolean>(true);
 
   editModeChange = output<boolean>();
 
@@ -141,15 +140,6 @@ export class BillEditComponent {
       this.store.dispatch(BillsActions.createBill({ bill, redirect: false }));
     } else {
       this.store.dispatch(BillsActions.updateBill({ bill, redirect: false }));
-    }
-  }
-
-  saveBillAndClose(): void {
-    const bill = this.createBillFromFormValue(this.form.value as Partial<Bill>);
-    if (this.newBill()) {
-      this.store.dispatch(BillsActions.createBill({ bill, redirect: false }));
-    } else {
-      this.store.dispatch(BillsActions.updateBill({ bill, redirect: true }));
     }
   }
 

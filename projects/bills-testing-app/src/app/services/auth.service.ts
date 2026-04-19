@@ -10,6 +10,7 @@ export class AuthServiceImpl extends AuthService {
   private store = inject(Store<AppState>);
   private authStateSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public authState$: Observable<boolean> = this.authStateSubject.asObservable();
+  public sessionRestored$: Observable<void> = of(undefined);
 
   constructor() {
     super();

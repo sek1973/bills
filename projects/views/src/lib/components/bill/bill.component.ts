@@ -122,7 +122,6 @@ export class BillComponent implements OnInit {
     if (bill) { this.store.dispatch(BillsActions.payBill({ bill })); }
   }
   saveBill(): void { this.billEdit()?.saveBill(); }
-  saveBillAndClose(): void { this.billEdit()?.saveBillAndClose(); }
   deleteBill(): void { this.billEdit()?.deleteBill(); }
   cancel(): void { this.billEdit()?.cancel(); }
   refresh(): void {

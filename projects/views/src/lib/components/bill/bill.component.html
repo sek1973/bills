@@ -38,34 +38,21 @@
               color="accent"
               class="toolbar-button"
               (click)="cancel()">
-        <span class="material-icons btn-icon">close</span>
-        <span class="btn-text">Anuluj</span>
+        <span class="btn-text-always">Anuluj</span>
       </button>
       <button mat-raised-button
               color="warn"
               class="toolbar-button"
               (click)="deleteBill()">
-        <span class="material-icons btn-icon">delete</span>
-        <span class="btn-text">Usuń</span>
+        <span class="btn-text-always">Usuń</span>
       </button>
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
               [disabled]="!billEdit()?.canSave()"
               (click)="saveBill()">
-        <span class="material-icons btn-icon">save</span>
-        <span class="btn-text">Zapisz</span>
+        <span class="btn-text-always">Zapisz</span>
       </button>
-      @if (billEdit()?.showSaveAndClose()) {
-      <button mat-raised-button
-              color="primary"
-              class="toolbar-button"
-              [disabled]="!billEdit()?.canSave()"
-              (click)="saveBillAndClose()">
-        <span class="material-icons btn-icon">done_all</span>
-        <span class="btn-text">Zapisz i zamknij</span>
-      </button>
-      }
       }
       @if (!editMode()) {
       <div class="bill-full-buttons">
