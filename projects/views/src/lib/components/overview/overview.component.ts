@@ -11,14 +11,14 @@ import { TableCellDirective } from 'projects/tools/src/lib/components/table/dire
 import { TableColumn, TableMenuItem } from 'projects/tools/src/lib/components/table/table-column.model';
 import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
 import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
-import { NotificationService, TableComponent, ThemeService } from 'projects/tools/src/public-api';
+import { NotificationService, PullToRefreshDirective, TableComponent, ThemeService } from 'projects/tools/src/public-api';
 
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, BillDueColorDirective, DateToStringPipe, CurrencyToStringPipe]
+  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatTooltipModule, TableComponent, TableCellDirective, BillDueColorDirective, DateToStringPipe, CurrencyToStringPipe, PullToRefreshDirective]
 })
 export class OverviewComponent implements OnInit {
   editMode = signal(false);

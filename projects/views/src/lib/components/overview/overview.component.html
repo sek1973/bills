@@ -1,4 +1,6 @@
 <app-table #table
+           pullToRefresh
+           (pullToRefresh)="refresh()"
            [tableTitle]="'Rachunki (' + filtered().length + ')'"
            [data]="filtered()"
            [columnsDefinition]="columns"

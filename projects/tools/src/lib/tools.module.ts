@@ -5,15 +5,16 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { BILLS_DATE_FORMATS, BillsDateAdapter } from './helpers/date.adapter';
 
 export function provideToolsDeps(): EnvironmentProviders {
-    return makeEnvironmentProviders([
-        provideAnimationsAsync(),
-        provideHttpClient(),
-        { provide: MAT_DATE_FORMATS, useValue: BILLS_DATE_FORMATS },
-        { provide: DateAdapter, useClass: BillsDateAdapter },
-    ]);
+  return makeEnvironmentProviders([
+    provideAnimationsAsync(),
+    provideHttpClient(),
+    { provide: MAT_DATE_FORMATS, useValue: BILLS_DATE_FORMATS },
+    { provide: DateAdapter, useClass: BillsDateAdapter },
+  ]);
 }
 
 export * from './components';
+export * from './directives';
 export * from './helpers';
 export * from './services';
 
