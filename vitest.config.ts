@@ -1,19 +1,12 @@
 import angular from '@analogjs/vite-plugin-angular';
-import path from 'path';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [angular({ tsconfig: './tsconfig.vitest.json' })],
-  resolve: {
-    alias: {
-      'projects/model/src/public-api': path.resolve(__dirname, 'projects/model/src/public-api.ts'),
-      // TODO: Vitest seems to have an issue with nested barrel files, investigate and remove the need for this once resolved
-      'projects/model/src/lib/model': path.resolve(__dirname, 'projects/model/src/lib/model/index.ts'),
-      'projects/store/src/public-api': path.resolve(__dirname, 'projects/store/src/public-api.ts'),
-      'projects/tools/src/public-api': path.resolve(__dirname, 'projects/tools/src/public-api.ts'),
-      'projects/views/src/public-api': path.resolve(__dirname, 'projects/views/src/public-api.ts'),
-    },
-  },
+  plugins: [
+    tsconfigPaths({ projects: ['./tsconfig.vitest.json'] }),
+    angular({ tsconfig: './tsconfig.vitest.json' }),
+  ],
   test: {
     globals: true,
     environment: 'jsdom',
