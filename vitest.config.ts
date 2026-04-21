@@ -7,6 +7,8 @@ export default defineConfig({
   resolve: {
     alias: {
       'projects/model/src/public-api': path.resolve(__dirname, 'projects/model/src/public-api.ts'),
+      // TODO: Vitest seems to have an issue with nested barrel files, investigate and remove the need for this once resolved
+      'projects/model/src/lib/model': path.resolve(__dirname, 'projects/model/src/lib/model/index.ts'),
       'projects/store/src/public-api': path.resolve(__dirname, 'projects/store/src/public-api.ts'),
       'projects/tools/src/public-api': path.resolve(__dirname, 'projects/tools/src/public-api.ts'),
       'projects/views/src/public-api': path.resolve(__dirname, 'projects/views/src/public-api.ts'),

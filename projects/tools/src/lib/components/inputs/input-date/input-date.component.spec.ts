@@ -1,0 +1,68 @@
+import { provideZonelessChangeDetection } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { DescriptionProvider } from '../input-component-base';
+import { InputDateComponent } from './input-date.component';
+
+function makeProvider(): DescriptionProvider {
+  return { getDescriptionObj: () => ({ labelText: 'Date', tooltipText: 'Pick a date', placeholderText: 'MM/DD/YYYY' }) };
+}
+
+function setup(overrides: { editMode?: boolean; autoHide?: boolean; value?: any } = {}) {
+  const fg = new UntypedFormGroup({ dueDate: new UntypedFormControl(overrides.value ?? null) });
+  const fixture = TestBed.createComponent(InputDateComponent);
+  fixture.componentRef.setInput('formGroup', fg);
+  fixture.componentRef.setInput('path', ['dueDate']);
+  fixture.componentRef.setInput('descriptionProvider', makeProvider());
+  if (overrides.editMode !== undefined) fixture.componentRef.setInput('editMode', overrides.editMode);
+  if (overrides.autoHide !== undefined) fixture.componentRef.setInput('autoHide', overrides.autoHide);
+  fixture.detectChanges();
+  return { fixture, component: fixture.componentInstance };
+}
+
+describe('InputDateComponent', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [InputDateComponent],
+      providers: [provideZonelessChangeDetection(), provideNativeDateAdapter()],
+    });
+  });
+
+  it('creates successfully', () => {
+    const { component } = setup();
+    expect(component).toBeTruthy();
+  });
+
+  it('is visible when control exists', () => {
+    const { component } = setup();
+    expect(component.visible()).toBe(true);
+  });
+
+  it('is not visible when control does not exist', () => {
+    const fg = new UntypedFormGroup({});
+    const fixture = TestBed.createComponent(InputDateComponent);
+    fixture.componentRef.setInput('formGroup', fg);
+    fixture.componentRef.setInput('path', ['missing']);
+    fixture.componentRef.setInput('descriptionProvider', makeProvider());
+    fixture.detectChanges();
+    expect(fixture.componentInstance.visible()).toBe(false);
+  });
+
+  it('is hidden when autoHide=true, editMode=false, and value is null', () => {
+    const { component } = setup({ autoHide: true, editMode: false, value: null });
+    expect(component.visible()).toBe(false);
+  });
+
+  it('is visible when autoHide=true, editMode=false, and value is non-empty', () => {
+    const { component } = setup({ autoHide: true, editMode: false, value: new Date() });
+    expect(component.visible()).toBe(true);
+  });
+
+  it('renders the datepicker toggle when visible', () => {
+    const { fixture } = setup();
+    const toggle = fixture.nativeElement.querySelector('mat-datepicker-toggle');
+    expect(toggle).toBeTruthy();
+  });
+});
