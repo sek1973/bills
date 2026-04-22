@@ -4,8 +4,7 @@ import { NavigationService, NotificationService } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, concatMap, debounceTime, filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
-import { SupabaseService } from '../../../../../bills-main-app/src/app/services/supabase.service';
+import { catchError, concatMap, debounceTime, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app/app.state';
 import { AuthActions } from '../auth';
 import { BillsActions, BillsSelectors } from '../bill';
@@ -16,7 +15,6 @@ export class AuthEffects {
 
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
-  private supabaseService = inject(SupabaseService);
   private store = inject(Store<AppState>);
   private notification = inject(NotificationService);
   private navigationService = inject(NavigationService);
@@ -57,8 +55,7 @@ export class AuthEffects {
   // is explicitly restored after an outage.  The debounce prevents double-loading
   // if both sources fire on the same refresh.
   tokenRefreshed$ = createEffect(() =>
-    this.supabaseService.authEvents$.pipe(
-      filter(({ event }) => event === 'TOKEN_REFRESHED'),
+    this.authService.sessionRestored$.pipe(
       debounceTime(500),
       withLatestFrom(this.store.select(BillsSelectors.selectBill)),
       mergeMap(([, currentBill]) => {

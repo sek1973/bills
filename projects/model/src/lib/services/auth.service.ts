@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export abstract class AuthService {
   public abstract authState$: Observable<boolean>;
-  /** Emits (void) whenever the Supabase session token is silently refreshed. */
+  /** Emits (void) whenever the session token is silently refreshed. */
   public abstract sessionRestored$: Observable<void>;
 
   constructor() { }
