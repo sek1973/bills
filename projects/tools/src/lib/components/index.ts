@@ -3,5 +3,4 @@ export * from './confirm-dialog';
 export * from './import-report-dialog';
 export * from './inputs/';
 export * from './table/';
-export * from './view-fields/';
 
