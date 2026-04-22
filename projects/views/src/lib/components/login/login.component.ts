@@ -3,10 +3,9 @@ import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators }
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { FieldDescription } from 'projects/model/src/lib/model';
-import { AppState, AuthActions } from 'projects/store/src/lib/state';
-import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputPasswordComponent, InputTextComponent } from 'projects/tools/src/public-api';
+import { FieldDescription } from 'model';
+import { AppState, AuthActions } from 'store';
+import { DescriptionProvider, InputPasswordComponent, InputTextComponent } from 'tools';
 
 @Component({
   selector: 'app-login',

@@ -2,9 +2,9 @@ import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AppSelectors, AppState } from 'projects/store/src/lib/state';
-import { AppSpinnerComponent } from 'projects/tools/src/public-api';
 import { debounceTime } from 'rxjs/operators';
+import { AppSelectors, AppState } from 'store';
+import { AppSpinnerComponent } from 'tools';
 
 @Component({
   selector: 'app-root',

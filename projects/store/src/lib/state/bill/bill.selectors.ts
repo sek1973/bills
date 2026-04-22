@@ -1,4 +1,4 @@
-import { OverviewBill } from 'projects/model/src/lib/model';
+import { OverviewBill } from 'model';
 import { AppState } from '../app/app.state';
 
 

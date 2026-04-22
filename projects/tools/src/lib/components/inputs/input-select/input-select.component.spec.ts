@@ -1,7 +1,7 @@
 import { provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { Unit, UnitDescription } from 'projects/model/src/public-api';
+import { Unit, UnitDescription } from 'model';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { DescriptionProvider } from '../input-component-base';
 import { InputSelectComponent, SelectItem, unitsToSelectItems } from './input-select.component';

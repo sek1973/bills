@@ -16,5 +16,6 @@ export function provideToolsDeps(): EnvironmentProviders {
 export * from './components';
 export * from './directives';
 export * from './helpers';
+export * from './pipes';
 export * from './services';
 

@@ -1,4 +1,5 @@
 export * from './directives/';
+export * from './input-component-base';
 export * from './input-currency/input-currency.component';
 export * from './input-date/input-date.component';
 export * from './input-hyperlink/input-hyperlink.component';
@@ -9,3 +10,4 @@ export * from './input-text/input-text.component';
 export * from './input-textarea/input-textarea.component';
 export * from './input-toggle/input-toggle.component';
 export * from './validators/validators';
+

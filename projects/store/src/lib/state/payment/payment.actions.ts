@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Payment } from 'projects/model/src/lib/model';
+import { Payment } from 'model';
 
 export const PaymentsActions = {
 

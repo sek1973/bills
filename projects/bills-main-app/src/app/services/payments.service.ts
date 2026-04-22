@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
+import { Payment, PaymentsService } from 'model';
 import moment from 'moment';
-import { Payment, PaymentsService } from 'projects/model/src/public-api';
 import { from, map, Observable } from 'rxjs';
 import { PaymentRow } from './db.types';
 import { SupabaseService } from './supabase.service';

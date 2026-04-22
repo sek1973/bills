@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Payment, PaymentsService } from 'projects/model/src/public-api';
+import { Payment, PaymentsService } from 'model';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 

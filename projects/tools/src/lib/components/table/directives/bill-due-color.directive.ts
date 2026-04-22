@@ -1,5 +1,5 @@
 import { computed, Directive, input } from '@angular/core';
-import { addDays } from 'projects/model/src/public-api';
+import { addDays } from 'model';
 
 @Directive({
   selector: '[billDueColor]',

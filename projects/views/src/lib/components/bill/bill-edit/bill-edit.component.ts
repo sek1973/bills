@@ -4,11 +4,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Bill, BillDescription, Unit } from 'projects/model/src/lib/model';
-import { UserSettingsService } from 'projects/model/src/public-api';
-import { AppState, BillsActions } from 'projects/store/src/lib/state';
-import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
+import { Bill, BillDescription, Unit, UserSettingsService } from 'model';
+import { map } from 'rxjs';
+import { AppState, BillsActions } from 'store';
 import {
+  DescriptionProvider,
   InputCurrencyComponent,
   InputHyperlinkComponent,
   InputSelectComponent,
@@ -17,8 +17,7 @@ import {
   SelectItem,
   unitsToSelectItems,
   validateDistinctBillName
-} from 'projects/tools/src/public-api';
-import { map } from 'rxjs';
+} from 'tools';
 
 @Component({
   selector: 'app-bill-edit',

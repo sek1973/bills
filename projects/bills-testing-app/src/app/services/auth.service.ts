@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AuthService } from 'projects/model/src/public-api';
-import { AppState, AuthActions } from 'projects/store/src/lib/state';
+import { AuthService } from 'model';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { AppState, AuthActions } from '../../../../store/src/lib/state';
 
 @Injectable({ providedIn: 'root' })
 export class AuthServiceImpl extends AuthService {

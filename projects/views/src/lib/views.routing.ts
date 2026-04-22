@@ -1,5 +1,5 @@
 import { Routes, mapToCanActivate } from '@angular/router';
-import { AuthGuard } from 'projects/tools/src/public-api';
+import { AuthGuard } from 'tools';
 import { BillComponent, ChangePasswordComponent, LoginComponent, OverviewComponent, PageNotFoundComponent, ReportsComponent, ResetPasswordComponent, UpdatePasswordComponent } from './components';
 import { RootComponent } from './components/root/root.component';
 

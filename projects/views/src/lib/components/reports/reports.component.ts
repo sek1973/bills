@@ -5,9 +5,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AuthService, Bill, Payment, PaymentsService } from 'projects/model/src/public-api';
-import { AppState, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
-import { PullToRefreshDirective, ThemeService } from 'projects/tools/src/public-api';
+import { AuthService, Bill, Payment, PaymentsService } from 'model';
+import { AppState, BillsActions, BillsSelectors } from 'store';
+import { PullToRefreshDirective, ThemeService } from 'tools';
 import { PieSegment, ReportsPieChartComponent } from './reports-pie-chart/reports-pie-chart.component';
 import { BillSeries, ChartMode, ReportsStackedChartComponent, StackedBarPoint } from './reports-stacked-chart/reports-stacked-chart.component';
 

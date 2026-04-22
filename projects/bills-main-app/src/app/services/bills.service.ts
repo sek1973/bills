@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Bill, BillsService } from 'projects/model/src/public-api';
+import { Bill, BillsService } from 'model';
 import { from, map, Observable } from 'rxjs';
 import { BillRow } from './db.types';
 import { PaymentsServiceImpl } from './payments.service';

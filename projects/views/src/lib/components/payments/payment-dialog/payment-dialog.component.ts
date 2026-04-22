@@ -3,11 +3,9 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { calculateNextDeadline } from 'projects/model/src/lib/helpers/common.functions';
-import { Bill, Payment, PaymentDescription } from 'projects/model/src/lib/model';
-import { AppState, PaymentsActions } from 'projects/store/src/lib/state';
-import { DescriptionProvider } from 'projects/tools/src/lib/components/inputs/input-component-base';
-import { InputCurrencyComponent, InputDateComponent, InputTextComponent } from 'projects/tools/src/public-api';
+import { Bill, calculateNextDeadline, Payment, PaymentDescription } from 'model';
+import { AppState, PaymentsActions } from 'store';
+import { DescriptionProvider, InputCurrencyComponent, InputDateComponent, InputTextComponent } from 'tools';
 
 export interface PaymentDialogData {
   bill: Bill;

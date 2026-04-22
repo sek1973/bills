@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { REALTIME_CHANNEL_STATES, RealtimeChannel } from '@supabase/supabase-js';
-import { RealtimeService } from 'projects/model/src/public-api';
+import { RealtimeService } from 'model';
 import { Subject } from 'rxjs';
 import { SupabaseService } from './supabase.service';
 

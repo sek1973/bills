@@ -4,14 +4,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { OverviewBill, RealtimeService } from 'projects/model/src/public-api';
-import { AppState, AuthActions, BillsActions, BillsSelectors } from 'projects/store/src/lib/state';
-import { BillDueColorDirective } from 'projects/tools/src/lib/components/table/directives/bill-due-color.directive';
-import { TableCellDirective } from 'projects/tools/src/lib/components/table/directives/table-cell.directive';
-import { TableColumn, TableMenuItem } from 'projects/tools/src/lib/components/table/table-column.model';
-import { CurrencyToStringPipe } from 'projects/tools/src/lib/pipes/currency-to-string.pipe';
-import { DateToStringPipe } from 'projects/tools/src/lib/pipes/timespan-to-string.pipe';
-import { NotificationService, PullToRefreshDirective, TableComponent, ThemeService } from 'projects/tools/src/public-api';
+import { OverviewBill, RealtimeService } from 'model';
+import { AppState, AuthActions, BillsActions, BillsSelectors } from 'store';
+import {
+  BillDueColorDirective,
+  CurrencyToStringPipe,
+  DateToStringPipe,
+  NotificationService,
+  PullToRefreshDirective,
+  TableCellDirective,
+  TableColumn,
+  TableComponent,
+  TableMenuItem,
+  ThemeService
+} from 'tools';
 
 @Component({
   selector: 'app-overview',

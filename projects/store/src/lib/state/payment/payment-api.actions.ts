@@ -1,7 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { PostgrestError } from '@supabase/supabase-js';
-import { Payment } from 'projects/model/src/lib/model';
-import { ImportReport } from 'projects/model/src/public-api';
+import { ImportReport, Payment } from 'model';
 
 export const PaymentApiActions = {
 

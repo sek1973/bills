@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, input } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { FieldDescription } from 'projects/model/src/lib/model';
+import { FieldDescription } from 'model';
 import { getErrorMessage } from './validators/validators';
 
 export interface DescriptionProvider {

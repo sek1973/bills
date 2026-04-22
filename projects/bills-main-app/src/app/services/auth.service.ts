@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { AuthService } from 'projects/model/src/public-api';
+import { AuthService } from 'model';
 import { from, Observable, of, ReplaySubject } from 'rxjs';
 import { catchError, filter, map } from 'rxjs/operators';
 import { SupabaseService } from './supabase.service';

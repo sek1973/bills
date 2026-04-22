@@ -1,6 +1,6 @@
 import { Directive, ElementRef, forwardRef, HostListener, Renderer2 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { currencyToNumber, currencyToString } from 'projects/model/src/public-api';
+import { currencyToNumber, currencyToString } from 'model';
 
 export const APP_CURRENCY_VALUE_ACCESSOR = {
   provide: NG_VALUE_ACCESSOR,

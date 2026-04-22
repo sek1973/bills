@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { dateToString } from 'projects/model/src/public-api';
+import { dateToString } from 'model';
 
 @Pipe({
   name: 'timespanToString'

@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { PaymentsService } from 'projects/model/src/public-api';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NotificationService } from 'projects/tools/src/public-api';
+import { PaymentsService } from 'model';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, timeout } from 'rxjs/operators';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NotificationService } from 'tools';
 import { PaymentApiActions } from './payment-api.actions';
 import { PaymentsActions } from './payment.actions';
 
