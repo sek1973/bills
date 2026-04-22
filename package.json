@@ -17,6 +17,8 @@
     "build-testing-app": "ng build --configuration production --aot --project=bills-testing-app",
     "test:ui": "vitest --ui",
     "lint": "ng lint",
+    "depcruise": "depcruise projects --config .dependency-cruiser.js",
+    "depcruise:graph": "depcruise projects --config .dependency-cruiser.js --output-type dot | dot -T svg > dependency-graph.svg",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -61,6 +63,7 @@
     "@typescript-eslint/eslint-plugin": "^8.58.1",
     "@typescript-eslint/parser": "^8.58.1",
     "@vitest/ui": "^4.1.4",
+    "dependency-cruiser": "^17.3.10",
     "eslint": "^9.0.0",
     "eslint-config-google": "^0.14.0",
     "globals": "^17.0.0",
