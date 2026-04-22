@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Payment, PaymentsService } from 'model';
+import { Payment, PaymentsService } from '@bills/model';
 import moment from 'moment';
 import { from, map, Observable } from 'rxjs';
 import { PaymentRow } from './db.types';

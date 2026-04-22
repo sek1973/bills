@@ -3,9 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { OverviewBill, RealtimeService } from 'model';
-import { AppState, AuthActions, BillsActions, BillsSelectors } from 'store';
+import { OverviewBill, RealtimeService } from '@bills/model';
+import { AppState, AuthActions, BillsActions, BillsSelectors } from '@bills/store';
 import {
   BillDueColorDirective,
   CurrencyToStringPipe,
@@ -17,7 +16,8 @@ import {
   TableComponent,
   TableMenuItem,
   ThemeService
-} from 'tools';
+} from '@bills/tools';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-overview',

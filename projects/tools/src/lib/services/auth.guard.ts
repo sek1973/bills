@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from 'model';
+import { AuthService } from '@bills/model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PreviousUrlService } from './previous-url.service';

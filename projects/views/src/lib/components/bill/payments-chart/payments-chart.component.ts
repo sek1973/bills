@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, computed, effect, inject, input, signal, viewChild } from '@angular/core';
+import { Payment } from '@bills/model';
+import { ThemeService } from '@bills/tools';
 import { ScaleBand, ScaleLinear, Selection, axisBottom, axisLeft, max, scaleBand, scaleLinear, select, timeFormat } from 'd3';
-import { Payment } from 'model';
-import { ThemeService } from 'tools';
 
 interface ChartColors {
   textColor: string;

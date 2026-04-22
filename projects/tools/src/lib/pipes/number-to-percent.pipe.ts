@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { percentToString } from 'model';
+import { percentToString } from '@bills/model';
 
 @Pipe({
   name: 'numberToPercent'

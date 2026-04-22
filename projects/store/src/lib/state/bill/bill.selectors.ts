@@ -1,4 +1,4 @@
-import { OverviewBill } from 'model';
+import { OverviewBill } from '@bills/model';
 import { AppState } from '../app/app.state';
 
 

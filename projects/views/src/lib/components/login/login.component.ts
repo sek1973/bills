@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import { FieldDescription } from '@bills/model';
+import { AppState, AuthActions } from '@bills/store';
+import { DescriptionProvider, InputPasswordComponent, InputTextComponent } from '@bills/tools';
 import { Store } from '@ngrx/store';
-import { FieldDescription } from 'model';
-import { AppState, AuthActions } from 'store';
-import { DescriptionProvider, InputPasswordComponent, InputTextComponent } from 'tools';
 
 @Component({
   selector: 'app-login',

@@ -3,10 +3,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Bill, BillDescription, Unit, UserSettingsService } from 'model';
-import { map } from 'rxjs';
-import { AppState, BillsActions } from 'store';
+import { Bill, BillDescription, Unit, UserSettingsService } from '@bills/model';
+import { AppState, BillsActions } from '@bills/store';
 import {
   DescriptionProvider,
   InputCurrencyComponent,
@@ -17,7 +15,9 @@ import {
   SelectItem,
   unitsToSelectItems,
   validateDistinctBillName
-} from 'tools';
+} from '@bills/tools';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-bill-edit',

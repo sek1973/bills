@@ -7,10 +7,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { Bill, Payment, RealtimeService, UserSettingsService } from 'model';
+import { Bill, Payment, RealtimeService, UserSettingsService } from '@bills/model';
+import { AppState, BillsActions, BillsSelectors, PaymentsSelectors } from '@bills/store';
+import { PullToRefreshDirective, ThemeService } from '@bills/tools';
 import { filter } from 'rxjs/operators';
-import { AppState, BillsActions, BillsSelectors, PaymentsSelectors } from 'store';
-import { PullToRefreshDirective, ThemeService } from 'tools';
 import { PaymentsComponent } from '../payments/payments.component';
 import { BillEditComponent } from './bill-edit/bill-edit.component';
 import { PaymentsChartComponent } from './payments-chart/payments-chart.component';

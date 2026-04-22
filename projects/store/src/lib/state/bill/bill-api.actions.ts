@@ -1,6 +1,6 @@
+import { Bill, OverviewBill } from '@bills/model';
 import { createAction, props } from '@ngrx/store';
 import { PostgrestError } from '@supabase/supabase-js';
-import { Bill, OverviewBill } from 'model';
 
 export const BillApiActions = {
   loadOverviewBillsSuccess: createAction(

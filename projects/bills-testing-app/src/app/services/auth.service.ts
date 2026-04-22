@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
+import { AuthService } from '@bills/model';
 import { Store } from '@ngrx/store';
-import { AuthService } from 'model';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { AppState, AuthActions } from '../../../../store/src/lib/state';

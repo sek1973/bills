@@ -4,10 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
+import { AuthService, Bill, Payment, PaymentsService } from '@bills/model';
+import { AppState, BillsActions, BillsSelectors } from '@bills/store';
+import { PullToRefreshDirective, ThemeService } from '@bills/tools';
 import { Store } from '@ngrx/store';
-import { AuthService, Bill, Payment, PaymentsService } from 'model';
-import { AppState, BillsActions, BillsSelectors } from 'store';
-import { PullToRefreshDirective, ThemeService } from 'tools';
 import { PieSegment, ReportsPieChartComponent } from './reports-pie-chart/reports-pie-chart.component';
 import { BillSeries, ChartMode, ReportsStackedChartComponent, StackedBarPoint } from './reports-stacked-chart/reports-stacked-chart.component';
 

@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
+import { Bill, Payment, RealtimeService } from '@bills/model';
+import { AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelectors } from '@bills/store';
+import { CurrencyToStringPipe, DateToStringPipe, TableCellDirective, TableColumn, TableComponent, ThemeService } from '@bills/tools';
 import { Store } from '@ngrx/store';
-import { Bill, Payment, RealtimeService } from 'model';
 import moment from 'moment';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelectors } from 'store';
-import { CurrencyToStringPipe, DateToStringPipe, TableCellDirective, TableColumn, TableComponent, ThemeService } from 'tools';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 @Component({

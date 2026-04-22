@@ -1,13 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BillsService, calculateNextDeadline, OverviewBillsService, Payment, PaymentsService } from '@bills/model';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService, validateBillName } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { BillsService, calculateNextDeadline, OverviewBillsService, Payment, PaymentsService } from 'model';
 import moment from 'moment';
 import { Observable, of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, timeout, withLatestFrom } from 'rxjs/operators';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService, validateBillName } from 'tools';
 import { AppState } from '../app/app.state';
 import { BillApiActions } from './bill-api.actions';
 import { BillsActions } from './bill.actions';

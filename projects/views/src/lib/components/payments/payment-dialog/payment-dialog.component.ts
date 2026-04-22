@@ -2,10 +2,10 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, computed, inject, On
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Bill, calculateNextDeadline, Payment, PaymentDescription } from '@bills/model';
+import { AppState, PaymentsActions } from '@bills/store';
+import { DescriptionProvider, InputCurrencyComponent, InputDateComponent, InputTextComponent } from '@bills/tools';
 import { Store } from '@ngrx/store';
-import { Bill, calculateNextDeadline, Payment, PaymentDescription } from 'model';
-import { AppState, PaymentsActions } from 'store';
-import { DescriptionProvider, InputCurrencyComponent, InputDateComponent, InputTextComponent } from 'tools';
 
 export interface PaymentDialogData {
   bill: Bill;

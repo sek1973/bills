@@ -17,10 +17,10 @@
     "target": "ES2022",
     "module": "es2020",
     "paths": {
-      "model": ["./projects/model/src/public-api.ts"],
-      "store": ["./projects/store/src/public-api.ts"],
-      "tools": ["./projects/tools/src/public-api.ts"],
-      "views": ["./projects/views/src/public-api.ts"]
+      "@bills/model": ["./projects/model/src/public-api.ts"],
+      "@bills/store": ["./projects/store/src/public-api.ts"],
+      "@bills/tools": ["./projects/tools/src/public-api.ts"],
+      "@bills/views": ["./projects/views/src/public-api.ts"]
     },
     "useDefineForClassFields": false
   },

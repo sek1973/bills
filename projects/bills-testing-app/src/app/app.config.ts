@@ -1,8 +1,8 @@
 import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
-import { AuthService, BillsService, PaymentsService } from 'model';
-import { provideBillsStore } from 'store';
-import { provideToolsDeps } from 'tools';
-import { provideViews } from 'views';
+import { AuthService, BillsService, PaymentsService } from '@bills/model';
+import { provideBillsStore } from '@bills/store';
+import { provideToolsDeps } from '@bills/tools';
+import { provideViews } from '@bills/views';
 import { environment } from '../environments/environment';
 import { AuthServiceImpl, BillsServiceImpl, PaymentsServiceImpl } from './services';
 

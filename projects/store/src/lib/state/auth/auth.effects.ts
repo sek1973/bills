@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
+import { AuthService } from '@bills/model';
+import { NavigationService, NotificationService } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { AuthService } from 'model';
 import { of } from 'rxjs';
 import { catchError, concatMap, debounceTime, filter, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
-import { NavigationService, NotificationService } from 'tools';
 import { SupabaseService } from '../../../../../bills-main-app/src/app/services/supabase.service';
 import { AppState } from '../app/app.state';
 import { AuthActions } from '../auth';

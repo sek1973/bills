@@ -1,4 +1,4 @@
-import { Bill, Payment } from 'model';
+import { Bill, Payment } from '@bills/model';
 
 export interface AppData {
   loggedIn: boolean;

@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService, FieldDescription } from 'model';
-import { DescriptionProvider, InputPasswordComponent, NotificationService } from 'tools';
+import { AuthService, FieldDescription } from '@bills/model';
+import { DescriptionProvider, InputPasswordComponent, NotificationService } from '@bills/tools';
 
 @Component({
   selector: 'app-update-password',

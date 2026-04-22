@@ -1,5 +1,5 @@
+import { Bill } from '@bills/model';
 import { createAction, props } from '@ngrx/store';
-import { Bill } from 'model';
 
 export const BillsActions = {
 

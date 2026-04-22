@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Bill, BillsService, Unit } from 'model';
+import { Bill, BillsService, Unit } from '@bills/model';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { PaymentsServiceImpl } from './payments.service';

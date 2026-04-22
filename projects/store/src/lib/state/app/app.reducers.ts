@@ -1,5 +1,5 @@
+import { Bill, OverviewBill, Payment } from '@bills/model';
 import { createReducer, on } from "@ngrx/store";
-import { Bill, OverviewBill, Payment } from 'model';
 import { AuthActions } from "../auth";
 import { BillApiActions, BillsActions } from "../bill";
 import { PaymentApiActions, PaymentsActions } from "../payment";

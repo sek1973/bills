@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, effect, inject, input, viewChild } from '@angular/core';
+import { ThemeService } from '@bills/tools';
 import { arc, pie, select } from 'd3';
-import { ThemeService } from 'tools';
 
 export interface PieSegment {
   name: string;

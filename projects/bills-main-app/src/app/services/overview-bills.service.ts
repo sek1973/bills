@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { OverviewBill, OverviewBillsService } from 'model';
+import { OverviewBill, OverviewBillsService } from '@bills/model';
 import { from, map, Observable } from 'rxjs';
 import { OverviewBillRow } from './db.types';
 import { SupabaseService } from './supabase.service';

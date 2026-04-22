@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
-import { AuthService, FieldDescription } from 'model';
-import { DescriptionProvider, InputTextComponent, NotificationService } from 'tools';
+import { AuthService, FieldDescription } from '@bills/model';
+import { DescriptionProvider, InputTextComponent, NotificationService } from '@bills/tools';
 
 @Component({
   selector: 'app-reset-password',

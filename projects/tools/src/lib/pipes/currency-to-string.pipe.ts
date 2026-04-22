@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { currencyToString } from 'model';
+import { currencyToString } from '@bills/model';
 
 @Pipe({
   name: 'currencyToString'
