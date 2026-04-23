@@ -33,6 +33,7 @@
             "tsConfig": "projects/bills-main-app/tsconfig.app.json",
             "assets": [
               "projects/bills-main-app/src/favicon.ico",
+              "projects/bills-main-app/src/sw.js",
               "projects/bills-main-app/src/assets"
             ],
             "styles": [
