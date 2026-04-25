@@ -15,10 +15,11 @@ export class PushNotificationService {
   readonly isSubscribed = signal(false);
 
   private swRegistration: ServiceWorkerRegistration | null = null;
+  private initPromise: Promise<void> | null = null;
 
   constructor() {
     if (this.isSupported) {
-      this.init();
+      this.initPromise = this.init();
     }
   }
 
@@ -37,6 +38,7 @@ export class PushNotificationService {
   }
 
   async subscribe(): Promise<void> {
+    if (this.initPromise) await this.initPromise;
     if (!this.swRegistration) return;
 
     const userId = this.supabase.user()?.id;

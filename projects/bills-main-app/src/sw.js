@@ -12,7 +12,11 @@ self.addEventListener('push', (event) => {
     tag: data.tag ?? 'bills-notification',
     renotify: true,
   };
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+      .then(() => console.log('[SW] showNotification succeeded'))
+      .catch((e) => console.error('[SW] showNotification failed', e))
+  );
 });
 
 self.addEventListener('notificationclick', (event) => {
