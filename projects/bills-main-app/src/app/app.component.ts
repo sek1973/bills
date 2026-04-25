@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { RouterOutlet } from '@angular/router';
-import { PushNotificationService } from './services/push-notification.service';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +11,9 @@ import { PushNotificationService } from './services/push-notification.service';
 })
 export class AppComponent {
   private titleService = inject(Title);
-  readonly pushNotifications = inject(PushNotificationService);
 
   constructor() {
     this.titleService.setTitle('Rachunki');
   }
+
 }

@@ -6,6 +6,7 @@ const VAPID_PRIVATE_KEY = Deno.env.get('VAPID_PRIVATE_KEY')!;
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const EMAIL_ADDR = Deno.env.get('EMAIL_ADDR')!;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
@@ -63,7 +64,7 @@ Deno.serve(async (req) => {
 
   const notification = JSON.stringify({ title, body: body ?? '', url: url ?? '/', tag: tag ?? 'bills-notification' });
 
-  webpush.setVapidDetails('mailto:bills@app.local', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+  webpush.setVapidDetails(`mailto:${EMAIL_ADDR}`, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 
   const results = await Promise.allSettled(
     (subs ?? []).map((sub) =>

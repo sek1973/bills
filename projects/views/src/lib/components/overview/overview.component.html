@@ -63,6 +63,15 @@
       <span class="material-icons"
             inline="true">bar_chart</span>
     </button>
+    @if (pushNotifications.isSupported) {
+    <button mat-icon-button
+            class="only-large-screen"
+            [matTooltip]="pushNotifications.isSubscribed() ? 'Wyłącz powiadomienia' : 'Włącz powiadomienia'"
+            (click)="pushNotifications.isSubscribed() ? pushNotifications.unsubscribe() : pushNotifications.subscribe()">
+      <span class="material-icons"
+            inline="true">{{ pushNotifications.isSubscribed() ? 'notifications_off' : 'notifications' }}</span>
+    </button>
+    }
     <button mat-icon-button
             class="only-large-screen"
             [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"

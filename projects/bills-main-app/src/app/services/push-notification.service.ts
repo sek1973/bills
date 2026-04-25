@@ -1,9 +1,10 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { PushNotificationService } from '@bills/model';
 import { environment } from '../../environments/environment';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
-export class PushNotificationService {
+export class PushNotificationServiceImpl extends PushNotificationService {
   private readonly supabase = inject(SupabaseService);
 
   readonly isSupported =
@@ -18,6 +19,7 @@ export class PushNotificationService {
   private initPromise: Promise<void> | null = null;
 
   constructor() {
+    super();
     if (this.isSupported) {
       this.initPromise = this.init();
     }

@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { OverviewBill, RealtimeService } from '@bills/model';
+import { OverviewBill, PushNotificationService, RealtimeService } from '@bills/model';
 import { AppState, AuthActions, BillsActions, BillsSelectors } from '@bills/store';
 import {
   BillDueColorDirective,
@@ -54,6 +54,13 @@ export class OverviewComponent implements OnInit {
       icon: 'analytics',
       action: () => this.router.navigate(['/raporty'])
     },
+    ...(this.pushNotifications.isSupported ? [{
+      label: this.pushNotifications.isSubscribed() ? 'Wyłącz powiadomienia' : 'Włącz powiadomienia',
+      icon: this.pushNotifications.isSubscribed() ? 'notifications_off' : 'notifications',
+      action: () => this.pushNotifications.isSubscribed()
+        ? this.pushNotifications.unsubscribe()
+        : this.pushNotifications.subscribe()
+    }] : []),
     {
       label: this.themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny',
       icon: this.themeService.darkMode() ? 'light_mode' : 'dark_mode',
@@ -79,6 +86,7 @@ export class OverviewComponent implements OnInit {
   private router = inject(Router);
   private notification = inject(NotificationService);
   private realtimeService = inject(RealtimeService);
+  pushNotifications = inject(PushNotificationService);
   themeService = inject(ThemeService);
   #destroyRef = inject(DestroyRef);
 
