@@ -15,6 +15,9 @@ export class ThemeService {
       const isDark = this.darkMode();
       document.documentElement.classList.toggle('dark-mode', isDark);
       localStorage.setItem(STORAGE_KEY, String(isDark));
+      document.querySelectorAll('meta[name="theme-color"]').forEach(el =>
+        el.setAttribute('content', isDark ? '#212121' : '#ffffff')
+      );
     });
   }
 
