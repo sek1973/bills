@@ -1,1 +1,8 @@
+@if (!networkStatus.isOnline()) {
+<div class="offline-banner">
+  <mat-icon>wifi_off</mat-icon>
+  <span>Brak połączenia — wyświetlane są zapisane dane</span>
+</div>
+}
+
 <router-outlet></router-outlet>
