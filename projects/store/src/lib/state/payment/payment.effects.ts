@@ -23,7 +23,7 @@ export class PaymentEffects {
         ofType(PaymentsActions.loadPayments),
         switchMap(action => this.paymentsService.load(action.billId)
           .pipe(
-            timeout(15000),
+            timeout(1000),
             retry({ count: 2, delay: 3_000 }),
             map(payments => PaymentApiActions.loadPaymentsSuccess({ payments })),
             catchError(error => of(PaymentApiActions.loadPaymentsFailure({ error })))

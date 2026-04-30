@@ -30,7 +30,7 @@ export class BillEffects {
       ofType(BillsActions.loadOverviewBills),
       switchMap(() =>
         this.overviewBillsService.load().pipe(
-          timeout(15000),
+          timeout(1000),
           retry({ count: 2, delay: 3_000 }),
           map(bills => BillApiActions.loadOverviewBillsSuccess({ bills })),
           catchError(error => of(BillApiActions.loadOverviewBillsFailure({ error })))
