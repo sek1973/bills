@@ -2,11 +2,11 @@ import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BillsService, calculateNextDeadline, OverviewBillsService, Payment, PaymentsService } from '@bills/model';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService, validateBillName } from '@bills/tools';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NetworkStatusService, NotificationService, validateBillName } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
-import { Observable, of } from 'rxjs';
+import { fromEvent, Observable, of, timer } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, timeout, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app/app.state';
 import { BillApiActions } from './bill-api.actions';
@@ -24,6 +24,7 @@ export class BillEffects {
   private confirmationService = inject(ConfirmationService);
   private notification = inject(NotificationService);
   private router = inject(Router);
+  private networkStatus = inject(NetworkStatusService);
 
   loadOverviewBills$ = createEffect(() => {
     return this.actions$.pipe(
@@ -31,7 +32,7 @@ export class BillEffects {
       switchMap(() =>
         this.overviewBillsService.load().pipe(
           timeout(1000),
-          retry({ count: 2, delay: 3_000 }),
+          retry({ count: 2, delay: (error) => this.networkStatus.isOnline() ? timer(3_000) : (() => { throw error; })() }),
           map(bills => BillApiActions.loadOverviewBillsSuccess({ bills })),
           catchError(error => of(BillApiActions.loadOverviewBillsFailure({ error })))
         )
@@ -260,6 +261,13 @@ export class BillEffects {
         ofType(BillApiActions.payBillSuccess),
         map(() => this.notification.success('Opłacono rachunek')),
         switchMap(() => of(BillsActions.loadOverviewBills())));
+  });
+
+  reloadOnReconnect$ = createEffect(() => {
+    if (typeof window === 'undefined') { return of(BillsActions.loadOverviewBills()); }
+    return fromEvent(window, 'online').pipe(
+      map(() => BillsActions.loadOverviewBills())
+    );
   });
 
   showBillError$ = createEffect(() => {

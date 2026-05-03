@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { PaymentsService } from '@bills/model';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NotificationService } from '@bills/tools';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NetworkStatusService, NotificationService } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { of, timer } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, timeout } from 'rxjs/operators';
 import { PaymentApiActions } from './payment-api.actions';
 import { PaymentsActions } from './payment.actions';
@@ -16,6 +16,7 @@ export class PaymentEffects {
   private confirmationService = inject(ConfirmationService);
   private notification = inject(NotificationService);
   private importReportService = inject(ImportReportService);
+  private networkStatus = inject(NetworkStatusService);
 
   loadPayments$ = createEffect(() => {
     return this.actions$
@@ -24,7 +25,7 @@ export class PaymentEffects {
         switchMap(action => this.paymentsService.load(action.billId)
           .pipe(
             timeout(1000),
-            retry({ count: 2, delay: 3_000 }),
+            retry({ count: 2, delay: (error) => this.networkStatus.isOnline() ? timer(3_000) : (() => { throw error; })() }),
             map(payments => PaymentApiActions.loadPaymentsSuccess({ payments })),
             catchError(error => of(PaymentApiActions.loadPaymentsFailure({ error })))
           )
