@@ -3,9 +3,8 @@ import { Validators } from '@angular/forms';
 import { PaymentsService } from '@bills/model';
 import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NetworkStatusService, NotificationService } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, timer } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, timeout } from 'rxjs/operators';
-import { RETRY_COUNT, RETRY_DELAY, TIMEOUT_VALUE } from '../shared';
+import { of } from 'rxjs';
+import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { PaymentApiActions } from './payment-api.actions';
 import { PaymentsActions } from './payment.actions';
 
@@ -23,10 +22,8 @@ export class PaymentEffects {
     return this.actions$
       .pipe(
         ofType(PaymentsActions.loadPayments),
-        switchMap(action => this.paymentsService.load(action.billId)
-          .pipe(
-            timeout(TIMEOUT_VALUE),
-            retry({ count: RETRY_COUNT, delay: (error) => this.networkStatus.isOnline() ? timer(RETRY_DELAY) : (() => { throw error; })() }),
+        switchMap(action =>
+          this.paymentsService.load(action.billId).pipe(
             map(payments => PaymentApiActions.loadPaymentsSuccess({ payments })),
             catchError(error => of(PaymentApiActions.loadPaymentsFailure({ error })))
           )

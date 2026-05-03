@@ -1,8 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { Payment, PaymentsService } from '@bills/model';
+
+import { NetworkStatusService } from '@bills/tools';
 import moment from 'moment';
-import { from, map, Observable } from 'rxjs';
+import { from, map, Observable, throwError, timer } from 'rxjs';
+import { retry, timeout } from 'rxjs/operators';
 import { PaymentRow } from './db.types';
+import { RETRY_COUNT, RETRY_DELAY, TIMEOUT_VALUE } from './shared';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({
@@ -11,9 +15,18 @@ import { SupabaseService } from './supabase.service';
 export class PaymentsServiceImpl extends PaymentsService {
 
   private serverService: SupabaseService = inject(SupabaseService);
+  private networkStatus: NetworkStatusService = inject(NetworkStatusService);
 
   load(billId: number): Observable<Payment[]> {
+    if (!this.networkStatus.isOnline()) {
+      return throwError(() => new Error('Brak połączenia z internetem'));
+    }
     return from(this.serverService.client.rpc('bill_payments_overview', { p_bill_id: billId })).pipe(
+      timeout(TIMEOUT_VALUE),
+      retry({
+        count: RETRY_COUNT,
+        delay: (error) => this.networkStatus.isOnline() ? timer(RETRY_DELAY) : throwError(() => error)
+      }),
       map(({ data, error }) => {
         if (error) throw error;
         return (data ?? []).map((r: PaymentRow) => this.fromRow(r));
