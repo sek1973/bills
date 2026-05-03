@@ -33,6 +33,10 @@ export const BillsActions = {
     props<{ bill: Bill }>()
   ),
 
+  payBillCancelled: createAction(
+    '[Bills] Pay Bill Cancelled'
+  ),
+
   setCurrentBill: createAction(
     '[Bills] Set Current Bill',
     props<{ bill?: Bill }>()

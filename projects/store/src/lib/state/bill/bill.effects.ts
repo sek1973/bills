@@ -7,8 +7,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
 import { fromEvent, Observable, of, timer } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, timeout, withLatestFrom } from 'rxjs/operators';
+import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, take, timeout, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app/app.state';
+import { PaymentsSelectors } from '../payment';
 import { BillApiActions } from './bill-api.actions';
 import { BillsActions } from './bill.actions';
 import { BillsSelectors } from './bill.selectors';
@@ -191,7 +192,10 @@ export class BillEffects {
         filter(action => action.bill.id >= 0),
         mergeMap(action =>
           this.paymentsService.load(action.bill.id).pipe(
-            catchError(() => of([] as Payment[])),
+            catchError(() => this.store.select(PaymentsSelectors.selectAll).pipe(
+              take(1),
+              map(storePayments => storePayments.filter(p => p.billId === action.bill.id))
+            )),
             switchMap(payments => {
               const closest = payments
                 .filter(p => !p.paiddate && p.deadline)
@@ -203,13 +207,13 @@ export class BillEffects {
                 cancelButtonLabel: 'Anuluj',
                 applyButtonLabel: 'OK',
                 inputType: ConfirmDialogInputType.InputTypeCurrency,
-                inputValue: closest?.sum ?? action.bill.defaultSum,
+                inputValue: closest?.sum || action.bill.defaultSum,
                 inputValidators: [Validators.required],
                 inputLabelText: 'Kwota',
                 inputPlaceholderText: 'Kwota'
               }).pipe(
-                filter(response => response !== false),
                 switchMap(response => {
+                  if (response === false) { return of(BillsActions.payBillCancelled()); }
                   const value = (response as ConfirmDialogResponse).value;
                   const today = new Date();
                   const payOp: Observable<boolean | number> = closest

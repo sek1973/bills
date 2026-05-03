@@ -58,6 +58,7 @@
       <div class="bill-full-buttons">
         <button mat-icon-button
                 matTooltip="Odśwież"
+                [disabled]="loading()"
                 (click)="refresh()">
           <span class="material-icons"
                 inline="true">refresh</span>
@@ -87,19 +88,21 @@
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
+              [disabled]="loading()"
               (click)="editBill()">
         <span class="btn-text btn-text-always">Edytuj</span>
       </button>
       <button mat-raised-button
               color="primary"
               class="toolbar-button"
+              [disabled]="loading()"
               (click)="payBill()">
         <span class="btn-text btn-text-always">Zapłacony</span>
       </button>
       <button mat-raised-button
               [color]="activeColor()"
               class="toolbar-button"
-              [disabled]="newBill()"
+              [disabled]="newBill() || loading()"
               (click)="toggleActive()">
         <span class="btn-text btn-text-always">{{ activeLabel() }}</span>
       </button>

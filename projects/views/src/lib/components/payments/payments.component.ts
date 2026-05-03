@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Bill, Payment, RealtimeService } from '@bills/model';
-import { AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelectors } from '@bills/store';
+import { AppSelectors, AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelectors } from '@bills/store';
 import { CurrencyToStringPipe, DateToStringPipe, TableCellDirective, TableColumn, TableComponent, ThemeService } from '@bills/tools';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
@@ -37,6 +37,7 @@ export class PaymentsComponent implements OnInit {
   private store = inject(Store<AppState>);
   private realtimeService = inject(RealtimeService);
   private themeService = inject(ThemeService);
+  readonly loading = toSignal(this.store.select(AppSelectors.selectLoading), { initialValue: false });
 
   ngOnInit(): void {
     this.subscribeToBill();
@@ -138,7 +139,7 @@ export class PaymentsComponent implements OnInit {
   });
 
   payClosest(): void {
-    if (this.bill) { this.store.dispatch(BillsActions.payBill({ bill: this.bill })); }
+    if (this.bill && !this.loading()) { this.store.dispatch(BillsActions.payBill({ bill: this.bill })); }
   }
 
   addPayment(): void {

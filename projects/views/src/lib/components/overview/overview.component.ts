@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { OverviewBill, PushNotificationService, RealtimeService } from '@bills/model';
-import { AppState, AuthActions, BillsActions, BillsSelectors } from '@bills/store';
+import { AppSelectors, AppState, AuthActions, BillsActions, BillsSelectors } from '@bills/store';
 import {
   BillDueColorDirective,
   CurrencyToStringPipe,
@@ -37,12 +37,12 @@ export class OverviewComponent implements OnInit {
     {
       label: 'Odśwież',
       icon: 'refresh',
-      action: () => this.refresh()
+      action: () => !this.loading() && this.refresh()
     },
     {
       label: 'Zapłacony',
       icon: 'check',
-      action: () => this.payBill()
+      action: () => !this.loading() && this.payBill()
     },
     {
       label: this.filterInactive() ? 'Pokaż nieaktywne' : 'Ukryj nieaktywne',
@@ -89,6 +89,7 @@ export class OverviewComponent implements OnInit {
   pushNotifications = inject(PushNotificationService);
   themeService = inject(ThemeService);
   #destroyRef = inject(DestroyRef);
+  readonly loading = toSignal(this.store.select(AppSelectors.selectLoading), { initialValue: false });
 
   ngOnInit(): void {
     this.store.dispatch(BillsActions.loadOverviewBills());

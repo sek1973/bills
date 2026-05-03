@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal, viewChild } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -8,7 +8,7 @@ import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/r
 import { Store } from '@ngrx/store';
 
 import { Bill, Payment, RealtimeService, UserSettingsService } from '@bills/model';
-import { AppState, BillsActions, BillsSelectors, PaymentsSelectors } from '@bills/store';
+import { AppSelectors, AppState, BillsActions, BillsSelectors, PaymentsSelectors } from '@bills/store';
 import { PullToRefreshDirective, ThemeService } from '@bills/tools';
 import { filter } from 'rxjs/operators';
 import { PaymentsComponent } from '../payments/payments.component';
@@ -40,6 +40,7 @@ export class BillComponent implements OnInit {
   protected readonly payments = signal<Payment[]>([]);
   protected routeParamId: number = -1;
 
+  readonly loading = toSignal(this.store.select(AppSelectors.selectLoading), { initialValue: false });
   protected readonly activeColor = computed(() => this.bill()?.active ? 'primary' : 'basic');
   protected readonly amountDetailsVisible = computed(() => this.userSettings.showAmountDetails());
   protected readonly detailsTooltip = computed(() => this.userSettings.showAmountDetails() ? 'Ukryj szczegóły' : 'Pokaż szczegóły');
