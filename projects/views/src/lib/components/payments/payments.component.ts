@@ -6,7 +6,7 @@ import { AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelect
 import { CurrencyToStringPipe, DateToStringPipe, TableCellDirective, TableColumn, TableComponent, ThemeService } from '@bills/tools';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
-import { distinctUntilChanged, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 @Component({
@@ -81,14 +81,14 @@ export class PaymentsComponent implements OnInit {
   private subscribeToBill(): void {
     this.store
       .select(BillsSelectors.selectBill)
-      .pipe(
-        takeUntilDestroyed(this.#destroyRef),
-        distinctUntilChanged((a, b) => a?.id === b?.id)
-      )
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe({
         next: bill => {
+          const idChanged = bill?.id !== this.bill?.id;
           this.bill = bill;
-          this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill?.id || -1 }));
+          if (idChanged) {
+            this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill?.id || -1 }));
+          }
         }
       });
   }

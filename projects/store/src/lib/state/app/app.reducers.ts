@@ -60,6 +60,10 @@ export const appReducer = createReducer<AppData>(
     return { ...data, loading: true };
   }),
 
+  on(BillApiActions.updateBillSuccess, (data: AppData, action: { bill: Bill }) => {
+    return { ...data, currentBill: action.bill, loading: false };
+  }),
+
   on(BillsActions.payBill, (data: AppData) => {
     return { ...data, loading: false };
   }),
