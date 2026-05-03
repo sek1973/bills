@@ -5,6 +5,7 @@ import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, Imp
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, timer } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, timeout } from 'rxjs/operators';
+import { RETRY_COUNT, RETRY_DELAY, TIMEOUT_VALUE } from '../shared';
 import { PaymentApiActions } from './payment-api.actions';
 import { PaymentsActions } from './payment.actions';
 
@@ -24,8 +25,8 @@ export class PaymentEffects {
         ofType(PaymentsActions.loadPayments),
         switchMap(action => this.paymentsService.load(action.billId)
           .pipe(
-            timeout(1000),
-            retry({ count: 2, delay: (error) => this.networkStatus.isOnline() ? timer(3_000) : (() => { throw error; })() }),
+            timeout(TIMEOUT_VALUE),
+            retry({ count: RETRY_COUNT, delay: (error) => this.networkStatus.isOnline() ? timer(RETRY_DELAY) : (() => { throw error; })() }),
             map(payments => PaymentApiActions.loadPaymentsSuccess({ payments })),
             catchError(error => of(PaymentApiActions.loadPaymentsFailure({ error })))
           )

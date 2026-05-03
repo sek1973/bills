@@ -10,6 +10,7 @@ import { fromEvent, Observable, of, timer } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, retry, switchMap, take, timeout, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '../app/app.state';
 import { PaymentsSelectors } from '../payment';
+import { RETRY_COUNT, RETRY_DELAY, TIMEOUT_VALUE } from '../shared';
 import { BillApiActions } from './bill-api.actions';
 import { BillsActions } from './bill.actions';
 import { BillsSelectors } from './bill.selectors';
@@ -32,8 +33,8 @@ export class BillEffects {
       ofType(BillsActions.loadOverviewBills),
       switchMap(() =>
         this.overviewBillsService.load().pipe(
-          timeout(1000),
-          retry({ count: 2, delay: (error) => this.networkStatus.isOnline() ? timer(3_000) : (() => { throw error; })() }),
+          timeout(TIMEOUT_VALUE),
+          retry({ count: RETRY_COUNT, delay: (error) => this.networkStatus.isOnline() ? timer(RETRY_DELAY) : (() => { throw error; })() }),
           map(bills => BillApiActions.loadOverviewBillsSuccess({ bills })),
           catchError(error => of(BillApiActions.loadOverviewBillsFailure({ error })))
         )
