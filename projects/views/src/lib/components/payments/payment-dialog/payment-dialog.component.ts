@@ -94,7 +94,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     const val = this.form.value;
     const payment = this.payment ? this.payment.clone(this.payment.id) : new Payment();
     payment.deadline = val.deadline;
-    payment.sum = val.sum;
+    payment.sum = val.sum !== '' && val.sum != null ? Number(val.sum) : 0;
     payment.reminder = val.reminder;
     payment.paiddate = val.paiddate;
     payment.remarks = val.remarks;
