@@ -12,7 +12,8 @@
   <app-input-text [formGroup]="form"
                   [editMode]="editMode()"
                   [path]="['account']"
-                  [descriptionProvider]="descriptionProvider">
+                  [descriptionProvider]="descriptionProvider"
+                  [textFormatFn]="accountFormatFn">
   </app-input-text>
   @if (editMode() || showAmountDetails()) {
   <app-input-text [formGroup]="form"

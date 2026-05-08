@@ -11,7 +11,8 @@
            [matTooltipHideDelay]="tooltipHideDelayValue"
            [id]="fieldName()"
            [formControlName]="fieldName()"
-           [placeholder]="_placeholderText()" />
+           [placeholder]="_placeholderText()"
+           (change)="onChange()" />
     <mat-error>
       {{ getErrorMessage(path()) }}
     </mat-error>

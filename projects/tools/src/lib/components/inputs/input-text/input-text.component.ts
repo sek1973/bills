@@ -27,4 +27,16 @@ export class InputTextComponent extends InputBaseComponent {
     | 'time'
     | 'url'
     | 'week'>('text');
+  textFormatFn = input<((value: string) => string) | null>(null);
+
+  protected onChange(): void {
+    const fn = this.textFormatFn();
+    if (!fn) return;
+    const ctrl = this.formControl();
+    if (!ctrl) return;
+    const formatted = fn(ctrl.value ?? '');
+    if (formatted !== ctrl.value) {
+      ctrl.setValue(formatted, { emitEvent: true });
+    }
+  }
 }

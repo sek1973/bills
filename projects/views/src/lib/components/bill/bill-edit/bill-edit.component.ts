@@ -40,6 +40,12 @@ export class BillEditComponent {
 
   unitEnumItems: SelectItem<Unit>[] = unitsToSelectItems();
 
+  accountFormatFn = (value: string): string =>
+    value.replace(
+      /\b(\d{2})\s?(\d{4})\s?(\d{4})\s?(\d{4})\s?(\d{4})\s?(\d{4})\s?(\d{4})\b/g,
+      '$1 $2 $3 $4 $5 $6 $7'
+    );
+
   private store = inject(Store<AppState>);
   private router = inject(Router);
   private userSettings = inject(UserSettingsService);
