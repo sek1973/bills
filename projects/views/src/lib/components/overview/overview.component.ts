@@ -3,7 +3,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { OverviewBill, PushNotificationService, RealtimeService } from '@bills/model';
+import { OverviewBill, PushNotificationService } from '@bills/model';
 import { AppSelectors, AppState, AuthActions, BillsActions, BillsSelectors } from '@bills/store';
 import {
   BillDueColorDirective,
@@ -85,7 +85,6 @@ export class OverviewComponent implements OnInit {
   private store = inject(Store<AppState>);
   private router = inject(Router);
   private notification = inject(NotificationService);
-  private realtimeService = inject(RealtimeService);
   pushNotifications = inject(PushNotificationService);
   themeService = inject(ThemeService);
   #destroyRef = inject(DestroyRef);
@@ -96,9 +95,6 @@ export class OverviewComponent implements OnInit {
     this.store.select(BillsSelectors.selectOverviewBills)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(bills => this.overviewBills.set(bills));
-    this.realtimeService.billsChanges$
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => this.store.dispatch(BillsActions.loadOverviewBills()));
   }
 
   onRowClicked(row: OverviewBill | undefined): void {

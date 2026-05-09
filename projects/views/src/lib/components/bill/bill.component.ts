@@ -7,10 +7,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { Bill, Payment, RealtimeService, UserSettingsService } from '@bills/model';
+import { Bill, Payment, UserSettingsService } from '@bills/model';
 import { AppSelectors, AppState, BillsActions, BillsSelectors, PaymentsSelectors } from '@bills/store';
 import { PullToRefreshDirective, ThemeService } from '@bills/tools';
-import { filter } from 'rxjs/operators';
 import { PaymentsComponent } from '../payments/payments.component';
 import { BillEditComponent } from './bill-edit/bill-edit.component';
 import { PaymentsChartComponent } from './payments-chart/payments-chart.component';
@@ -29,7 +28,6 @@ export class BillComponent implements OnInit {
   #destroyRef = inject(DestroyRef);
   private route = inject(ActivatedRoute);
   private store = inject(Store<AppState>);
-  private realtimeService = inject(RealtimeService);
   private userSettings = inject(UserSettingsService);
   readonly themeService = inject(ThemeService);
 
@@ -69,12 +67,6 @@ export class BillComponent implements OnInit {
       this.store.dispatch(BillsActions.loadOverviewBills());
     }
 
-    this.realtimeService.billsChanges$
-      .pipe(
-        takeUntilDestroyed(this.#destroyRef),
-        filter((billId: number) => !this.editMode() && this.bill()?.id === billId)
-      )
-      .subscribe(() => this.store.dispatch(BillsActions.loadOverviewBills()));
   }
 
   ngOnInit(): void {

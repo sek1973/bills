@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
-import { Bill, Payment, RealtimeService } from '@bills/model';
+import { Bill, Payment } from '@bills/model';
 import { AppSelectors, AppState, BillsActions, BillsSelectors, PaymentsActions, PaymentsSelectors } from '@bills/store';
 import { CurrencyToStringPipe, DateToStringPipe, TableCellDirective, TableColumn, TableComponent, ThemeService } from '@bills/tools';
 import { Store } from '@ngrx/store';
@@ -35,27 +35,12 @@ export class PaymentsComponent implements OnInit {
   #destroyRef = inject(DestroyRef);
   dialog = inject(MatDialog);
   private store = inject(Store<AppState>);
-  private realtimeService = inject(RealtimeService);
   private themeService = inject(ThemeService);
   readonly loading = toSignal(this.store.select(AppSelectors.selectLoading), { initialValue: false });
 
   ngOnInit(): void {
     this.subscribeToBill();
     this.subscribeToData();
-    this.subscribeToRealtimeChanges();
-  }
-
-  private subscribeToRealtimeChanges(): void {
-    this.realtimeService.paymentsChanges$
-      .pipe(
-        takeUntilDestroyed(this.#destroyRef),
-        filter(billId => billId === this.bill?.id)
-      )
-      .subscribe(() => {
-        if (this.bill) {
-          this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill.id }));
-        }
-      });
   }
 
   private subscribeToData(): void {
