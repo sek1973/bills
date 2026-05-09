@@ -258,8 +258,7 @@ export class BillEffects {
                   applyButtonLabel: 'OK'
                 }).pipe(
                   map(() => BillApiActions.payBillSuccess({ billId: bill.id }))
-                )),
-                catchError(error => of(BillApiActions.payBillFailure({ error })))
+                ))
               );
             }),
             catchError(error => of(BillApiActions.payBillFailure({ error })))
