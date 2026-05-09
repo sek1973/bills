@@ -13,16 +13,22 @@ export abstract class PaymentsService {
 
   constructor() { }
 
+  /** Loads all payments for a given bill from the data source */
   abstract load(billId: number): Observable<Payment[]>;
 
+  /** Creates a new payment data object but doesn't create it in the data source */
   abstract createPaymentData(payment: Payment): Payment;
 
+  /** Adds a new payment to the data source */
   abstract add(payment: Payment): Observable<number>;
 
+  /** Updates an existing payment in the data source */
   abstract update(payment: Payment): Observable<boolean>;
 
+  /** Deletes a payment from the data source */
   abstract delete(payment: Payment): Observable<boolean>;
 
+  /** Imports payments from a CSV string */
   importPayments(data: string, billId: number): Observable<ImportReport[]> {
     const requests: Observable<ImportReport>[] = [];
     data.split(IMPORT_LINE_SEPARATOR).forEach((line, index) => {
