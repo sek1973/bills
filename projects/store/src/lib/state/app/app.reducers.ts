@@ -65,6 +65,10 @@ export const appReducer = createReducer<AppData>(
   }),
 
   on(BillsActions.payBill, (data: AppData) => {
+    return { ...data, loading: false };
+  }),
+
+  on(BillsActions.payBillConfirmed, (data: AppData) => {
     return { ...data, loading: true };
   }),
 

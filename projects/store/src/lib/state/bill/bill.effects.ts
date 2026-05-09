@@ -205,55 +205,66 @@ export class BillEffects {
                 cancelButtonLabel: 'Anuluj',
                 applyButtonLabel: 'OK',
                 inputType: ConfirmDialogInputType.InputTypeCurrency,
-                inputValue: closest?.sum || action.bill.defaultSum,
+                inputValue: closest?.sum ?? action.bill.defaultSum,
                 inputValidators: [Validators.required],
                 inputLabelText: 'Kwota',
                 inputPlaceholderText: 'Kwota'
               }).pipe(
-                switchMap(response => {
-                  if (response === false) { return of(BillsActions.payBillCancelled()); }
+                map(response => {
+                  if (!response) { return BillsActions.payBillCancelled(); }
                   const value = (response as ConfirmDialogResponse).value;
-                  const today = new Date();
-                  const payOp: Observable<boolean | number> = closest
-                    ? this.paymentsService.update(new Payment(
-                      closest.deadline, value as number, today,
-                      closest.remarks, closest.reminder, closest.billId, closest.id
-                    ))
-                    : this.paymentsService.add(
-                      new Payment(today, value as number, today, undefined, undefined, action.bill.id)
-                    );
-
-                  return payOp.pipe(
-                    switchMap(() => {
-                      const otherUpcoming = payments.filter(p =>
-                        !p.paiddate && p.deadline && p.id !== closest?.id
-                      );
-                      if (otherUpcoming.length) {
-                        return of(BillApiActions.payBillSuccess({ billId: action.bill.id }));
-                      }
-                      const base = closest?.deadline ?? today;
-                      const nextDeadline = calculateNextDeadline(base, action.bill.unit, action.bill.repeat);
-                      const nextPayment = new Payment(nextDeadline, action.bill.defaultSum, undefined, undefined, undefined, action.bill.id);
-                      return this.paymentsService.add(nextPayment).pipe(
-                        switchMap(() => this.confirmationService.confirm({
-                          dialogTitle: 'Następna płatność',
-                          message: `Dodano termin następnej płatności: ${moment(nextDeadline).format('DD.MM.YYYY')}`,
-                          cancelButtonVisible: false,
-                          applyButtonLabel: 'OK'
-                        }).pipe(
-                          map(() => BillApiActions.payBillSuccess({ billId: action.bill.id }))
-                        )),
-                        catchError(error => of(BillApiActions.payBillFailure({ error })))
-                      );
-                    }),
-                    catchError(error => of(BillApiActions.payBillFailure({ error })))
-                  );
+                  return BillsActions.payBillConfirmed({ bill: action.bill, value: value as number, closest, payments });
                 }),
                 catchError(error => of(BillApiActions.payBillFailure({ error })))
               );
             })
           )
         )
+      );
+  });
+
+  payBillConfirmed$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(BillsActions.payBillConfirmed),
+        mergeMap(action => {
+          const { bill, value, closest, payments } = action;
+          const today = new Date();
+          const payOp: Observable<boolean | number> = closest
+            ? this.paymentsService.update(new Payment(
+              closest.deadline, value, today,
+              closest.remarks, closest.reminder, closest.billId, closest.id
+            ))
+            : this.paymentsService.add(
+              new Payment(today, value, today, undefined, undefined, bill.id)
+            );
+
+          return payOp.pipe(
+            switchMap(() => {
+              const otherUpcoming = payments.filter(p =>
+                !p.paiddate && p.deadline && p.id !== closest?.id
+              );
+              if (otherUpcoming.length) {
+                return of(BillApiActions.payBillSuccess({ billId: bill.id }));
+              }
+              const base = closest?.deadline ?? today;
+              const nextDeadline = calculateNextDeadline(base, bill.unit, bill.repeat);
+              const nextPayment = new Payment(nextDeadline, bill.defaultSum, undefined, undefined, undefined, bill.id);
+              return this.paymentsService.add(nextPayment).pipe(
+                switchMap(() => this.confirmationService.confirm({
+                  dialogTitle: 'Następna płatność',
+                  message: `Dodano termin następnej płatności: ${moment(nextDeadline).format('DD.MM.YYYY')}`,
+                  cancelButtonVisible: false,
+                  applyButtonLabel: 'OK'
+                }).pipe(
+                  map(() => BillApiActions.payBillSuccess({ billId: bill.id }))
+                )),
+                catchError(error => of(BillApiActions.payBillFailure({ error })))
+              );
+            }),
+            catchError(error => of(BillApiActions.payBillFailure({ error })))
+          );
+        })
       );
   });
 

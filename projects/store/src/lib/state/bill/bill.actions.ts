@@ -1,4 +1,4 @@
-import { Bill } from '@bills/model';
+import { Bill, Payment } from '@bills/model';
 import { createAction, props } from '@ngrx/store';
 
 export const BillsActions = {
@@ -31,6 +31,11 @@ export const BillsActions = {
   payBill: createAction(
     '[Bills] Pay Bill',
     props<{ bill: Bill }>()
+  ),
+
+  payBillConfirmed: createAction(
+    '[Bills] Pay Bill Confirmed',
+    props<{ bill: Bill, value: number, closest: Payment | undefined, payments: Payment[] }>()
   ),
 
   payBillCancelled: createAction(
