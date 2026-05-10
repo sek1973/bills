@@ -1,9 +1,8 @@
 import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { AuthService, BillsService, OverviewBillsService, PaymentsService, PushNotificationService, RealtimeService } from '@bills/model';
-import { provideBillsStore, RealtimeEffects } from '@bills/store';
+import { provideBillsStore } from '@bills/store';
 import { provideToolsDeps } from '@bills/tools';
 import { provideViews } from '@bills/views';
-import { provideEffects } from '@ngrx/effects';
 import { environment } from '../environments/environment';
 import { BillsServiceImpl, OverviewBillsServiceImpl, PaymentsServiceImpl, PushNotificationServiceImpl, RealtimeServiceImpl } from './services';
 import { AuthServiceImpl } from './services/auth.service';
@@ -21,6 +20,5 @@ export const appConfig: ApplicationConfig = {
     { provide: OverviewBillsService, useExisting: OverviewBillsServiceImpl },
     { provide: RealtimeService, useExisting: RealtimeServiceImpl },
     { provide: PushNotificationService, useExisting: PushNotificationServiceImpl },
-    provideEffects([RealtimeEffects]),
   ]
 };
