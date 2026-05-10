@@ -34,6 +34,23 @@ export class PaymentsServiceImpl extends PaymentsService {
     );
   }
 
+  loadAll(): Observable<Payment[]> {
+    if (!this.networkStatus.isOnline()) {
+      return throwError(() => new Error('Brak połączenia z internetem'));
+    }
+    return from(this.serverService.client.from('payments').select<'*', PaymentRow>('*')).pipe(
+      timeout(TIMEOUT_VALUE),
+      retry({
+        count: RETRY_COUNT,
+        delay: (error) => this.networkStatus.isOnline() ? timer(RETRY_DELAY) : throwError(() => error)
+      }),
+      map(({ data, error }) => {
+        if (error) throw error;
+        return (data ?? []).map((r: PaymentRow) => this.fromRow(r));
+      })
+    );
+  }
+
   createPaymentData(payment: Payment): Payment {
     return payment.clone();
   }

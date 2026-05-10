@@ -88,6 +88,14 @@ export const appReducer = createReducer<AppData>(
     return { ...data, payments: action.payments, loading: false };
   }),
 
+  on(PaymentsActions.loadAllPayments, (data: AppData) => {
+    return { ...data, loading: true };
+  }),
+
+  on(PaymentApiActions.loadAllPaymentsSuccess, (data: AppData, action: { payments: Payment[] }) => {
+    return { ...data, payments: action.payments, loading: false };
+  }),
+
   on(PaymentsActions.createPayment, (data: AppData) => {
     return { ...data, loading: true };
   }),
@@ -117,6 +125,7 @@ export const appReducer = createReducer<AppData>(
     BillApiActions.payBillFailure,
     BillApiActions.loadOverviewBillsFailure,
     PaymentApiActions.loadPaymentsFailure,
+    PaymentApiActions.loadAllPaymentsFailure,
     PaymentApiActions.updatePaymentFailure,
     PaymentApiActions.createPaymentFailure,
     PaymentApiActions.deletePaymentFailure,

@@ -6,6 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Params, RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { switchMap } from 'rxjs/operators';
 
 import { Bill, Payment, UserSettingsService } from '@bills/model';
 import { AppSelectors, AppState, BillsActions, BillsSelectors, PaymentsSelectors } from '@bills/store';
@@ -59,9 +60,10 @@ export class BillComponent implements OnInit {
         this.dispatchSelectedBill(val);
       });
 
-    this.store.select(PaymentsSelectors.selectAll)
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe(payments => this.payments.set(payments || []));
+    this.store.select(BillsSelectors.selectBill).pipe(
+      takeUntilDestroyed(this.#destroyRef),
+      switchMap(bill => this.store.select(PaymentsSelectors.selectByBillId(bill?.id || -1)))
+    ).subscribe(payments => this.payments.set(payments || []));
 
   }
 

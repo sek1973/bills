@@ -2,12 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { AuthService } from '@bills/model';
 import { NavigationService, NotificationService } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, concatMap, debounceTime, map, mergeMap, switchMap, withLatestFrom } from 'rxjs/operators';
-import { AppState } from '../app/app.state';
+import { catchError, concatMap, debounceTime, map, mergeMap, switchMap } from 'rxjs/operators';
 import { AuthActions } from '../auth';
-import { BillsActions, BillsSelectors } from '../bill';
+import { BillsActions } from '../bill';
 import { PaymentsActions } from '../payment';
 
 @Injectable()
@@ -15,7 +13,6 @@ export class AuthEffects {
 
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
-  private store = inject(Store<AppState>);
   private notification = inject(NotificationService);
   private navigationService = inject(NavigationService);
 
@@ -57,14 +54,7 @@ export class AuthEffects {
   tokenRefreshed$ = createEffect(() =>
     this.authService.sessionRestored$.pipe(
       debounceTime(500),
-      withLatestFrom(this.store.select(BillsSelectors.selectBill)),
-      mergeMap(([, currentBill]) => {
-        const actions = [BillsActions.loadOverviewBills()];
-        if (currentBill?.id != null) {
-          actions.push(PaymentsActions.loadPayments({ billId: currentBill.id }) as any);
-        }
-        return actions;
-      })
+      mergeMap(() => [BillsActions.loadOverviewBills(), PaymentsActions.loadAllPayments()])
     )
   );
 

@@ -8,6 +8,10 @@ export const PaymentsActions = {
     props<{ billId: number }>()
   ),
 
+  loadAllPayments: createAction(
+    '[Payments] Load All'
+  ),
+
   updatePayment: createAction(
     '[Payments] Update Payment',
     props<{ payment: Payment }>()

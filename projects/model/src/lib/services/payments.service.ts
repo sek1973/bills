@@ -16,6 +16,9 @@ export abstract class PaymentsService {
   /** Loads all payments for a given bill from the data source */
   abstract load(billId: number): Observable<Payment[]>;
 
+  /** Loads all payments across all bills from the data source */
+  abstract loadAll(): Observable<Payment[]>;
+
   /** Creates a new payment data object but doesn't create it in the data source */
   abstract createPaymentData(payment: Payment): Payment;
 

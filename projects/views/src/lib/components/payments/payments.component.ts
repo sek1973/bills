@@ -6,7 +6,7 @@ import { AppSelectors, AppState, BillsActions, BillsSelectors, PaymentsActions, 
 import { CurrencyToStringPipe, DateToStringPipe, TableCellDirective, TableColumn, TableComponent, ThemeService } from '@bills/tools';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
-import { filter } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { PaymentDialogComponent } from './payment-dialog/payment-dialog.component';
 
 @Component({
@@ -44,17 +44,16 @@ export class PaymentsComponent implements OnInit {
   }
 
   private subscribeToData(): void {
-    this.store
-      .select(PaymentsSelectors.selectAll)
-      .pipe(takeUntilDestroyed(this.#destroyRef),
-        filter(() => !!this.bill))
-      .subscribe({
-        next: payments => {
-          const list = payments || [];
-          this.data.set(list);
-          this.updateClosestUpcoming(list);
-        }
-      });
+    this.store.select(BillsSelectors.selectBill).pipe(
+      takeUntilDestroyed(this.#destroyRef),
+      switchMap(bill => this.store.select(PaymentsSelectors.selectByBillId(bill?.id || -1)))
+    ).subscribe({
+      next: payments => {
+        const list = payments || [];
+        this.data.set(list);
+        this.updateClosestUpcoming(list);
+      }
+    });
   }
 
   private updateClosestUpcoming(payments: Payment[]): void {
@@ -68,15 +67,7 @@ export class PaymentsComponent implements OnInit {
     this.store
       .select(BillsSelectors.selectBill)
       .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe({
-        next: bill => {
-          const idChanged = bill?.id !== this.bill?.id;
-          this.bill = bill;
-          if (idChanged) {
-            this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill?.id || -1 }));
-          }
-        }
-      });
+      .subscribe({ next: bill => { this.bill = bill; } });
   }
 
   onRowClicked(row: Payment): void {
@@ -90,7 +81,7 @@ export class PaymentsComponent implements OnInit {
   }
 
   refresh(): void {
-    this.store.dispatch(PaymentsActions.loadPayments({ billId: this.bill?.id || -1 }));
+    this.store.dispatch(PaymentsActions.loadAllPayments());
   }
 
   paymentRowStyle = computed(() => {

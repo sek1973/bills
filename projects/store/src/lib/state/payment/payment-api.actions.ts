@@ -14,6 +14,16 @@ export const PaymentApiActions = {
     props<{ error: PostgrestError }>()
   ),
 
+  loadAllPaymentsSuccess: createAction(
+    '[Payment API] Load All Success',
+    props<{ payments: Payment[] }>()
+  ),
+
+  loadAllPaymentsFailure: createAction(
+    '[Payment API] Load All Failure',
+    props<{ error: PostgrestError }>()
+  ),
+
   updatePaymentSuccess: createAction(
     '[Payment API] Update Payment Success',
     props<{ payment: Payment }>()

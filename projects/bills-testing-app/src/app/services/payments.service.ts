@@ -35,6 +35,10 @@ export class PaymentsServiceImpl extends PaymentsService {
     return of(this.payments.filter(p => p.billId === billId)).pipe(delay(1000));
   }
 
+  loadAll(): Observable<Payment[]> {
+    return of([...this.payments]).pipe(delay(1000));
+  }
+
   createPaymentData(payment: Payment): Payment {
     const id = this.findNextId();
     return payment.clone(id);

@@ -31,6 +31,19 @@ export class PaymentEffects {
       );
   });
 
+  loadAllPayments$ = createEffect(() => {
+    return this.actions$
+      .pipe(
+        ofType(PaymentsActions.loadAllPayments),
+        switchMap(() =>
+          this.paymentsService.loadAll().pipe(
+            map(payments => PaymentApiActions.loadAllPaymentsSuccess({ payments })),
+            catchError(error => of(PaymentApiActions.loadAllPaymentsFailure({ error })))
+          )
+        )
+      );
+  });
+
   updatePayment$ = createEffect(() => {
     return this.actions$
       .pipe(
@@ -53,7 +66,7 @@ export class PaymentEffects {
           this.notification.success('Zapisano zmiany dla płatności');
           return action;
         }),
-        switchMap(action => of(PaymentsActions.loadPayments({ billId: action.payment.billId || -1 }))));
+        switchMap(action => of(PaymentsActions.loadAllPayments())));
   });
 
   createPayment$ = createEffect(() => {
@@ -78,7 +91,7 @@ export class PaymentEffects {
           this.notification.success('Utworzono nową płatność');
           return action;
         }),
-        switchMap(action => of(PaymentsActions.loadPayments({ billId: action.payment.billId || -1 }))));
+        switchMap(action => of(PaymentsActions.loadAllPayments())));
   });
 
   deletePayment$ = createEffect(() => {
@@ -118,7 +131,7 @@ export class PaymentEffects {
           this.notification.success('Usunięto płatność');
           return action;
         }),
-        switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
+        switchMap(action => of(PaymentsActions.loadAllPayments())));
   });
 
   importPayments$ = createEffect(() => {
@@ -175,7 +188,7 @@ export class PaymentEffects {
           }
           return action;
         }),
-        switchMap(action => of(PaymentsActions.loadPayments({ billId: action.billId }))));
+        switchMap(action => of(PaymentsActions.loadAllPayments())));
   });
 
   showPaymentError$ = createEffect(() => {
