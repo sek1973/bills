@@ -91,7 +91,6 @@ export class OverviewComponent implements OnInit {
   readonly loading = toSignal(this.store.select(AppSelectors.selectLoading), { initialValue: false });
 
   ngOnInit(): void {
-    this.store.dispatch(BillsActions.loadOverviewBills());
     this.store.select(BillsSelectors.selectOverviewBills)
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(bills => this.overviewBills.set(bills));
@@ -130,7 +129,7 @@ export class OverviewComponent implements OnInit {
   }
 
   refresh(): void {
-    this.store.dispatch(BillsActions.loadOverviewBills());
+    // No-op: loadOverviewBills is now dispatched globally at startup
   }
 
   payBill(): void {

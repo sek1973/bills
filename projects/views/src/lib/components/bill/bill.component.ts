@@ -63,10 +63,6 @@ export class BillComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(payments => this.payments.set(payments || []));
 
-    if (!this.bills()?.length) {
-      this.store.dispatch(BillsActions.loadOverviewBills());
-    }
-
   }
 
   ngOnInit(): void {
@@ -117,7 +113,6 @@ export class BillComponent implements OnInit {
   deleteBill(): void { this.billEdit()?.deleteBill(); }
   cancel(): void { this.billEdit()?.cancel(); }
   refresh(): void {
-    this.store.dispatch(BillsActions.loadOverviewBills());
     this.paymentsComponent()?.refresh();
   }
   toggleActive(): void { this.billEdit()?.toggleActive(); }

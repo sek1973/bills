@@ -78,7 +78,6 @@ export class ReportsComponent implements OnInit {
   readonly pieLabel = computed(() => this.selectedBarPoint()?.label ?? '');
 
   ngOnInit(): void {
-    this.store.dispatch(BillsActions.loadOverviewBills());
     this.store.select(BillsSelectors.selectAll)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(bills => this.bills.set(bills));

@@ -4,13 +4,14 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { appReducer, BillEffects, PaymentEffects, RealtimeEffects } from './state';
+import { AppInitEffects } from './state/app-init.effects';
 import { AuthEffects } from './state/auth/auth.effects';
 
 export function provideBillsStore(production: boolean): EnvironmentProviders {
   return makeEnvironmentProviders([
     provideStore({ data: appReducer }),
     provideStoreDevtools({ name: 'Bills', maxAge: 25, logOnly: production, connectInZone: true }),
-    provideEffects([AuthEffects, BillEffects, PaymentEffects, RealtimeEffects]),
+    provideEffects([AuthEffects, BillEffects, PaymentEffects, RealtimeEffects, AppInitEffects]),
     importProvidersFrom(MatSnackBarModule),
   ]);
 }
