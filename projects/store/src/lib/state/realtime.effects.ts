@@ -1,20 +1,23 @@
 import { inject } from '@angular/core';
-import { AppState, BillsActions, BillsSelectors, PaymentsActions } from '@bills/store';
+import { RealtimeService } from '@bills/model';
 import { createEffect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { filter, map, withLatestFrom } from 'rxjs/operators';
-import { RealtimeServiceImpl } from './realtime.service';
+import { AppState } from './app/app.state';
+import { BillsActions } from './bill/bill.actions';
+import { BillsSelectors } from './bill/bill.selectors';
+import { PaymentsActions } from './payment';
 
 export const RealtimeEffects = {
   billsChanges$: createEffect(() => {
-    const realtimeService = inject(RealtimeServiceImpl);
+    const realtimeService = inject(RealtimeService);
     return realtimeService.billsChanges$.pipe(
       map(() => BillsActions.loadOverviewBills())
     );
   }, { functional: true }),
 
   paymentsChanges$: createEffect(() => {
-    const realtimeService = inject(RealtimeServiceImpl);
+    const realtimeService = inject(RealtimeService);
     const store = inject(Store<AppState>);
     return realtimeService.paymentsChanges$.pipe(
       withLatestFrom(store.select(BillsSelectors.selectBill)),

@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
+import { RealtimeService } from '@bills/model';
 import { REALTIME_CHANNEL_STATES, RealtimeChannel } from '@supabase/supabase-js';
 import { Subject } from 'rxjs';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({ providedIn: 'root' })
-export class RealtimeServiceImpl {
+export class RealtimeServiceImpl extends RealtimeService {
 
   private supabase: SupabaseService = inject(SupabaseService);
 
@@ -18,6 +19,7 @@ export class RealtimeServiceImpl {
   private paymentsChannel: RealtimeChannel | null = null;
 
   constructor() {
+    super();
     const client = this.supabase.client;
 
     client.auth.getSession().then(async ({ data }) => {
