@@ -64,4 +64,14 @@ export const PaymentApiActions = {
     props<{ error: string }>()
   ),
 
+  upsertPayment: createAction(
+    '[Payment API] Upsert Payment',
+    props<{ payment: Payment }>()
+  ),
+
+  removePayment: createAction(
+    '[Payment API] Remove Payment',
+    props<{ paymentId: number; billId: number }>()
+  ),
+
 };

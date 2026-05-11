@@ -53,4 +53,14 @@ export const BillApiActions = {
     props<{ error: PostgrestError }>()
   ),
 
+  removeBill: createAction(
+    '[Bill API] Remove Bill',
+    props<{ billId: number }>()
+  ),
+
+  upsertBill: createAction(
+    '[Bill API] Upsert Bill',
+    props<{ bill: Bill }>()
+  ),
+
 };
