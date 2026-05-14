@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { PaymentsService } from '@bills/model';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NetworkStatusService, NotificationService } from '@bills/tools';
+import { OfflineCacheService, PaymentsService } from '@bills/model';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, ImportReportService, NotificationService } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, concatMap, filter, map, mergeMap, switchMap } from 'rxjs/operators';
@@ -16,7 +16,7 @@ export class PaymentEffects {
   private confirmationService = inject(ConfirmationService);
   private notification = inject(NotificationService);
   private importReportService = inject(ImportReportService);
-  private networkStatus = inject(NetworkStatusService);
+  private cacheService = inject(OfflineCacheService);
 
   loadPayments$ = createEffect(() => {
     return this.actions$
@@ -37,8 +37,23 @@ export class PaymentEffects {
         ofType(PaymentsActions.loadAllPayments),
         switchMap(() =>
           this.paymentsService.loadAll().pipe(
+            concatMap(payments =>
+              this.cacheService.savePayments(payments).pipe(
+                catchError(() => of(void 0)),
+                map(() => payments),
+              )
+            ),
             map(payments => PaymentApiActions.loadAllPaymentsSuccess({ payments })),
-            catchError(error => of(PaymentApiActions.loadAllPaymentsFailure({ error })))
+            catchError(error =>
+              this.cacheService.getPayments().pipe(
+                switchMap(payments =>
+                  payments.length > 0
+                    ? of(PaymentApiActions.loadAllPaymentsSuccess({ payments }))
+                    : of(PaymentApiActions.loadAllPaymentsFailure({ error }))
+                ),
+                catchError(() => of(PaymentApiActions.loadAllPaymentsFailure({ error })))
+              )
+            )
           )
         )
       );

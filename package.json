@@ -40,6 +40,7 @@
     "@supabase/supabase-js": "^2.103.0",
     "angular-material-styles": "^1.1.21",
     "d3": "^7.9.0",
+    "idb": "^8.0.3",
     "material-design-icons": "^3.0.1",
     "material-icons": "^1.13.14",
     "moment": "^2.30.1",

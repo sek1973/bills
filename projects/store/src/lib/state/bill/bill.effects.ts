@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { BillsService, calculateNextDeadline, OverviewBillsService, Payment, PaymentsService } from '@bills/model';
-import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NetworkStatusService, NotificationService, validateBillName } from '@bills/tools';
+import { BillsService, calculateNextDeadline, OfflineCacheService, OverviewBillsService, Payment, PaymentsService } from '@bills/model';
+import { ConfirmationService, ConfirmDialogInputType, ConfirmDialogResponse, NotificationService, validateBillName } from '@bills/tools';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import moment from 'moment';
@@ -25,15 +25,30 @@ export class BillEffects {
   private confirmationService = inject(ConfirmationService);
   private notification = inject(NotificationService);
   private router = inject(Router);
-  private networkStatus = inject(NetworkStatusService);
+  private cacheService = inject(OfflineCacheService);
 
   loadOverviewBills$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(BillsActions.loadOverviewBills),
       switchMap(() =>
         this.overviewBillsService.load().pipe(
+          concatMap(bills =>
+            this.cacheService.saveBills(bills).pipe(
+              catchError(() => of(void 0)),
+              map(() => bills),
+            )
+          ),
           map(bills => BillApiActions.loadOverviewBillsSuccess({ bills })),
-          catchError(error => of(BillApiActions.loadOverviewBillsFailure({ error })))
+          catchError(error =>
+            this.cacheService.getBills().pipe(
+              switchMap(bills =>
+                bills.length > 0
+                  ? of(BillApiActions.loadOverviewBillsSuccess({ bills }))
+                  : of(BillApiActions.loadOverviewBillsFailure({ error }))
+              ),
+              catchError(() => of(BillApiActions.loadOverviewBillsFailure({ error })))
+            )
+          )
         )
       )
     );
