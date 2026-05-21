@@ -1,34 +1,35 @@
+<div class="reports-header">
+  <button mat-icon-button
+          routerLink="/zestawienie"
+          matTooltip="Powrót do zestawienia">
+    <span class="material-icons">arrow_back</span>
+  </button>
+  <h1 class="reports-title">Raporty</h1>
+  <span class="spacer"></span>
+  <div class="chart-modes">
+    @for (option of modeOptions; track option.value) {
+    <label class="mode-pill"
+           [class.active]="chartMode() === option.value">
+      <input type="radio"
+             name="chartMode"
+             [value]="option.value"
+             [checked]="chartMode() === option.value"
+             (change)="setChartMode(option.value)">
+      {{ option.label }}
+    </label>
+    }
+  </div>
+  <span class="spacer"></span>
+  <button mat-icon-button
+          [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"
+          (click)="themeService.toggle()">
+    <span class="material-icons">{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</span>
+  </button>
+</div>
+
 <div class="reports-page"
      pullToRefresh
      (pullToRefresh)="refresh()">
-
-  <div class="reports-header">
-    <a mat-icon-button
-       routerLink="/zestawienie"
-       matTooltip="Powrót do zestawienia">
-      <span class="material-icons">arrow_back</span>
-    </a>
-    <h1 class="reports-title">Raporty</h1>
-    <div class="chart-modes">
-      @for (option of modeOptions; track option.value) {
-      <label class="mode-pill"
-             [class.active]="chartMode() === option.value">
-        <input type="radio"
-               name="chartMode"
-               [value]="option.value"
-               [checked]="chartMode() === option.value"
-               (change)="setChartMode(option.value)">
-        {{ option.label }}
-      </label>
-      }
-    </div>
-    <span class="spacer"></span>
-    <button mat-icon-button
-            [matTooltip]="themeService.darkMode() ? 'Tryb jasny' : 'Tryb ciemny'"
-            (click)="themeService.toggle()">
-      <span class="material-icons">{{ themeService.darkMode() ? 'light_mode' : 'dark_mode' }}</span>
-    </button>
-  </div>
 
   <div class="reports-content">
 
