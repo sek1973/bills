@@ -49,7 +49,11 @@ export class PaymentsComponent implements OnInit {
       switchMap(bill => this.store.select(PaymentsSelectors.selectByBillId(bill?.id || -1)))
     ).subscribe({
       next: payments => {
-        const list = payments || [];
+        const list = payments ? [...payments].sort((a, b) => {
+          if (!a.deadline) return 1;
+          if (!b.deadline) return -1;
+          return moment(b.deadline).diff(moment(a.deadline));
+        }) : [];
         this.data.set(list);
         this.updateClosestUpcoming(list);
       }
