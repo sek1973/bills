@@ -104,6 +104,7 @@ export class TableComponent<T> {
   readonly expandedRowTemplate = contentChild<TemplateRef<ExpandedRowComponent<T>>>('expandedRowTemplate');
   readonly middleToolbarPanelTemplate = contentChild<TemplateRef<TablePanelComponent<T>>>('middleToolbarPanelTemplate');
   readonly rightToolbarPanelTemplate = contentChild<TemplateRef<TablePanelComponent<T>>>('rightToolbarPanelTemplate');
+  readonly footerTemplate = contentChild<TemplateRef<Component>>('footerTemplate');
 
   readonly cellTemplates = computed(() => {
     const map = new Map<string, TemplateRef<Component>>();

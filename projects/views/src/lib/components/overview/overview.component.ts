@@ -3,7 +3,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { OverviewBill, PushNotificationService } from '@bills/model';
+import { addDays, OverviewBill, PushNotificationService } from '@bills/model';
 import { AppSelectors, AppState, AuthActions, BillsActions, BillsSelectors } from '@bills/store';
 import {
   BillDueColorDirective,
@@ -32,6 +32,19 @@ export class OverviewComponent implements OnInit {
   filterInactive = signal(true);
   filtered = computed(() =>
     this.filterInactive() ? this.overviewBills().filter(b => b.active) : this.overviewBills()
+  );
+  urgentSum = computed(() =>
+    this.filtered()
+      .filter(b => b.active && b.dueDate && b.dueDate < addDays())
+      .reduce((acc, b) => acc + b.sum, 0)
+  );
+  remainingSum = computed(() =>
+    this.filtered()
+      .filter(b => b.active && (!b.dueDate || b.dueDate >= addDays()))
+      .reduce((acc, b) => acc + b.sum, 0)
+  );
+  totalSum = computed(() =>
+    this.filtered().filter(b => b.active).reduce((acc, b) => acc + b.sum, 0)
   );
   menuItems = computed<TableMenuItem[]>(() => [
     {

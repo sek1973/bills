@@ -40,6 +40,23 @@
     <span>{{ row.sum | currencyToString }}</span>
   </ng-template>
 
+  <ng-template #footerTemplate>
+    <div class="table-footer-summary">
+      <span class="footer-segment">
+        <span class="footer-label">Nadchodzące:</span>
+        <span class="footer-value footer-urgent">{{ urgentSum() | currencyToString }}</span>
+      </span>
+      <span class="footer-segment">
+        <span class="footer-label">Pozostałe:</span>
+        <span class="footer-value">{{ remainingSum() | currencyToString }}</span>
+      </span>
+      <span class="footer-segment footer-total">
+        <span class="footer-label">Łącznie:</span>
+        <span class="footer-value">{{ totalSum() | currencyToString }}</span>
+      </span>
+    </div>
+  </ng-template>
+
   <ng-template #rightToolbarPanelTemplate>
     <button mat-icon-button
             class="only-large-screen"

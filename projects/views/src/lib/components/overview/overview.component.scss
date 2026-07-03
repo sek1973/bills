@@ -2,6 +2,52 @@ table {
   width: 100%;
 }
 
+.table-footer-summary {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  padding: 8px 16px;
+  gap: 12px;
+  justify-content: space-around;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+  .footer-segment {
+    display: flex;
+    gap: 6px;
+    font-size: 14px;
+    flex-direction: row;
+
+    .footer-label {
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    .footer-value {
+      text-align: right;
+      font-weight: 500;
+    }
+
+    .footer-urgent {
+      font-weight: 600;
+      color: darkgoldenrod;
+    }
+
+    &.footer-total {
+      padding-top: 4px;
+      margin-top: 2px;
+    }
+  }
+}
+
+:host-context(html.dark-mode) {
+  .table-footer-summary {
+    .footer-segment {
+      .footer-label {
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+  }
+}
+
 .only-large-screen {
   display: none;
 }

@@ -320,4 +320,7 @@
   @if (pageable()) {
   <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
   }
+  @if (footerTemplate()) {
+  <ng-container [ngTemplateOutlet]="footerTemplate()!"></ng-container>
+  }
 </div>
