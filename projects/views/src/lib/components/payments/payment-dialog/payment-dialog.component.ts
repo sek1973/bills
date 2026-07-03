@@ -90,7 +90,11 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     this.dialogRef.close('cancel');
   }
 
-  saveData(): void {
+  saveDataAndPay(): void {
+    this.saveData('zapłacony');
+  }
+
+  saveData(closeResult?: string): void {
     const val = this.form.value;
     const payment = this.payment ? this.payment.clone(this.payment.id) : new Payment();
     payment.deadline = val.deadline;
@@ -104,7 +108,7 @@ export class PaymentDialogComponent implements OnInit, AfterViewInit {
     } else {
       this.store.dispatch(PaymentsActions.createPayment({ payment }));
     }
-    this.dialogRef.close(payment);
+    this.dialogRef.close(closeResult ?? payment);
   }
 
   getDescriptionProvider(): DescriptionProvider {

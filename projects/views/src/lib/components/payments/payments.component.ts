@@ -157,7 +157,11 @@ export class PaymentsComponent implements OnInit {
       data: { payment, bill: this.bill, suggestedBase }
     });
 
-    dialogRef.afterClosed().subscribe();
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'zapłacony' && this.bill) {
+        this.store.dispatch(BillsActions.payBill({ bill: this.bill }));
+      }
+    });
   }
 
   deletePayment(): void {
