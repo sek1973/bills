@@ -19,7 +19,8 @@
     "lint": "ng lint",
     "depcruise": "depcruise projects --config .dependency-cruiser.js",
     "depcruise:graph": "depcruise projects --config .dependency-cruiser.js --output-type dot | dot -T svg > dependency-graph.svg",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "build-test": "npm run build && npm run build-testing-app && npm run test && npm run depcruise"
   },
   "private": true,
   "dependencies": {
