@@ -35,8 +35,29 @@ export class BillsDateAdapter extends NativeDateAdapter {
     if (value === undefined || value === null || value === '') {
       return null;
     }
-    const dateTime = value.split('.');
-    return new Date(+dateTime[2], +dateTime[1] - 1, +dateTime[0]);
+    if (typeof value === 'string') {
+      if (value.includes('.')) {
+        const parts = value.split('.');
+        if (parts[0].length === 4) {
+          // YYYY.MM.DD
+          return new Date(+parts[0], +parts[1] - 1, +parts[2]);
+        } else {
+          // DD.MM.YYYY
+          return new Date(+parts[2], +parts[1] - 1, +parts[0]);
+        }
+      }
+      if (value.includes('-')) {
+        const parts = value.split('-');
+        if (parts[0].length === 4) {
+          // YYYY-MM-DD
+          return new Date(+parts[0], +parts[1] - 1, +parts[2]);
+        } else {
+          // DD-MM-YYYY
+          return new Date(+parts[2], +parts[1] - 1, +parts[0]);
+        }
+      }
+    }
+    return super.parse(value);
   }
 }
 
