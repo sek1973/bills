@@ -55,6 +55,7 @@
                   "with": "projects/bills-main-app/src/environments/environment.prod.ts"
                 }
               ],
+              "allowedCommonJsDependencies": ["moment"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -127,6 +128,7 @@
             "sourceMap": true,
             "optimization": false,
             "namedChunks": true,
+            "allowedCommonJsDependencies": ["moment"],
             "browser": "projects/bills-testing-app/src/main.ts"
           },
           "configurations": {

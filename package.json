@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --project=bills-main-app",
-    "build": "ng build --project=bills-main-app",
+    "build": "ng build --configuration production --project=bills-main-app",
     "test": "vitest --run",
     "test:all": "vitest --run",
     "test:model": "vitest --run projects/model/src",
